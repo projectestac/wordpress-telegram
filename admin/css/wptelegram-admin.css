@@ -1,0 +1,146 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+.wptelegram-header-wrapper {
+    background: #fff;
+    border: 3px solid #bbb;
+    border-radius: 15px 15px 0 0;
+    position: relative;
+    padding: 10px;
+    overflow: hidden;
+}
+.wptelegram-header-wrapper table {
+    width: 100%;
+    table-layout: fixed;
+}
+@media screen and (max-width: 600px) {
+    .wptelegram-header-wrapper td,.wptelegram-header-wrapper th { display: block }
+}
+.wptelegram-header-wrapper .wptelegram-title h1 {
+    color: #20627b;
+}
+.wptelegram-header-wrapper td {
+    text-align: center;
+}
+.wptelegram-socials p {
+    margin: 5px 0;
+}
+.wptelegram-socials .fb-like {
+    margin: 5px 0;
+}
+.telegram-follow-button {
+    color: #fff;
+    background: #1e96c8;
+    padding: 3px 7px;
+    font-weight: 500;
+    font-size: 11px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+.telegram-follow-button:hover {
+    background: #167ba5;
+    color: #fff;
+}
+#wptelegram-header h2 {
+    display: inline;
+    margin-left: 10px;
+}
+#wptelegram-header h2 img {
+    vertical-align: middle;
+}
+#wptelegram-header h2 span {
+    margin-left: 10px;
+    vertical-align: middle;
+}
+#wptelegram-wrap form {
+    background: #fff;
+    padding: 10px;
+    border-radius: 10px;
+}
+#wptelegram-wrap .nav-tab img {
+    display: inline-block;
+    vertical-align: middle;
+}
+#wptelegram-wrap .nav-tab span{
+    margin: auto 10px;
+    vertical-align: middle;
+}
+@media screen and (max-width: 630px){
+    #wptelegram-wrap .nav-tab span{
+        display: none;
+    }
+}
+#wptelegram-wrap li, #wptelegram-wrap p, #wptelegram_meta_box p, #wptelegram_meta_box li {
+    font-size: 16px;
+}
+#wptelegram-wrap .form-table td>input[type=text] {
+    font-size: 1.5em;
+    font-family: monospace;
+    font-weight: 200;
+    vertical-align: middle;
+}
+@media screen and (min-width: 782px){
+    #wptelegram-wrap .form-table td>input[type=text]{
+        width: 350px;
+    }
+}
+#wptelegram-wrap button{
+	vertical-align: middle;
+}
+#wptelegram_message_template{
+	min-width: 50%;
+    min-height: 170px;
+    resize: both;
+}
+#wptelegram-wrap ol, #wptelegram_meta_box ol{
+	list-style-type: disc;
+}
+#wptelegram-wrap a {
+    text-decoration: none;
+}
+#wptelegram-wrap code, #wptelegram_meta_box code{
+    padding: 2px 4px;
+    font-size: 95%;
+    color: #bb0f3b;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+    font-style: normal;
+}
+#wptelegram_message_template-container{
+    max-width: 400px;
+}
+.wptelegram-tag {
+    background: none;
+    border: 0px;
+}
+.wptelegram-tag {
+    background: none;
+    border: 0px;
+    vertical-align: baseline !important;
+}
+.wptelegram-tag:focus {
+    outline: none;
+}
+#wptelegram-wrap .select2-container {
+    width: 100% !important;
+}
+.wptelegram-before-submit {
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+/* For older Wordpress versions*/
+.notice{
+    background:#fff;
+    border-left:4px solid #fff;
+    -webkit-box-shadow:0 1px 1px 0 rgba(0,0,0,.1);
+    box-shadow:0 1px 1px 0 rgba(0,0,0,.1);
+    margin:5px 15px 2px;
+    padding:1px 12px
+}
+.notice-success {
+    border-left-color: #46b450;
+}
+.notice-error {
+    border-left-color: #dc3232;
+}
