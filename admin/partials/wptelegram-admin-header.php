@@ -15,8 +15,8 @@ echo '<h2></h2>';
                 <div class="wptelegram-title"><h1><?php echo esc_html( sprintf( '%1$s %2$s', $title, $version ) ); ?></h1></div>
             </td>
             <?php
-            // ************ XTEC - Hide help info - 2018.07.12 @nacho
-            if ( is_xtecadmin() ) {
+            // ************ XTEC - Hide help info - 2018.07.26 @nacho
+            if ( is_xtec_super_admin() ) {
             ?>
                 <td>
                     <div class="">
@@ -32,8 +32,8 @@ echo '<h2></h2>';
             ?>
 
             <?php
-            // ************ XTEC - Hide social networks - 2018.07.12 @nacho
-            if ( is_xtecadmin() ) {
+            // ************ XTEC - Hide social networks - 2018.07.26 @nacho
+            if ( is_xtec_super_admin() ) {
             ?>
                 <td>
                     <div class="wptelegram-socials">
