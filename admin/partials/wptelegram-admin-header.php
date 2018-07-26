@@ -16,8 +16,8 @@ echo '<h2></h2>';
             </td>
 
             <?php
-            // ************ XTEC - Hide help info - 2018.07.12 @nacho
-            if ( is_xtecadmin() ) {
+            // ************ XTEC - Hide help info - 2018.07.26 @nacho
+            if ( is_xtec_super_admin() ) {
             ?>
                 <td>
                     <div class="">
@@ -33,8 +33,8 @@ echo '<h2></h2>';
             ?>
 
             <?php
-            // ************ XTEC - Hide social networks - 2018.07.12 @nacho
-            if ( is_xtecadmin() ) {
+            // ************ XTEC - Hide social networks - 2018.07.26 @nacho
+            if ( is_xtec_super_admin() ) {
             ?>
                 <td>
                     <div class="wptelegram-socials">
