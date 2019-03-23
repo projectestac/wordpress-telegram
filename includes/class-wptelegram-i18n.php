@@ -6,7 +6,7 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       https://twitter.com/manzoorwanijk
+ * @link       https://t.me/manzoorwanijk
  * @since      1.0.0
  *
  * @package    WPTelegram
@@ -22,7 +22,7 @@
  * @since      1.0.0
  * @package    WPTelegram
  * @subpackage WPTelegram/includes
- * @author     Manzoor Wani
+ * @author     Manzoor Wani <@manzoorwanijk>
  */
 class WPTelegram_i18n {
 

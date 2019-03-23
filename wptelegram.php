@@ -1,5 +1,4 @@
 <?php
-
 /**
  *
  * @link              https://t.me/manzoorwanijk
@@ -9,8 +8,8 @@
  * @wordpress-plugin
  * Plugin Name:       WP Telegram
  * Plugin URI:        https://t.me/WPTelegram
- * Description:       Get notifications and send posts automatically to Telegram when published or updated, whether to a Telegram Channel, Group, Supergroup or private chat, with full control...
- * Version:           1.8.0
+ * Description:       Integrate your WordPress site perfectly with Telegram. Send posts automatically to Telegram when published or updated, whether to a Telegram Channel, Group, Supergroup or private chat, with full control. Get your email notifications on Telegram.
+ * Version:           2.0.9
  * Author:            Manzoor Wani
  * Author URI:        https://t.me/manzoorwanijk
  * License:           GPL-2.0+
@@ -24,13 +23,17 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'WPTELEGRAM_VER', '1.8.0' );
+define( 'WPTELEGRAM_VER', '2.0.9' );
 
 define( 'WPTELEGRAM_BASENAME', plugin_basename( __FILE__ ) );
 
 define( 'WPTELEGRAM_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 
 define( 'WPTELEGRAM_URL', untrailingslashit( plugins_url( '', __FILE__ ) ) );
+
+define( 'WPTELEGRAM_MODULES_DIR', WPTELEGRAM_DIR . '/modules' );
+
+define( 'WPTELEGRAM_MODULES_URL', WPTELEGRAM_URL . '/modules' );
 
 /**
  * The code that runs during plugin activation.
@@ -55,12 +58,15 @@ register_deactivation_hook( __FILE__, 'deactivate_wptelegram' );
 
 /**
  * The core plugin class that is used to define internationalization,
- * admin-specific hooks and other handlers
+ * admin-specific hooks, and public-facing site hooks.
  */
 require WPTELEGRAM_DIR . '/includes/class-wptelegram.php';
 
 /**
- * Begins execution of the plugin.
+ * Begins execution of the plugin and acts as the main instance of WPTelegram.
+ *
+ * Returns the main instance of WPTelegram to prevent the need to use globals.
+ *
  *
  * Since everything within the plugin is registered via hooks,
  * then kicking off the plugin from this point in the file does
@@ -68,10 +74,13 @@ require WPTELEGRAM_DIR . '/includes/class-wptelegram.php';
  *
  * @since    1.0.0
  */
-function run_wptelegram() {
+function WPTG() {
 
-	$plugin = new WPTelegram();
-	$plugin->run();
-	define( 'WPTELEGRAM_LOADED', true );
+	return WPTelegram::instance();
 }
-run_wptelegram();
+
+// Fire and load modules
+WPTG()->load_modules();
+
+define( 'WPTELEGRAM_LOADED', true );
+

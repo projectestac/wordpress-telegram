@@ -3,8 +3,8 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       https://t.me/WPTelegram
- * @since      1.6.0
+ * @link       https://t.me/manzoorwanijk
+ * @since      1.0.0
  *
  * @package    WPTelegram
  * @subpackage WPTelegram/public
@@ -14,151 +14,347 @@
  * The public-facing functionality of the plugin.
  *
  * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
+ * enqueue the public-facing stylesheet and JavaScript.
  *
  * @package    WPTelegram
  * @subpackage WPTelegram/public
- * @author     Manzoor Wani
+ * @author     Manzoor Wani <@manzoorwanijk>
  */
-class WPTelegram_Public {
-
-	/**
-	 * Title of the plugin.
-	 *
-	 * @since    1.6.0
-	 * @access   protected
-	 * @var      string    $title    Title of the plugin
-	 */
-	protected $title;
-
-	/**
-	 * The ID of this plugin.
-	 *
-	 * @since    1.6.0
-	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
-	 */
-	private $plugin_name;
-
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since    1.6.0
-	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
-	 */
-	private $version;
+class WPTelegram_Public extends WPTelegram_Core_Base {
 
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since	1.6.0
-	 * @param	string    $plugin_name       The name of the plugin.
-	 * @param	string    $version    The version of this plugin.
+	 * @since	1.0.0
+	 * @param 	string    $plugin_title	Title of the plugin
+	 * @param	string    $plugin_name	The name of the plugin.
+	 * @param	string    $version		The version of this plugin.
 	 */
-	public function __construct( $title, $plugin_name, $version ) {
+	public function __construct( $plugin_title, $plugin_name, $version ) {
 
-		$this->title = $title;
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+		parent::__construct( $plugin_title, $plugin_name, $version );
+
+        $this->sub_dir = 'public';
+	}
+
+	/**
+	 * Register the stylesheets for the public-facing side of the site.
+	 *
+	 * @since    1.0.0
+	 */
+	public function enqueue_styles() {
+
+		parent::enqueue_style( $this->plugin_name, $this->sub_dir );
 
 	}
 
 	/**
-	 * Render the profile fields
+	 * Register the JavaScript for the public-facing side of the site.
 	 *
-	 * @since	1.6.0
-	 * @param	WP_User	$user	The WordPress user
+	 * @since    1.0.0
 	 */
-	public function add_user_profile_fields( $user ) {
-		global $wptelegram_options;
-		$bot_token = $wptelegram_options['telegram']['bot_token'];
-		if ( '' == $bot_token ) {
+	public function enqueue_scripts() {
+
+		parent::enqueue_script( $this->plugin_name, $this->sub_dir, 'js', array( 'jquery' ) );
+
+	}
+
+	/**
+	 * Do the necessary db upgrade, if needed
+	 *
+	 * @since    2.0.0
+	 */
+	public function do_upgrade() {
+
+		$current_version = get_option( 'wptelegram_ver', '1.9.4' );
+
+		if ( ! version_compare( $current_version, WPTELEGRAM_VER, '<' ) ) {
 			return;
 		}
-		$bot_username = get_site_transient( 'wptelegram_bot_username' );
-		// if somehow the bot_username is not in transient
-		if ( ! $bot_username ) {
-			$tg_api = new WPTelegram_Bot_API( $bot_token );
-			$res = $tg_api->getMe();
 
-			if ( ! is_wp_error( $res ) && 200 == $res->get_response_code() ) {
-				$bot_info = $res->get_result();
-				$bot_username = $bot_info['username'];
-				set_site_transient( 'wptelegram_bot_username', $bot_username );
-			}
-		}
-
-		set_query_var( 'telegram_chat_id', $user->telegram_chat_id );
-		set_query_var( 'bot_username', $bot_username );
-
-		if ( $template = locate_template( 'wptelegram-profile-fields.php' ) ) {
-			/**
-		     * locate_template() returns path to file.
-		     * if either the child theme or the parent theme have overridden the template.
-		     */
-
-			if ( $this->is_valid_template( $template ) ) {
-			    load_template( $template );
-			}
-		} else {
-		    /*
-		     * If neither the child nor parent theme have overridden the template,
-		     * we load the template from the 'partials' sub-directory of the directory this file is in.
-		     */
-		    load_template( WPTELEGRAM_DIR . '/public/partials/wptelegram-profile-fields.php' );
-		}
-	}
-
-	/**
-	 * Check whether the template path is valid
-	 *
-	 * @since	1.6.0
-	 * @param	string	$template	The template path
-	 * @return	bool
-	 */
-	private function is_valid_template( $template ) {
-		/**
-		 * Only allow templates that are in the active theme directory,
-		 * parent theme directory, or the /wp-includes/theme-compat/ directory
-		 * (prevent directory traversal attacks)
-		 */
-		$valid_paths = array_map( 'realpath',
-			array(
-				STYLESHEETPATH,
-				TEMPLATEPATH,
-				ABSPATH . WPINC . '/theme-compat/',
-			)
+		// the sequential upgrades
+		// subsequent upgrade depends upon the previous on
+		$version_upgrades = array(
+			'2.0.0', // first upgrade
 		);
 
-		$path = realpath( $template );
+		// always
+		if ( ! in_array( WPTELEGRAM_VER, $version_upgrades ) ) {
+			$version_upgrades[] = WPTELEGRAM_VER;
+		}
+		
+		foreach ( $version_upgrades as $target_version ) {
+			
+			if ( version_compare( $current_version, $target_version, '<' ) ) {
 
-		foreach ( $valid_paths as $valid_path ) {
-			if ( preg_match( '/\A' . preg_quote( $valid_path ) . '/', $path ) ) {
-				return true;
+				$this->upgrade_to( $target_version );
+
+				$current_version = $target_version;
 			}
 		}
-		return false;
 	}
 
 	/**
-	 * Render the profile fields
+	 * Upgrade to a specific version
 	 *
-	 * @since	1.6.0
-	 * @param	WP_Error	$errors	WP_Error object (passed by reference)
-	 * @param	bool		$update	Whether this is a user update.
-	 * @param	stdClass	$user	User object (passed by reference).
+	 * @since    2.0.0
 	 */
-	public function validate_user_profile_fields( &$errors, $update = null, &$user = null ) {
-		if ( isset( $_POST['telegram_chat_id'] ) ) {
-			$chat_id = sanitize_text_field( $_POST['telegram_chat_id'] );
-			$pattern = apply_filters( 'wptelegram_user_telegram_chat_id_regex', '/\A[0-9]+\Z/', $user );
-			if ( $chat_id && ! preg_match( $pattern, $chat_id ) ) {
-		        $errors->add( 'invalid_chat_id', __( 'Error: ', 'wptelegram' ) . __( 'Please Enter a valid Chat ID', 'wptelegram' ) );
-		    } elseif ( current_user_can( 'edit_user', $user->ID ) ) {
-		    	update_user_meta( $user->ID, 'telegram_chat_id', $chat_id );
-		    }
+	private function upgrade_to( $version ) {
+
+		// 2.0.1 becomes 201
+		$_version = str_replace( '.', '', $version );
+
+		$method = array( $this, "upgrade_to_{$_version}" );
+
+		if ( is_callable( $method ) ) {
+
+			call_user_func( $method );
 		}
+
+		update_option( 'wptelegram_ver', $version );
 	}
 
+	/**
+	 * Upgrade to a specific version
+	 *
+	 * @since    2.0.0
+	 */
+	private function upgrade_to_200() {
+
+		$telegram_opts = get_option( 'wptelegram_telegram', array() );
+
+		// possibly a new install
+		if ( empty( $telegram_opts['bot_token'] ) ) {
+			return;
+		}
+
+		$wptelegram['bot_token'] = $telegram_opts['bot_token'];
+
+		// if P2TG should be active
+		if ( ! empty( $telegram_opts['chat_ids'] ) ) {
+
+			// activate p2tg
+			$wptelegram['modules'][0]['p2tg'] = 'on';
+
+			// migrate Telegram Destination
+			$wptelegram_p2tg['channels'] = $telegram_opts['chat_ids'];
+		}
+
+		// fetch other stuff
+		$wordpress_opts = get_option( 'wptelegram_wordpress', array() );
+
+		/* Migrate Rules */
+		// when
+		if ( ! empty( $wordpress_opts['send_when'] ) ) {
+
+			if ( in_array( 'send_new', $wordpress_opts['send_when'] ) ) {
+				$wptelegram_p2tg['send_when'][] = 'new';
+			}
+			if ( in_array( 'send_updated', $wordpress_opts['send_when'] ) ) {
+				$wptelegram_p2tg['send_when'][] = 'existing';
+			}
+		}
+
+		// post_type
+		if ( ! empty( $wordpress_opts['which_post_type'] ) ) {
+
+			$wptelegram_p2tg['post_types'] = (array) $wordpress_opts['which_post_type'];
+		}
+
+		$author_rule = array();
+
+		// Authors
+		if ( ! empty( $wordpress_opts['from_authors'][0] ) && 'all' !== $wordpress_opts['from_authors'][0] && ! empty( $wordpress_opts['authors'] ) ) {
+
+			$param = 'post_author';
+			$operator = ( 'selected' == $wordpress_opts['from_authors'][0] ) ? 'in' : 'not_in';
+			$values = $wordpress_opts['authors'];
+
+			$author_rule = compact( 'param', 'operator', 'values' );
+		}
+
+		$taxonomy_rules = array();
+
+		// categories
+		if ( ! empty( $wordpress_opts['from_terms'][0] ) && 'all' !== $wordpress_opts['from_terms'][0] && ! empty( $wordpress_opts['terms'] ) ) {
+
+			// taxonomy with their terms
+			$tax_terms = array();
+
+			foreach ( $wordpress_opts['terms'] as $term_tax ) {
+				
+				list( $term_id, $taxonomy ) = explode( '@', $term_tax );
+				if ( 'category' === $taxonomy ) {
+					$tax_terms[ $taxonomy ][] = $term_id;
+				} else {
+					$tax_terms[ 'tax:' . $taxonomy ][] = $term_id;
+				}
+			}
+
+			$operator = ( 'selected' == $wordpress_opts['from_terms'][0] ) ? 'in' : 'not_in';
+
+			foreach ( $tax_terms as $taxonomy => $terms ) {
+
+				$param = $taxonomy;
+				$values = $terms;
+
+				$taxonomy_rules[] = compact( 'param', 'operator', 'values' );
+			}
+		}
+
+		$rule_groups = array();
+
+		foreach ( $taxonomy_rules as $tax_rule ) {
+			$rule_group = array();
+
+			$rule_group[] = $tax_rule;
+
+			if ( ! empty( $author_rule ) ) {
+				$rule_group[] = $author_rule;
+			}
+
+			$rule_groups[] = $rule_group;
+		}
+
+		// if we do not have anything
+		if ( empty( $rule_groups ) && ! empty( $author_rule ) ) {
+
+			$rule_group = array();
+
+			$rule_group[] = $author_rule;
+
+			$rule_groups[] = $rule_group;
+		}
+
+		// if we have something
+		if ( ! empty( $rule_groups ) ) {
+
+			$wptelegram_p2tg['rules'] = $rule_groups;
+		}
+
+		/* Migrate Message settings */
+		$message_opts = get_option( 'wptelegram_message', array() );
+		$keys = array(
+			'message_template',
+			'excerpt_source',
+			'excerpt_length',
+			'parse_mode',
+			'inline_url_button',
+			'inline_button_text',
+			'send_featured_image',
+			'image_position',
+			'misc',
+		);
+
+		foreach ( $keys as $key ) {
+
+			if ( ! empty( $message_opts[ $key ] ) ) {
+
+				$wptelegram_p2tg[ $key ] = ( 'off' === $message_opts[ $key ] ) ? 0 : $message_opts[ $key ];
+			}
+		}
+
+		// convert macros in template
+		if ( ! empty( $wptelegram_p2tg[ 'message_template' ] ) ) {
+
+			$template = json_decode( $wptelegram_p2tg[ 'message_template' ] );
+
+			$macros = array(
+				'title',
+				'author',
+				'excerpt',
+				'content',
+			);
+
+			foreach ( $macros as $macro ) {
+				
+				$template = str_replace( '{' . $macro . '}', '{post_' . $macro . '}', $template );
+			}
+
+			// replace taxonomy macros
+			if ( preg_match_all( '/(?<=\{\[)[a-z0-9_]+?(?=\]\})/iu', $template, $matches ) ) {
+
+				foreach ( $matches[0] as $taxonomy ) {
+
+					$template = str_replace( '{[' . $taxonomy . ']}', '{terms:' . $taxonomy . '}', $template );
+				}
+			}
+
+			// replace custom fields macros
+			if ( preg_match_all( '/(?<=\{\[\[).+?(?=\]\]\})/u', $template, $matches ) ) {
+
+				foreach ( $matches[0] as $custom_field ) {
+
+					$template = str_replace( '{[[' . $custom_field . ']]}', '{cf:' . $custom_field . '}', $template );
+				}
+			}
+
+			$wptelegram_p2tg['message_template'] = WPTG()->helpers->sanitize_message_template( $template, false );
+		}
+
+		// now decide about single_message
+		$wptelegram_p2tg[ 'single_message' ] = 0;
+		if ( ( ! empty( $message_opts[ 'attach_image' ] ) && 'on' == $message_opts[ 'attach_image' ] ) || ( ! empty( $message_opts[ 'image_style' ] ) && 'with_caption' == $message_opts[ 'image_style' ] ) ) {
+
+			$wptelegram_p2tg[ 'single_message' ] = 'on';
+		}
+
+		$notify_opts = get_option( 'wptelegram_notify', array() );
+		// if Notify should be active
+		if ( ! empty( $notify_opts['chat_ids'] ) && ! empty( $notify_opts['watch_emails'] ) ) {
+
+			// activate notify
+			$wptelegram['modules'][0]['notify'] = 'on';
+
+			// migrate NOTIFICATION SETTINGS
+			$wptelegram_notify['chat_ids'] = $notify_opts['chat_ids'];
+			$wptelegram_notify['watch_emails'] = $notify_opts['watch_emails'];
+			$wptelegram_notify['user_notifications'] = empty( $notify_opts['user_notifications'] ) ? 0 : $notify_opts['user_notifications'];
+
+			$template = '🔔‌<b>{email_subject}</b>🔔' . PHP_EOL . PHP_EOL . '{email_message}';
+			if ( ! empty( $notify_opts['hashtag'] ) ) {
+				$template .= PHP_EOL . PHP_EOL . $notify_opts['hashtag'];
+			}
+
+			$wptelegram_notify['message_template'] = WPTG()->helpers->sanitize_message_template( $template, false );
+
+			$wptelegram_notify['parse_mode'] = 'HTML';
+		}
+
+		// if proxy should be active
+		if ( apply_filters( 'wptelegram_bot_api_use_proxy', false ) ) {
+			// activate proxy
+			$wptelegram['modules'][0]['proxy'] = 'on';
+		}
+
+		$proxy_opts = get_option( 'wptelegram_proxy', array() );
+		
+		if ( ! empty( $proxy_opts ) ) {
+
+			$wptelegram_proxy = $proxy_opts;
+
+			if ( ! empty( $proxy_opts['script_url'] ) ) {
+				$wptelegram_proxy['proxy_method'] = 'google_script';
+			} else {
+				$wptelegram_proxy['proxy_method'] = 'php_proxy';
+			}
+		}
+
+		$sections = array(
+			'telegram',
+			'wordpress',
+			'message',
+			'notify',
+			'proxy',
+		);
+		foreach ( $sections as $section ) {
+			delete_option( 'wptelegram_' . $section );
+		}
+
+		// update the options
+		$options = compact( 'wptelegram', 'wptelegram_p2tg', 'wptelegram_notify', 'wptelegram_proxy' );
+		foreach ( $options as $option => $value ) {
+			update_option( $option, $value );
+		}
+	}
 }

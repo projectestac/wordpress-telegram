@@ -3,9 +3,10 @@
 /**
  * The file that defines the core plugin class
  *
- * A class definition that includes attributes and functions used in the admin area and the handlers
+ * A class definition that includes attributes and functions used across both the
+ * public-facing side of the site and the admin area.
  *
- * @link       https://t.me/WPTelegram
+ * @link       https://t.me/manzoorwanijk
  * @since      1.0.0
  *
  * @package    WPTelegram
@@ -24,9 +25,16 @@
  * @since      1.0.0
  * @package    WPTelegram
  * @subpackage WPTelegram/includes
- * @author     Manzoor Wani
+ * @author     Manzoor Wani <@manzoorwanijk>
  */
-class WPTelegram {
+final class WPTelegram {
+
+	/**
+	 * The single instance of the class.
+	 *
+	 * @since 1.0.0
+	 */
+	protected static $_instance = null;
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -41,11 +49,11 @@ class WPTelegram {
 	/**
 	 * Title of the plugin.
 	 *
-	 * @since    1.3.7
+	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $title    Title of the plugin
+	 * @var      string    $plugin_title    Title of the plugin
 	 */
-	protected $title;
+	protected $plugin_title;
 
 	/**
 	 * The unique identifier of this plugin.
@@ -66,25 +74,89 @@ class WPTelegram {
 	protected $version;
 
 	/**
+	 * The plugin options
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string    $options    The plugin options
+	 */
+	protected $options;
+
+	/**
+	 * The utility methods
+	 *
+	 * @since    1.0.0
+	 * @access   public
+	 * @var      string    $utils    The utility methods
+	 */
+	public $utils;
+
+	/**
+	 * The helpers methods
+	 *
+	 * @since    1.0.0
+	 * @access   public
+	 * @var      string    $helpers    The helpers methods
+	 */
+	public $helpers;
+
+	/**
+	 * Main class Instance.
+	 *
+	 * Ensures only one instance of the class is loaded or can be loaded.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @return Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	/**
+	 * Cloning is forbidden.
+	 *
+	 * @since 1.0.0
+	 */
+	public function __clone() {}
+
+	/**
+	 * Unserializing instances of this class is forbidden.
+	 *
+	 * @since 1.0.0
+	 */
+	public function __wakeup() {}
+
+	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
 	 * Load the dependencies, define the locale, and set the hooks for the admin area and
-	 * the handlers.
+	 * the public-facing side of the site.
 	 *
 	 * @since    1.0.0
 	 */
 	public function __construct() {
 
-		$this->title =  __( 'WP Telegram', 'wptelegram' );
-		$this->plugin_name = 'wptelegram';
-		$this->version = WPTELEGRAM_VER;
+		$this->version		= WPTELEGRAM_VER;
+		$this->plugin_title	=  __( 'WP Telegram', 'wptelegram' );
+		$this->plugin_name	= strtolower( __CLASS__ );
 
 		$this->load_dependencies();
+		$this->set_options();
+
 		$this->set_locale();
 		$this->define_admin_hooks();
-		$this->define_handler_hooks();
 		$this->define_public_hooks();
+
+		$this->run();
+
+		$this->utils = WPTelegram_Utils::instance();
+		$this->helpers = WPTelegram_Helpers::instance();
+
 	}
 
 	/**
@@ -95,7 +167,7 @@ class WPTelegram {
 	 * - WPTelegram_Loader. Orchestrates the hooks of the plugin.
 	 * - WPTelegram_i18n. Defines internationalization functionality.
 	 * - WPTelegram_Admin. Defines all hooks for the admin area.
-	 * - WPTelegram_Post_Handler. Defines all hooks for handling the post transition.
+	 * - WPTelegram_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -118,10 +190,44 @@ class WPTelegram {
 		require_once WPTELEGRAM_DIR . '/includes/class-wptelegram-i18n.php';
 
 		/**
-		 * The miscellaneous functions
-		 * 
+		 * The class responsible for plugin options
 		 */
-		require_once WPTELEGRAM_DIR . '/includes/wptelegram-functions.php';
+		require_once WPTELEGRAM_DIR . '/includes/class-wptelegram-options.php';
+
+		/**
+		 * The class responsible for loading modules
+		 */
+		require_once WPTELEGRAM_DIR . '/includes/class-wptelegram-modules.php';
+
+		/**
+		 * The utility methods
+		 */
+		require_once WPTELEGRAM_DIR . '/includes/class-wptelegram-utils.php';
+
+		/**
+		 * The helper methods
+		 */
+		require_once WPTELEGRAM_DIR . '/includes/class-wptelegram-helpers.php';
+
+		/**
+		 * The logger class
+		 */
+		require_once WPTELEGRAM_DIR . '/includes/class-wptelegram-logger.php';
+
+		/**
+		 * CMB2 library responsible for rendering fields
+		 */
+		require_once WPTELEGRAM_DIR . '/includes/cmb2/init.php';
+
+		/**
+		 * The library responsible for converting HTML to plain text
+		 */
+		require_once WPTELEGRAM_DIR . '/includes/html2text/html2text.php';
+
+		/**
+		 * The class responsible for defining all the common properties and methods
+		 */
+		require_once WPTELEGRAM_DIR . '/includes/class-wptelegram-core-base.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
@@ -133,32 +239,6 @@ class WPTelegram {
 		 */
 		require_once WPTELEGRAM_DIR . '/includes/wptelegram-bot-api/class-wptelegram-bot-api-loader.php';
 
-		/**
-		 * The library responsible for converting HTML to plain text
-		 */
-		require_once WPTELEGRAM_DIR . '/includes/html2text/html2text.php';
-
-		/**
-		 * The class responsible for rendering all the settings in the admin area
-		 */
-		require_once WPTELEGRAM_DIR . '/admin/class-wptelegram-settings-api.php';
-
-		/**
-		 * The class responsible for rendering all the settings in the admin area
-		 */
-		require_once WPTELEGRAM_DIR . '/admin/class-wptelegram-admin-settings.php';
-
-		/**
-		 * The class responsible for handling the post edit triggers
-		 * 
-		 */
-		require_once WPTELEGRAM_DIR . '/includes/class-wptelegram-post-handler.php';
-
-		/**
-		 * The class responsible for handling the wp_mail triggers
-		 * 
-		 */
-		require_once WPTELEGRAM_DIR . '/includes/class-wptelegram-notification-handler.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -166,8 +246,42 @@ class WPTelegram {
 		 */
 		require_once WPTELEGRAM_DIR . '/public/class-wptelegram-public.php';
 
+		/**
+		 * Helper functions
+		 */
+		require_once WPTELEGRAM_DIR . '/includes/helper-functions.php';
+
 		$this->loader = new WPTelegram_Loader();
 
+	}
+
+	/**
+	 * Set the plugin options
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function set_options() {
+
+		$this->options['core'] = new WPTelegram_Options( $this->plugin_name );
+
+		$modules = WPTelegram_Modules::get_all_modules();
+
+		foreach ( array_keys( $modules ) as $module ) {
+			$this->options[ $module ] = new WPTelegram_Options( $this->plugin_name . '_' . $module );
+		}
+
+	}
+
+	/**
+	 * Load the active modules
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	public function load_modules() {
+		$modules = new WPTelegram_Modules();
+		$modules->load();
 	}
 
 	/**
@@ -198,62 +312,36 @@ class WPTelegram {
 
 		$plugin_admin = new WPTelegram_Admin( $this->get_plugin_title(), $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'wptelegram_activated', $plugin_admin, 'set_settings_page_redirect' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles', 10, 1 );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts', 10, 1 );
 		$this->loader->add_filter( 'plugin_action_links_' . WPTELEGRAM_BASENAME, $plugin_admin, 'plugin_action_links' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_menu_page' );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'settings_page_redirect' );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_init' );
-		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'register_meta_box');
-		$this->loader->add_action( 'admin_notices', $plugin_admin, 'admin_notices' );
 
-	}
+		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'load_cmb2_addons' );
 
-	/**
-	 * Register all of the hooks related to the changes in post state
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function define_handler_hooks() {
+		$this->loader->add_action( 'init', $plugin_admin, 'initiate_logger' );
 
-		$post_handler = new WPTelegram_Post_Handler();
-		$this->loader->add_action( 'save_post', $post_handler, 'handle_save_post', 20, 2 );
-		$this->loader->add_action( 'future_to_publish', $post_handler, 'handle_future_to_publish', 20, 1 );
+		$this->loader->add_action( 'cmb2_admin_init', $plugin_admin, 'create_options_pages' );
 
-		$this->loader->add_action( 'wptelegram_bot_api_before_request', $post_handler, 'proxy_setup', 20, 1 );
+		$this->loader->add_action( 'wp_ajax_wptelegram_test', $plugin_admin, 'ajax_handle_test' );
 
-		$notif_handler = new WPTelegram_Notification_Handler();
-		//$this->loader->add_action( 'phpmailer_init', $notif_handler, 'handle_phpmailer_init' );
-		/**
-		 * Better to use "wp_mail" filter
-		 * instead of "phpmailer_init" action
-		 * PHPMailer class has evolved drastically
-		 * making the address formats inconsistent
-		 */
-		$this->loader->add_filter( 'wp_mail', $notif_handler, 'handle_wp_mail', 10, 1 );
 	}
 
 	/**
 	 * Register all of the hooks related to the public-facing functionality
 	 * of the plugin.
 	 *
-	 * @since    1.6.0
+	 * @since    1.0.0
 	 * @access   private
 	 */
 	private function define_public_hooks() {
 
 		$plugin_public = new WPTelegram_Public( $this->get_plugin_title(), $this->get_plugin_name(), $this->get_version() );
 
-		global $wptelegram_options;
-		$user_notifications = $wptelegram_options['notify']['user_notifications'];
-		if ( 'on' == $user_notifications ) {
-			$this->loader->add_action( 'show_user_profile', $plugin_public, 'add_user_profile_fields', 10, 1 );
-			$this->loader->add_action( 'edit_user_profile', $plugin_public, 'add_user_profile_fields', 10, 1 );
+		$this->loader->add_action( 'after_setup_theme', $plugin_public, 'do_upgrade' );
 
-			$this->loader->add_filter( 'user_profile_update_errors', $plugin_public, 'validate_user_profile_fields', 10, 3 );
-		}
+		// $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
+		// $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+
 	}
 
 	/**
@@ -261,18 +349,34 @@ class WPTelegram {
 	 *
 	 * @since    1.0.0
 	 */
-	public function run() {
+	private function run() {
 		$this->loader->run();
+	}
+
+	/**
+	 * Get the plugin options
+	 *
+	 * @since    1.0.0
+	 * @access   public
+	 */
+	public function options( $module = 'core' ) {
+
+		// return core options by default
+		if ( array_key_exists( $module, $this->options ) ) {
+			return $this->options[ $module ];
+		} else {
+			return new WPTelegram_Options( $module );
+		}		
 	}
 
 	/**
 	 * The title of the plugin.
 	 *
-	 * @since     1.3.7
+	 * @since     1.0.0
 	 * @return    string    The title of the plugin.
 	 */
 	public function get_plugin_title() {
-		return $this->title;
+		return $this->plugin_title;
 	}
 
 	/**

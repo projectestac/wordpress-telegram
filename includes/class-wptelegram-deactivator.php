@@ -3,7 +3,7 @@
 /**
  * Fired during plugin deactivation
  *
- * @link       https://twitter.com/manzoorwanijk
+ * @link       https://t.me/manzoorwanijk
  * @since      1.0.0
  *
  * @package    WPTelegram
@@ -18,19 +18,28 @@
  * @since      1.0.0
  * @package    WPTelegram
  * @subpackage WPTelegram/includes
- * @author     Manzoor Wani
+ * @author     Manzoor Wani <@manzoorwanijk>
  */
 class WPTelegram_Deactivator {
 
 	/**
-	 * Short Description. (use period)
+	 * clean up the things
 	 *
-	 * Long Description.
+	 * It cleans the traces left in the database if necessary
 	 *
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
 
+		$hooks = array(
+			'notify_cron_hook',
+			'p2tg_process_queue',
+		);
+
+		foreach ( $hooks as $hook ) {
+
+			wp_clear_scheduled_hook( 'wptelegram_' . $hook );
+		}
 	}
 
 }

@@ -3,7 +3,7 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://t.me/WPTelegram
+ * @link       https://t.me/manzoorwanijk
  * @since      1.0.0
  *
  * @package    WPTelegram
@@ -13,99 +13,28 @@
 /**
  * The admin-specific functionality of the plugin.
  *
+ * Defines the plugin name, version, and two examples hooks for how to
+ * enqueue the admin-specific stylesheet and JavaScript.
+ *
  * @package    WPTelegram
  * @subpackage WPTelegram/admin
- * @author     Manzoor Wani
+ * @author     Manzoor Wani <@manzoorwanijk>
  */
-class WPTelegram_Admin {
-
-	/**
-	 * Title of the plugin.
-	 *
-	 * @since    1.3.7
-	 * @access   protected
-	 * @var      string    $title    Title of the plugin
-	 */
-	protected $title;
-
-	/**
-	 * The ID of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
-	 */
-	private $plugin_name;
-
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
-	 */
-	private $version;
-
-    /**
-     * WPTelegram_Settings_API
-     *
-     * @var Object
-     */
-    private $settings_api;
-
-	/**
-	 * Object which handles settings sections, fields and metabox
-	 *
-	 * @since  	1.0.0
-	 * @access 	private
-	 * @var WPTelegram_Admin_Settings $settings Admin Settings Object
-	 */
-	private $settings;
+class WPTelegram_Admin extends WPTelegram_Core_Base {
 
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
+	 * @since	1.0.0
+	 * @param 	string    $plugin_title	Title of the plugin
+	 * @param	string    $plugin_name	The name of the plugin.
+	 * @param	string    $version		The version of this plugin.
 	 */
-	public function __construct( $title, $plugin_name, $version ) {
+	public function __construct( $plugin_title, $plugin_name, $version ) {
 
-		$this->title = $title;
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
-		$this->settings = new WPTelegram_Admin_Settings();
-		$this->settings_api = new WPTelegram_Settings_API( $plugin_name );
-		
-		$this->update_terms_option();
-	}
+		parent::__construct( $plugin_title, $plugin_name, $version );
 
-	/**
-	 * Update Options after upgrade from version < 1.4.5
-	 *
-	 * @since    1.5.0
-	 */
-	private function update_terms_option() {
-		$option_name = 'wptelegram_wordpress';
-		$option_value = get_option( $option_name );
-
-		if ( ! isset( $option_value['terms'] ) ) {
-			return;
-		}
-
-		$old_terms = $option_value['terms'];
-		$new_terms = array();
-
-		if ( ! preg_match( '/^[0-9]+?-/', $old_terms[0] ) ) {
-			return;
-		}
-
-		foreach ( $old_terms as $term ) {
-			$new_terms[] = preg_replace( '/^([0-9]+?)-/', '$1@', $term );
-		}
-		$option_value['terms'] = $new_terms;
-
-		update_option( $option_name, $option_value, true );
+        $this->sub_dir = 'admin';
 	}
 
 	/**
@@ -113,9 +42,19 @@ class WPTelegram_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function enqueue_styles( $hook_suffix ) {
 
-		wp_enqueue_style( $this->plugin_name, WPTELEGRAM_URL . '/admin/css/wptelegram-admin.css', array(), $this->version, 'all' );
+		parent::enqueue_style( $this->plugin_name, $this->sub_dir );
+
+		parent::enqueue_style( $this->plugin_name.'-emojicss', 'emojionearea', 'emojionearea' );
+
+		// load only on plugin pages
+		if ( WPTG()->helpers->is_settings_page() ) {
+
+			parent::enqueue_style( $this->plugin_name . '-cmb2-grid-view', 'bootstrap' );
+
+			parent::enqueue_style( $this->plugin_name.'-select2', 'select2', 'select2' );
+		}
 	}
 
 	/**
@@ -123,9 +62,48 @@ class WPTelegram_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts( $hook_suffix ) {
 
-		wp_enqueue_script( $this->plugin_name, WPTELEGRAM_URL . '/admin/js/wptelegram-admin.js', array( 'jquery' ), $this->version, false );
+		parent::enqueue_script( $this->plugin_name, $this->sub_dir, 'js', array( 'jquery' ) );
+
+		parent::enqueue_script( $this->plugin_name.'-emojijs', 'emojionearea', 'emojionearea' );
+
+		if ( WPTG()->helpers->is_settings_page() ) {
+
+			parent::enqueue_script( $this->plugin_name.'-select2', 'select2', 'select2' );
+		}
+
+		// script localization
+		$translation_array = array(
+			'title'		=> $this->plugin_title,
+			'name'		=> $this->plugin_name,
+			'version'	=> $this->version,
+			'bot_token'	=> current_user_can( 'manage_options' ) ? WPTG()->options()->get( 'bot_token' ) : '', // do not expose the bot token to non-admins
+			'ajax'		=> array(
+				'use'	=> 'server', // or 'browser'
+				'url'	=> admin_url( 'admin-ajax.php' ),
+				'nonce'	=> wp_create_nonce( 'wptelegram' ),
+			),
+			'l10n'		=> array(
+				'could_not_connect'	=> __( 'Could not connect', 'wptelegram' ),
+				'empty_bot_token'	=> __( 'Bot Token is empty', 'wptelegram' ),
+				'empty_channels'	=> __( 'Username is empty', 'wptelegram' ),
+				'empty_chat_ids'	=> __( 'Chat ID is empty', 'wptelegram' ),
+				'invalid_bot_token'	=> __( 'Invalid Bot Token', 'wptelegram' ),
+				'send_test_prompt'	=> __( 'A message will be sent to the Channel/Chat. You can modify the text below', 'wptelegram' ),
+				'send_test_text'	=> __( 'This is a test message', 'wptelegram' ),
+				'please_wait'		=> __( 'Please wait...', 'wptelegram' ),
+				'choose'			=> __( 'Choose', 'wptelegram' ),
+				'success'			=> __( 'Success', 'wptelegram' ),
+				'failure'			=> __( 'Failure', 'wptelegram' ),
+				'error'				=> __( 'Error:', 'wptelegram' ),
+			),
+		);
+		wp_localize_script(
+			$this->plugin_name,
+			'wptelegram',
+			$translation_array
+		);
 	}
 
     /**
@@ -140,228 +118,481 @@ class WPTelegram_Admin {
 		return $links;
     }
 
-    /**
-     * Sets the redirect after activation
-     *
-     * @since  1.6.3
-     */
-    public function set_settings_page_redirect() {
-    	if ( ! is_network_admin() ) {
-    		// set redirect transient
-			set_transient( '_wptelegram_settings_page_redirect', 1, 30 );
+	/**
+	 * Initialize CMB2 Conditionals
+	 *
+	 * @since    1.0.0
+	 */
+	public function load_cmb2_addons() {
+
+		if ( defined( 'CMB2_LOADED' ) ) {
+
+			/**
+			 * The class responsible for CMB2 select2
+			 */
+			require_once WPTELEGRAM_DIR . '/includes/cmb2-select2/cmb2-select2.php';
+
+			/**
+			 * The class responsible for CMB2 select_plus
+			 */
+			require_once WPTELEGRAM_DIR . '/includes/cmb2-select-plus/cmb2-select-plus.php';
+
+			/**
+			 * The class responsible for CMB2 switch
+			 */
+			require_once WPTELEGRAM_DIR . '/includes/CMB2-Switch-Button/cmb2-switch-button.php';
+
+			new PW_CMB2_Field_Select2();
+			new Select_Plus_CMB2_Field();
+			new CMB2_Switch_Button();
 		}
-    }
-
-    /**
-     * Do redirect if required
-     *
-     * @since  1.6.3
-     */
-    public function settings_page_redirect() {
-    	global $wptelegram_options;
-
-    	// check if Bot Token is set
-    	$token = $wptelegram_options['telegram']['bot_token'];
-
-    	// redirect transient name
-    	$transient = '_wptelegram_settings_page_redirect';
-
-    	// get redirect transient
-    	$redirect = get_transient( $transient );
-
-    	// delete redirect transient
-		delete_transient( $transient );
-
-		/**
-		 * if redirect transient exists
-		 * and
-		 * if the Bot Token (settings) not set
-		 */
-		if ( $redirect && ! $token ) {
-			// redirect to WP Telegram Settings Page
-			wp_redirect( admin_url( 'admin.php?page=' . rawurlencode( $this->plugin_name ) ) );
-		}
-    }
-
-    /**
-     * Initialize the admin area of the plugin
-     *
-     * @since  1.3.0
-     */
-    public function admin_init() {
-    	
-        /**
-		 * use admin_init hook to set post types
-		 * because add_meta_boxes hook would not be able to
-		 * return Custom Post Types
-		 */
-		$this->settings->set_post_types();
-        //set the settings
-        $this->settings_api->set_sections( $this->settings->get_settings_sections() );
-        $this->settings_api->set_fields( $this->settings->get_settings_fields() );
-
-        //initialize settings
-        $this->settings_api->admin_init();
-    }
+	}
 
 	/**
-	 * Add an entry in the Admin Menu
+	 * Initiate logger
 	 *
-	 * @since  1.0.0
+	 * @since    1.0.0
 	 */
-	public function add_menu_page() {
+	public function initiate_logger() {
 
-		add_menu_page(
-			__( 'WP Telegram Settings', 'wptelegram' ),
-			__( 'WP Telegram', 'wptelegram' ),
-			'manage_options',
-			$this->plugin_name,
-			array( $this, 'display_settings_page' ),
-			WPTELEGRAM_URL . '/admin/icons/icon-16x16-white.svg',
-			80
+		$active_logs = WPTG()->options()->get( 'enable_logs', array() );
+
+		$logger = new WPTelegram_Logger( $active_logs );
+		$logger->hookup();
+	}
+
+	/**
+	 * Build Options page
+	 *
+	 * @since    1.0.0
+	 */
+	public function create_options_pages() {
+
+		$box = array(
+			'id'			=> $this->plugin_name,
+			'title'			=> esc_html__( $this->plugin_title ),
+			'object_types'	=> array( 'options-page' ),
+			'option_key'	=> $this->plugin_name,
+			'icon_url'		=> WPTELEGRAM_URL . '/admin/icons/icon-16x16-white.svg',
+			'capability'	=> 'manage_options',
+			'message_cb'	=> array( $this, 'custom_settings_messages' ),
+            'classes'       => 'wptelegram-box',
 		);
-		add_submenu_page(
-	        'wptelegram',
-			__( 'WP Telegram Settings', 'wptelegram' ),
-			__( 'Core', 'wptelegram' ),
-			'manage_options',
-	        'wptelegram'
-        );
-	}
+		$cmb2 = new_cmb2_box( $box );
 
-	/**
-	 * Render the menu page for plugin
-	 *
-	 * @since  1.3.7
-	 */
-	public function display_settings_page() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'Sorry, you are not allowed to access this page.' ) );
-		}
-        $this->load_select2();
-        $this->load_emojioneArea();
-        
-		echo '<div class="wrap wptelegram" id="wptelegram-wrap">';
+		$cmb2->add_field( array(
+			'name'			=> __( 'Telegram Options', 'wptelegram' ),
+			'type'			=> 'title',
+			'id'			=> 'tg_title',
+			'before_row'	=> array( $this, 'render_header' ),
+			'after'			=> array( __CLASS__, 'get_telegram_guide' ),
+		) );
+		
+		$cmb2->add_field( array(
+			'name'				=> __( 'Bot Token', 'wptelegram' ),
+			'desc'				=> WPTG()->helpers->get_test_button_html( __( 'Test Token', 'wptelegram' ), 'bot_token' ),
+			'id'				=> 'bot_token',
+			'type'				=> 'text_medium',
+            'before_row'        => WPTG()->helpers->open_grid_row_with_col( 7 ),
+            'after_row'         => WPTG()->helpers->close_grid_col(),
+			'sanitization_cb'	=> array( $this, 'sanitize_values' ),
+			'after_field'		=> array( __CLASS__, 'render_after_field' ),
+            'attributes'        => array(
+                'required'          => 'required',
+                'data-validation'   => 'bot_token',
+            ),
+            'classes'           => 'medium-width bot_token large-font',
+		) );
+		
+		$cmb2->add_field( array(
+			'name'				=> __( 'Bot Username', 'wptelegram' ),
+			'desc'				=> '<br>' . sprintf( __( 'Telegram Bot username (without %s).', 'wptelegram' ), '<code>@</code>' ),
+			'id'				=> 'bot_username',
+			'after'				=> sprintf( __( 'Use %s to set automatically.', 'wptelegram' ), '<b>' . __( 'Test Token', 'wptelegram' ) . '</b>' ),
+			'type'				=> 'text_medium',
+            'before_row'        => WPTG()->helpers->add_grid_col_to_row( 5 ),
+            'after_row'         => WPTG()->helpers->close_grid_col_and_row(),
+			'sanitization_cb'	=> array( $this, 'sanitize_values' ),
+			'before_field'		=> '<code>@</code>',
+			'after_field'		=> array( __CLASS__, 'render_after_field' ),
+            'attributes'        => array(
+                'data-validation'   => 'bot_username',
+            ),
+            'classes'			=> 'readonly bot_username large-font',
+		) );
 
-        include_once WPTELEGRAM_DIR . '/admin/partials/wptelegram-admin-header.php';
+		$cmb2->add_field( array(
+			'type'	=> 'title',
+			'id'	=> 'modules_title',
+			'name'	=> __( 'Modules', 'wptelegram' ),
+		) );
 
-        add_action( 'wptelegram_before_submit_button', array( $this, 'display_remove_settings' ) );
+		$group_field_id = $cmb2->add_field( array(
+			'id'          => 'modules',
+			'type'        => 'group',
+			'repeatable'  => false,
+			'options'     => array(
+				'group_title'	=> '',
+			),
+		) );
 
-        $this->settings_api->show_navigation();
-        $this->settings_api->show_forms();
-        echo '</div>';
-        // the template containing js
-        include_once WPTELEGRAM_DIR . '/admin/partials/wptelegram-admin-display.php';
-	}
+		// add a fake field to allow disabling of all modules
+		$cmb2->add_group_field( $group_field_id, array(
+			'type'		=> 'hidden',
+			'id'		=> 'fake',
+			'default'	=> 'on',
+		) );
 
-	/**
-	 * Render the remove settings checkbox
-	 *
-	 * @since  1.4.1
-	 */
-	public function display_remove_settings() {
-		global $wptelegram_options;
-		$remove_settings = isset( $wptelegram_options['wordpress']['remove_settings'] ) ? $wptelegram_options['wordpress']['remove_settings'] : 'on';
-		$float = is_rtl() ? 'left' : 'right';
-		?>
-		<div class="wptelegram-before-submit" style="float:<?php echo $float; ?>">
-			<input type="hidden" name="wptelegram_wordpress[remove_settings]" value="off">
-			<label for="wptelegram_wordpress[remove_settings]"><input type="checkbox" class="checkbox remove_settings" id="wptelegram_wordpress[remove_settings]" name="wptelegram_wordpress[remove_settings]" value="on" <?php checked( $remove_settings, 'on' ); ?>><?php esc_html_e( 'Remove settings on uninstall', 'wptelegram' ); ?></label>
-		</div>
-		<?php
-	}
+		$modules = WPTelegram_Modules::get_all_modules();
 
-	/**
-	 * Register Metabox
-	 *
-	 * @since  1.0.0
-	 */
-	public function register_meta_box()
-	{
-		global $wptelegram_options;
-		$post_edit_switch = $wptelegram_options['wordpress']['post_edit_switch'];
-		if ( 'on' != $post_edit_switch ) {
-			return;
-		}
+		foreach ( $modules as $id => $name ) {
 
-		$show_switch_to_all = apply_filters( 'wptelegram_show_switch_to_all_authors', false );
-		$from_authors = $wptelegram_options['wordpress']['from_authors'][0];
+			$args = compact( 'id', 'name' );
 
-		if ( ! ( $show_switch_to_all || 'all' == $from_authors ) ) {
-			$authors = $wptelegram_options['wordpress']['authors'];
-			$author_in_list = in_array( get_current_user_id(), $authors );
+			$file_path = WPTELEGRAM_MODULES_DIR . '/' . $id . '/class-wptelegram-' . $id . '.php';
 
-			if ( 'selected' == $from_authors && ! $author_in_list ) {
-				return;
-			} elseif ( 'not_selected' == $from_authors && $author_in_list ) {
-				return;
+			if ( ! file_exists( $file_path ) ) {
+				continue;
 			}
+
+			$args['type'] = 'switch';
+			$args['after_field'] = array( __CLASS__, 'render_after_module' );
+
+			$cmb2->add_group_field( $group_field_id, $args );
 		}
 
-        $this->load_emojioneArea();
+		// Advanced settings
+		$fields = array(
+			array(
+				'name'	=> __( 'Advanced settings', 'wptelegram' ),
+				'type'	=> 'title',
+				'id'	=> 'advanced_settings_title',
+				'desc'	=> __( 'Settings in this section should not be changed unless recommended by WP Telegram Support.', 'wptelegram' ),
+			),
+			array(
+				'name'				=> __( 'Send files by URL', 'wptelegram' ),
+				'desc'				=> __( 'Turn off to upload the files/images instead of passing the url.', 'wptelegram' ),
+				'after'				=> '<p class="description">' . __( 'Google Script proxy does not support file upload.', 'wptelegram' ) . '</p>',
+				'id'				=> 'send_files_by_url',
+				'type'				=> 'switch',
+				'default'			=> 'on',
+				'sanitization_cb'	=> array( $this, 'sanitize_checkbox' ),
+			),
+			array(
+				'name'              => __( 'Enable logs for', 'wptelegram' ),
+				'id'                => 'enable_logs',
+				'type'              => 'multicheck',
+				'select_all_button' => false,
+	            'before_row'        => WPTG()->helpers->open_grid_row_with_col(),
+	            'after_row'         => WPTG()->helpers->close_grid_col(),
+				'options'           => array(
+					'bot_api'	=> __( 'Bot API', 'wptelegram' ),
+					'p2tg'		=> __( 'Post to Telegram', 'wptelegram' ),
+				),
+			),
+			array(
+				'name'			=> __( 'Debug Info', 'wptelegram' ),
+				'id'			=> 'debug_info',
+				'type'			=> 'text', // fake
+	            'before_row'	=> WPTG()->helpers->add_grid_col_to_row(),
+	            'after_row'		=> WPTG()->helpers->close_grid_col_and_row(),
+	            'render_row_cb'	=> array( $this, 'render_debug_info' ),
+			),
+			array(
+				'name'				=> __( 'Remove settings on uninstall', 'wptelegram' ),
+				'id'				=> 'clean_uninstall',
+				'type'				=> 'switch',
+				'default'			=> 'on',
+				'sanitization_cb'	=> array( $this, 'sanitize_checkbox' ),
+			),
+		);
 
-		$screens = $this->settings->get_post_types( 'metabox' );
-	    $screens = (array) apply_filters( 'wptelegram_cpt_meta_box_screens', $screens);
-
-	    /**
-	     * The $screen parameter as array to add_meta_box
-	     * was added in WordPress 4.4
-	     * So, passing as string to support older versions
-	     */
-	    foreach ( $screens as $screen ) {
-	    	add_meta_box(
-	            'wptelegram_meta_box',
-	            __( 'WP Telegram Options', 'wptelegram' ),
-	            array( $this->settings, 'wptelegram_meta_box_cb' ),
-	            $screen,
-	            'normal',
-	            'high'
-	        );
-	    }
-        wp_enqueue_style( $this->plugin_name.'-metabox', WPTELEGRAM_URL . '/admin/css/wptelegram-admin-metabox.css', array(), $this->version, 'all' );
-	}
-
-	/**
-	 * Load Emoji One Area
-	 *
-	 * @since  1.3.0
-	 */
-	private function load_emojioneArea(){
-		wp_enqueue_style( $this->plugin_name.'-emojicss', WPTELEGRAM_URL . '/admin/emoji/emojionearea.min.css', array(), $this->version, 'all' );
-        wp_enqueue_script( $this->plugin_name.'-emojijs', WPTELEGRAM_URL . '/admin/emoji/emojionearea.min.js', array(), $this->version, 'all' );
-	}
-
-	/**
-	 * Load Select2
-	 *
-	 * @since  1.3.8
-	 */
-	private function load_select2(){
-		wp_enqueue_style( $this->plugin_name.'-select2css', WPTELEGRAM_URL . '/admin/select2/select2.min.css', array(), $this->version, 'all' );
-        wp_enqueue_script( $this->plugin_name.'-select2js', WPTELEGRAM_URL . '/admin/select2/select2.min.js', array(), $this->version, 'all' );
-	}
-
-	/**
-	 * Show admin notices on failure
-	 *
-	 * @since  1.3.0
-	 */
-	public function admin_notices() {
-		if ( ! isset( $_GET['wptelegram'] ) ) {
-		 return;
+		foreach ( $fields as $field ) {
+			$cmb2->add_field( $field );
 		}
+	}
+
+	/**
+	 * Handles checkbox sanitization
+	 *
+	 * @param  mixed      $value      The unsanitized value from the form.
+	 * @param  array      $field_args Array of field arguments.
+	 * @param  CMB2_Field $field      The field object
+	 *
+	 * @return mixed                  Sanitized value to be stored.
+	 */
+	public function sanitize_checkbox( $value, $field_args, $field ) {
+		
+		return is_null( $value ) ? 0 : $value;
+	}
+
+	/**
+	 * Handles sanitization for the fields
+	 *
+	 * @param  mixed      $value      The unsanitized value from the form.
+	 * @param  array      $field_args Array of field arguments.
+	 * @param  CMB2_Field $field      The field object
+	 *
+	 * @return mixed                  Sanitized value to be stored.
+	 */
+	public function sanitize_values( $value, $field_args, $field ) {
+		
+		$status = '';
+		$value = WPTG()->utils->sanitize( $value );
+		switch ( $field->id() ) {
+			case 'bot_token':
+				if ( empty( $value ) ) {
+					$status = 'empty';
+				} elseif ( ! preg_match( '/\A\d{9}:[\w-]{35}\Z/', $value ) ) {
+					$status = 'invalid';
+				}
+				break;
+		}
+		if ( ! empty( $status ) ) {
+			$value = $field->value();
+			$transient = 'wptelegram_cmb2_invalid_fields';
+			$invalid_fields = get_transient( $transient );
+			/**
+			 * avoid E_WARNING in latest PHP versions
+			 * for inserting elements into string or boolean as array
+			 */
+			if ( empty( $invalid_fields ) ) {
+				$invalid_fields = array();
+			}
+			$invalid_fields[ $field->id() ] = $status;
+			set_transient( $transient, $invalid_fields, 30 );
+		}
+		return $value;
+	}
+
+	/**
+	 * Callback to define the optionss-saved message.
+	 *
+	 * @param CMB2  $cmb The CMB2 object.
+	 * @param array $args {
+	 *     An array of message arguments
+	 *
+	 *     @type bool   $is_options_page Whether current page is this options page.
+	 *     @type bool   $should_notify   Whether options were saved and we should be notified.
+	 *     @type bool   $is_updated      Whether options were updated with save (or stayed the same).
+	 *     @type string $setting         For add_settings_error(), Slug title of the setting to which
+	 *                                   this error applies.
+	 *     @type string $code            For add_settings_error(), Slug-name to identify the error.
+	 *                                   Used as part of 'id' attribute in HTML output.
+	 *     @type string $message         For add_settings_error(), The formatted message text to display
+	 *                                   to the user (will be shown inside styled `<div>` and `<p>` tags).
+	 *                                   Will be 'Settings updated.' if $is_updated is true, else 'Nothing to update.'
+	 *     @type string $type            For add_settings_error(), Message type, controls HTML class.
+	 *                                   Accepts 'error', 'updated', '', 'notice-warning', etc.
+	 *                                   Will be 'updated' if $is_updated is true, else 'notice-warning'.
+	 * }
+	 */
+	public function custom_settings_messages( $cmb, $args ) {
+		if ( ! empty( $args['should_notify'] ) ) {
+
+			if ( $args['is_updated'] ) {
+
+				// Modify the updated message.
+				$args['message'] = esc_html__( 'Settings updated', 'wptelegram' );
+			}
+
+			$transient = 'wptelegram_cmb2_invalid_fields';
+			$invalid_fields = get_transient( $transient );
+			if ( ! empty( $invalid_fields ) ) {
+				$args['type'] = 'error';
+				foreach ( (array) $invalid_fields as $field => $status ) {
+					$field_name = $cmb->get_field(
+						array(
+							'id' => $field,
+							'cmb_id' => $cmb->prop( 'id' ),
+						)
+					)->args( 'name' );
+
+					if ( 'empty' == $status ) {
+						$args['message'] = sprintf( esc_html__( '%s is empty', 'wptelegram' ), $field_name );
+					} else {
+						$args['message'] = sprintf( esc_html__( 'Invalid %s', 'wptelegram' ), $field_name );
+					}
+					
+					add_settings_error( $args['setting'], $args['code'], $args['message'], $args['type'] );
+				}
+			} else {
+				add_settings_error( $args['setting'], $args['code'], $args['message'], $args['type'] );
+			}
+			delete_transient( $transient );
+		}
+	}
+
+	/**
+	 * Render the settings page header
+	 * @param  object $field_args Current field args
+	 * @param  object $field      Current field object
+	 */
+	public function render_header( $field_args, $field ) {
+
+		$title = $this->plugin_title;
+		$version = $this->version;
+
+		$plugin_url = WPTELEGRAM_URL;
+		$text_domain = 'wptelegram';
+
+		include_once WPTELEGRAM_DIR . '/admin/partials/wptelegram-admin-header.php';
 		?>
-		<?php
-		$code = $_GET['wptelegram'];
-		$message = __( 'WP Telegram failed to communicate.', 'wptelegram' );
-		if ( $error = get_site_transient( 'wptelegram_http_error' ) ) {
-			$message .= ' <b>' . __( 'Reason: ', 'wptelegram' ) . '</b>' . $error->get_error_message();
-			delete_transient( 'wptelegram_http_error' );
-		}
-		?>
-		<div class="notice notice-error is-dismissible">
-		  <p><b><?php esc_html_e( 'Error: ', 'wptelegram'); _e( $code ); ?>&#33;</b>&nbsp;<?php echo $message; ?></p>
+		<div class="cmb-row wptelegram-header-desc">
+			<p><?php echo __( 'With this plugin, you can send posts to Telegram and receive notifications and do lot more :)', 'wptelegram' ); ?></p>
 		</div>
 		<?php
 	}
+
+	/**
+	 * Output the Telegram Instructions
+	 * 
+	 * @param  object $field_args Current field args
+	 * @param  object $field      Current field object
+	 */
+	public static function get_telegram_guide( $field_args, $field ) { ?>
+		<p style="color:#f10e0e;"><b><?php echo __( 'INSTRUCTIONS!','wptelegram'); ?></b></p>
+		<ol style="list-style-type: decimal;">
+			<li><?php printf( __( 'Create a Bot by sending %s command to %s', 'wptelegram' ), '<code>/newbot</code>', '<a href="https://t.me/BotFather"  target="_blank">@BotFather</a>' );
+			?></li>
+			<li><?php printf( __( 'After completing the steps %s will provide you the Bot Token.', 'wptelegram' ), '@BotFather' ); ?></li>
+			<li><?php esc_html_e( 'Copy the token and paste into the Bot Token field below.', 'wptelegram' ); ?>&nbsp;<?php printf( __( 'For ease, use %s', 'wptelegram' ), '<a href="' . esc_url( 'https://desktop.telegram.org' ) . '" target="_blank">Telegram Desktop</a>' ); ?></li>
+		 	<li><?php esc_html_e( 'Test your bot token below.', 'wptelegram' ); ?>
+		 	</li>
+		 	<li><?php esc_html_e( 'Activate the modules you want to use.', 'wptelegram' ); ?>
+		 	</li>
+			<li><?php printf( __( 'Hit %s below', 'wptelegram' ), '<b>' . __( 'Save Changes' ) . '</b>' ); ?></li>
+		 	<li><?php esc_html_e( 'Configure the activated modules.', 'wptelegram' ); ?>
+			<li><?php esc_html_e( "That's it! :)", 'wptelegram' ); ?></li>
+		</ol>
+
+	 	<?php
+	}
+    
+    /**
+     * Output a the after field html
+     * 
+     * @param  object $field_args Current field args
+     * @param  object $field      Current field object
+     */
+    public static function render_after_field( $field_args, $field ) {
+        $_id = $field->_id(); ?>
+
+        <?php if ( 'bot_token' == $_id ) : ?>
+            <p class="as-row">
+                <span class="hidden wptelegram-info <?php echo $_id; ?>-test"><?php esc_html_e( 'Test Result:', 'wptelegram' ); ?>&nbsp;</span>
+                <span class="hidden wptelegram-info <?php echo $_id; ?>-info"></span>
+                
+                <span class="hidden wptelegram-info error <?php echo $_id; ?>-err"><?php esc_html_e( 'Invalid Bot Token', 'wptelegram' ); ?></span>
+            </p>
+
+        <?php elseif ( 'bot_username' == $_id ) : ?>
+            <p>
+                <span class="hidden wptelegram-info error <?php echo $_id; ?>-err"><?php esc_html_e( 'Invalid Bot Username', 'wptelegram' ); ?></span>
+            </p>
+        <?php endif; ?>
+        <?php
+    }
+	
+	/**
+	 * Output a the after field html
+	 * @param  object $field_args Current field args
+	 * @param  object $field      Current field object
+	 */
+	public static function render_after_module( $field_args, $field ) {
+		$id = $field->args( '_id' );
+
+		$active_modules = WPTG()->helpers->get_active_modules();
+
+		// display settings only if the module is active
+		if ( in_array( $id, $active_modules ) ) {
+
+			$settings_url = admin_url( 'admin.php?page=wptelegram_' . $id );
+
+			echo '<span class="tab"></span>';
+			printf( '<span><a href="%s">%s</a></span>', esc_url( $settings_url ), __( 'Settings', 'wptelegram' ) );
+		}
+	}
+
+	/**
+	 * Manually debug info
+	 *
+	 * @param  array      $field_args Array of field arguments.
+	 * @param  CMB2_Field $field      The field object
+	 */
+	public function render_debug_info( $field_args, $field ) {
+		$id          = $field->args( 'id' );
+		$label       = $field->args( 'name' );
+
+		$info = 'PHP: ' . PHP_VERSION . PHP_EOL;
+		$info .= 'WP: ' . get_bloginfo( 'version' ) . PHP_EOL;
+		$info .= 'WP Telegram: ' . WPTG()->get_version();
+		?>
+		<div class="col-md-6">
+			<div class="cmb-row cmb-type-text cmb2-id-debug-info">
+				<div class="cmb-th">
+					<label for="<?php echo $id; ?>"><?php echo $label; ?></label>
+				</div>
+				<div class="cmb-td">
+					<pre style="margin:0px;"><?php echo $info; ?></pre>
+				</div>
+			</div>
+		</div>
+		</div><!-- for grid row -->
+		<?php
+	}
+
+	/**
+	 * Handle ajax request for settings tests
+	 *
+	 * @since    1.0.0
+	 */
+    public function ajax_handle_test() {
+
+    	check_ajax_referer( 'wptelegram', 'nonce' );
+
+    	$params = WPTG()->utils->sanitize( $_POST );
+
+		$body = '[]';
+		$code = 200;
+
+    	if ( isset( $params['bot_token'], $params['api_method'] ) ) {
+
+    		$bot_api = new WPTelegram_Bot_API( $params['bot_token'] );
+
+    		if ( empty( $params['api_params'] ) ) {
+    			$params['api_params'] = array();
+    		}
+    		
+    		$res = call_user_func( array( $bot_api, $params['api_method'] ), $params['api_params'] );
+
+			if ( is_wp_error( $res ) ) {
+				
+				$body = WPTG()->utils->error_to_response( $res );
+				$code = $body['error_code'];
+
+			} else {
+
+				$body = $res->get_decoded_body();
+				$code = $res->get_response_code();
+			}
+
+    	} else {
+
+    		$body = array(
+				'ok'			=> false,
+				'error_code'	=> 403,
+				'description'	=> __( 'Bot Token is empty', 'wptelegram' ), // lets just be lax and only tell about bot token ;)
+			);
+			$code = $body['error_code'];
+    	}
+
+    	@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
+
+    	WPTG()->utils->set_status_header( $code );
+    	// avoid php errors if any
+    	ob_clean();
+		echo json_encode( $body );
+		die();
+    }
 }

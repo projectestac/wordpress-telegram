@@ -6,8 +6,7 @@
  * 
  */
 if ( ! class_exists( 'WPTelegram_Bot_API_Response' ) ) :
-class WPTelegram_Bot_API_Response
-{
+class WPTelegram_Bot_API_Response {
     /**
      * @since  1.0.0
      *
@@ -54,7 +53,7 @@ class WPTelegram_Bot_API_Response
      *
      * @var string API Endpoint used to make the request.
      */
-    protected $endpoint;
+    protected $api_method;
 
     /**
      * @since  1.0.0
@@ -85,7 +84,7 @@ class WPTelegram_Bot_API_Response
 
         $this->request = $request;
         $this->raw_response = $raw_response;
-        $this->endpoint = (string) $request->get_endpoint();
+        $this->api_method = (string) $request->get_api_method();
     }
 
     /**
@@ -157,12 +156,12 @@ class WPTelegram_Bot_API_Response
 
     /**
      * Gets the Request Endpoint used to get the response.
-     * @since   1.0.0
+     * @since   1.0.5
      *
      * @return string
      */
-    public function get_endpoint() {
-        return $this->endpoint;
+    public function get_api_method() {
+        return $this->api_method;
     }
 
     /**
@@ -222,7 +221,7 @@ class WPTelegram_Bot_API_Response
     public function decode_body() {
         $this->decoded_body = json_decode( $this->body, true );
         // check for PHP < 5.3
-        if ( function_exists( 'json_last_error' ) ) {
+        if ( function_exists( 'json_last_error' ) && defined( 'JSON_ERROR_NONE' ) ) {
             return ( json_last_error() == JSON_ERROR_NONE );
         }
         return true;
