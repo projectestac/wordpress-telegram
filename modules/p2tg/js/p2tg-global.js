@@ -1,12 +1,11 @@
-(function( $, l10n, bot_api ) {
+(function( $ ) {
     'use strict';
 
     var p2tg = {};
 
     p2tg.configure = function(){
         p2tg.$page = $('.wp-admin.post-php,.wp-admin.post-new-php');
-        p2tg.$form = p2tg.$page.find('form#post');
-        p2tg.metabox = p2tg.$form.find('#wptelegram_p2tg_override');
+        p2tg.metabox = p2tg.$page.find('#wptelegram_p2tg_override');
     };
 
     p2tg.init = function(){
@@ -16,7 +15,7 @@
         p2tg.metabox.find('input[type="checkbox"][name="_wptg_p2tg_override_switch"]').trigger('change');
     };
     
-    p2tg.toggle_override_options = function( evt, params ) {
+    p2tg.toggle_override_options = function() {
 
         var elems = p2tg.metabox.find('.cmb-row.depends-upon-override_switch');
 
@@ -30,4 +29,4 @@
     // trigger on $(document).ready();
     $(p2tg.init);
 
-})( jQuery, wptelegram.l10n, wptelegram.bot_api );
+})( jQuery );

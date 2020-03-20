@@ -1,192 +1,559 @@
 # Copyright (C) 2017 WP Telegram
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Telegram 1.6.5\n"
-"POT-Creation-Date: 2018-03-07 14:06+0530\n"
-"PO-Revision-Date: 2018-03-07 14:07+0530\n"
+"Project-Id-Version: WP Telegram 2.0.12\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/wptelegram\n"
+"POT-Creation-Date: 2020-03-08 06:38:23+00:00\n"
+"PO-Revision-Date: 2018-12-23 23:04+0530\n"
 "Last-Translator: \n"
 "Language-Team: WPTelegram\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 "X-Poedit-KeywordsList: __;_e;_x;esc_attr__;esc_attr_e;esc_html__;esc_html_e\n"
 "X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: includes/cmb2\n"
 
-#: admin/class-wptelegram-admin-settings.php:52
-msgid "Telegram Settings"
-msgstr "Ajustaments de Telegram"
-
-#: admin/class-wptelegram-admin-settings.php:58
-msgid "WordPress Settings"
-msgstr "Ajustaments de WordPress"
-
-#: admin/class-wptelegram-admin-settings.php:59
-msgid "In this section you can teach WordPress how and when to do the job"
+#: admin/class-wptelegram-admin.php:88
+msgid "Could not connect"
 msgstr ""
-"En aquesta secció pots establir com i quan WordPress ha de realitzar la tasca"
 
-#: admin/class-wptelegram-admin-settings.php:64
-msgid "Message Settings"
-msgstr "Ajustaments del Missatge"
+#: admin/class-wptelegram-admin.php:89 admin/class-wptelegram-admin.php:670
+msgid "Bot Token is empty"
+msgstr "El Bot Token està buit"
 
-#: admin/class-wptelegram-admin-settings.php:65
-msgid "In this section you can change the way messages are sent to Telegram"
+#: admin/class-wptelegram-admin.php:90
+msgid "Username is empty"
 msgstr ""
-"En aquesta secció pots canviar la forma en què s'envien els missatges a "
-"Telegram"
 
-#: admin/class-wptelegram-admin-settings.php:70
-msgid "Notification Settings"
-msgstr "Ajustaments de Notificacions"
+#: admin/class-wptelegram-admin.php:91
+msgid "Chat ID is empty"
+msgstr ""
 
-#: admin/class-wptelegram-admin-settings.php:89
+#: admin/class-wptelegram-admin.php:92 admin/class-wptelegram-admin.php:564
+msgid "Invalid Bot Token"
+msgstr "Bot Token invàlid"
+
+#: admin/class-wptelegram-admin.php:93
+msgid ""
+"A message will be sent to the Channel/Chat. You can modify the text below"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:94
+msgid "This is a test message"
+msgstr "Aquest és un missatge de prova"
+
+#: admin/class-wptelegram-admin.php:95
+msgid "Please wait..."
+msgstr "Si us plau, espera ..."
+
+#: admin/class-wptelegram-admin.php:96
+msgid "Choose"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:97
+msgid "Success"
+msgstr "Satisfactori"
+
+#: admin/class-wptelegram-admin.php:98
+msgid "Failure"
+msgstr "Error"
+
+#: admin/class-wptelegram-admin.php:99
+#: modules/notify/class-wptelegram-notify-admin.php:414
+msgid "Error:"
+msgstr "Error:"
+
+#: admin/class-wptelegram-admin.php:115 admin/class-wptelegram-admin.php:596
+msgid "Settings"
+msgstr "Ajustaments"
+
+#: admin/class-wptelegram-admin.php:181
+msgid ""
+"With this plugin, you can send posts to Telegram and receive notifications "
+"and do lot more :)"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:186
+#: modules/notify/class-wptelegram-notify-admin.php:68
+#: modules/notify/class-wptelegram-notify-admin.php:340
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:118
+msgid "INSTRUCTIONS!"
+msgstr "INSTRUCCIONS!"
+
+#: admin/class-wptelegram-admin.php:202
+msgid "Telegram Options"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:208
 msgid "Bot Token"
 msgstr "Bot Token"
 
-#: admin/class-wptelegram-admin-settings.php:90
-msgid "Please read the instructions above"
-msgstr "Si us plau, llegeix les instruccions anteriors"
-
-#: admin/class-wptelegram-admin-settings.php:91
-#: admin/class-wptelegram-admin-settings.php:115
-#: admin/class-wptelegram-admin-settings.php:220
-#: admin/class-wptelegram-admin-settings.php:339
-msgid "e.g."
-msgstr "e.g."
-
-#: admin/class-wptelegram-admin-settings.php:98
-#: admin/partials/wptelegram-admin-display.php:60
+#: admin/class-wptelegram-admin.php:209 admin/class-wptelegram-admin.php:227
 msgid "Test Token"
 msgstr "Prova el Token"
 
-#: admin/class-wptelegram-admin-settings.php:113
-msgid "Channel Username(s) or Chat ID(s)"
-msgstr "Nom d'Usuari del(s) Canal(s) o Chat ID(s)"
+#: admin/class-wptelegram-admin.php:224
+msgid "Bot Username"
+msgstr ""
 
-#: admin/class-wptelegram-admin-settings.php:114
-#: admin/class-wptelegram-admin-settings.php:362
-msgid "If more than one, separate them by comma"
-msgstr "Si n'hi ha més d'un, separa'ls amb comes"
+#: admin/class-wptelegram-admin.php:225
+msgid "Telegram Bot username (without %s)."
+msgstr ""
 
-#: admin/class-wptelegram-admin-settings.php:122
-#: admin/class-wptelegram-admin-settings.php:346
-#: admin/partials/wptelegram-admin-display.php:147
+#: admin/class-wptelegram-admin.php:227
+msgid "Use %s to set automatically."
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:243
+msgid "Modules"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:286
+msgid "Advanced settings"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:289
+msgid ""
+"Settings in this section should not be changed unless recommended by WP "
+"Telegram Support."
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:292
+msgid "Send files by URL"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:293
+msgid "Turn off to upload the files/images instead of passing the url."
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:294
+msgid "Google Script proxy does not support file upload."
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:301
+msgid "Enable logs for"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:308
+msgid "Bot API"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:309
+#: includes/class-wptelegram-modules.php:68
+msgid "Post to Telegram"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:313
+msgid "Debug Info"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:321
+msgid "Remove settings on uninstall"
+msgstr "Elimina els ajustaments en desinstal·lar"
+
+#: admin/class-wptelegram-admin.php:415
+msgid "Settings updated"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:431
+msgid "%s is empty"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:433
+msgid "Invalid %s"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:484
+msgid "Integrate your WordPress website perfectly with Telegram."
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:488
+msgid "Do you like %s?"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:490
+msgid "Give it a rating"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:495
+msgid "Need help?"
+msgstr "Necessites ajuda?"
+
+#: admin/class-wptelegram-admin.php:497
+msgid "Get LIVE support on Telegram"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:513
+msgid "What is NEW?"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:520
+msgid "Enjoy %s"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:536
+msgid "Create a Bot by sending %s command to %s"
+msgstr "Crea un Bot enviant la comanda %s a %s"
+
+#: admin/class-wptelegram-admin.php:538
+msgid "After completing the steps %s will provide you the Bot Token."
+msgstr "Quan s'hagin completat els passos %s et proporcionarà el Bot Token."
+
+#: admin/class-wptelegram-admin.php:539
+msgid "Copy the token and paste into the Bot Token field below."
+msgstr "Copia el token i enganxa'l a sota al camp Bot Token."
+
+#: admin/class-wptelegram-admin.php:539
+msgid "For ease, use %s"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:540
+msgid "Test your bot token below."
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:541
+msgid "Activate the modules you want to use."
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:542
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:998
+msgid "Hit %s below"
+msgstr "Prem %s a sota"
+
+#: admin/class-wptelegram-admin.php:542
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:998
+msgid "Save Changes"
+msgstr "Desa els canvis"
+
+#: admin/class-wptelegram-admin.php:543
+msgid "Configure the activated modules."
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:544
+msgid "That's it! :)"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:561
+msgid "Test Result:"
+msgstr ""
+
+#: admin/class-wptelegram-admin.php:569
+msgid "Invalid Bot Username"
+msgstr ""
+
+#: admin/partials/class-wptelegram-admin-header.php:104
+msgid "Get connected"
+msgstr "Mantén-te connectat"
+
+#: admin/partials/class-wptelegram-admin-header.php:111
+#, fuzzy
+msgid "Follow %s"
+msgstr "Segueix"
+
+#: admin/partials/class-wptelegram-admin-header.php:115
+#, fuzzy
+msgid "Join %s"
+msgstr "Afegeix-me"
+
+#: includes/class-wptelegram-helpers.php:137
+msgid "You must set the Bot Token first."
+msgstr ""
+
+#: includes/class-wptelegram-helpers.php:137
+msgid "Click here"
+msgstr ""
+
+#: includes/class-wptelegram-modules.php:69
+msgid "Send the posts automatically to a Telegram Channel or group."
+msgstr ""
+
+#: includes/class-wptelegram-modules.php:72
+msgid "Private Notifications"
+msgstr ""
+
+#: includes/class-wptelegram-modules.php:73
+msgid "Send your email notifications to Telegram."
+msgstr ""
+
+#: includes/class-wptelegram-modules.php:76
+msgid "Proxy"
+msgstr ""
+
+#: includes/class-wptelegram-modules.php:77
+msgid "Bypass the ban on Telegram by making use of proxy."
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:63
+msgid ""
+"The module will watch the Email Notifications sent from this site and "
+"deliver them on your Telegram"
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:85
+msgid "Notification Settings"
+msgstr "Ajustaments de Notificacions"
+
+#: modules/notify/class-wptelegram-notify-admin.php:91
+msgid "If Email goes to"
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:93
+msgid "If you want to receive notification for every email, then write %s"
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:101
+#: modules/notify/class-wptelegram-notify-admin.php:190
+msgid "Send it to"
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:102
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:147
 msgid "Send Test"
 msgstr "Envia la Prova"
 
-#: admin/class-wptelegram-admin-settings.php:139
-msgid "When to send?"
-msgstr "Quan enviar?"
-
-#: admin/class-wptelegram-admin-settings.php:145
-msgid "When publishing a new post"
-msgstr "Quan es faci una nova publicació"
-
-#: admin/class-wptelegram-admin-settings.php:146
-msgid "Updating an existing post"
-msgstr "Actualitzant un missatge existent"
-
-#: admin/class-wptelegram-admin-settings.php:152
-msgid "Which post type(s) to send?"
-msgstr "Quins tipus de missatges d'han d'enviar?"
-
-#: admin/class-wptelegram-admin-settings.php:162
-msgid "Categories/Terms"
-msgstr "Categories"
-
-#: admin/class-wptelegram-admin-settings.php:168
-msgid "Post from all Categories/Terms"
-msgstr "Publica de totes les Categories"
-
-#: admin/class-wptelegram-admin-settings.php:169
-#: admin/class-wptelegram-admin-settings.php:192
-msgid "Post only from selected ones"
-msgstr "Envia només de les seleccionades"
-
-#: admin/class-wptelegram-admin-settings.php:170
-#: admin/class-wptelegram-admin-settings.php:193
-msgid "Do not post from selected ones"
-msgstr "No publiquis de les seleccionades"
-
-#: admin/class-wptelegram-admin-settings.php:176
-msgid "The rule will apply to the selected categories/terms and their children"
+#: modules/notify/class-wptelegram-notify-admin.php:102
+msgid "Telegram User or Group Chat ID."
 msgstr ""
-"La regla s'aplicarà a les categories seleccionades i a les seves sub-"
-"categories"
 
-#: admin/class-wptelegram-admin-settings.php:185
-msgid "Authors"
-msgstr "Autors"
+#: modules/notify/class-wptelegram-notify-admin.php:116
+msgid "Notifications to Users"
+msgstr "Notificacions als usuaris"
 
-#: admin/class-wptelegram-admin-settings.php:191
-msgid "Post from all Authors"
-msgstr "Permet publicar a tots als Autors"
-
-#: admin/class-wptelegram-admin-settings.php:201
-#: admin/class-wptelegram-admin-settings.php:295
-#: admin/class-wptelegram-admin-settings.php:313
-#: admin/class-wptelegram-admin-settings.php:362
-#: admin/class-wptelegram-admin-settings.php:583
-msgid "Note:"
-msgstr "Nota:"
-
-#: admin/class-wptelegram-admin-settings.php:201
-msgid ""
-"The authors not chosen to post from, will not see the ON/OFF switch on the "
-"post edit screen"
+#: modules/notify/class-wptelegram-notify-admin.php:117
+msgid "Allow users to receive their email notifications on Telegram"
 msgstr ""
-"Els autors als quals no se'ls permet publicar, no veuran el botó ON/OFF a la "
-"pantalla d'edició de publicacions"
+"Permet que els usuaris rebin les seves notificacions per e-mail a Telegram"
 
-#: admin/class-wptelegram-admin-settings.php:207
-msgid "When editing a post"
-msgstr "Quan s'editi un missatge"
-
-#: admin/class-wptelegram-admin-settings.php:208
-msgid ""
-"You can use this switch to override the above settings for a particular post"
+#: modules/notify/class-wptelegram-notify-admin.php:118
+msgid "Use %s to let them connect their Telegram account."
 msgstr ""
-"Pots usar aquest botó per sobreeescriure els ajustaments anteriors per una "
-"publicació concreta"
 
-#: admin/class-wptelegram-admin-settings.php:209
-msgid "Show an ON/OFF switch on the post edit screen"
-msgstr "Mostra un botó ON/OFF a la pantalla d'edició de la publicació"
+#: modules/notify/class-wptelegram-notify-admin.php:118
+msgid "They can also enter their Telegram Chat ID manually on %s page"
+msgstr ""
 
-#: admin/class-wptelegram-admin-settings.php:218
+#: modules/notify/class-wptelegram-notify-admin.php:118
+msgid "profile"
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:125
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:215
+msgid "Message Settings"
+msgstr "Ajustaments del Missatge"
+
+#: modules/notify/class-wptelegram-notify-admin.php:131
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:220
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:873
 msgid "Message Template"
 msgstr "Plantilla del Missatge"
 
-#: admin/class-wptelegram-admin-settings.php:219
+#: modules/notify/class-wptelegram-notify-admin.php:132
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:221
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:874
 msgid "Structure of the message to be sent"
 msgstr "Estructura del missatge que s'ha d'enviar"
 
-#: admin/class-wptelegram-admin-settings.php:234
+#: modules/notify/class-wptelegram-notify-admin.php:146
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:312
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:574
+msgid "Parse Mode"
+msgstr "Mode d'anàlisi"
+
+#: modules/notify/class-wptelegram-notify-admin.php:150
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:316
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:446
+msgid "Learn more"
+msgstr "Saber-ne més"
+
+#: modules/notify/class-wptelegram-notify-admin.php:152
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:320
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:574
+msgid "None"
+msgstr "Cap"
+
+#: modules/notify/class-wptelegram-notify-admin.php:153
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:321
+msgid "Markdown style"
+msgstr "estil de Marcatge"
+
+#: modules/notify/class-wptelegram-notify-admin.php:154
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:322
+msgid "HTML style"
+msgstr "estil HTML"
+
+#: modules/notify/class-wptelegram-notify-admin.php:181
+msgid "To receive notifications privately:"
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:183
+msgid "Get your Chat ID from %s and enter it below."
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:184
+msgid "Send YOUR OWN BOT a message to start the conversation."
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:187
+msgid "To receive notifications into a group:"
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:189
+msgid "Add %s to the group to get its Chat ID."
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:190
+msgid "Enter the Chat ID in %s field below."
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:191
+msgid "Add YOUR OWN BOT to the group."
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:213
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:552
+#: modules/proxy/class-wptelegram-proxy-admin.php:245
+msgid "Chat ID"
+msgstr "Chat ID"
+
+#: modules/notify/class-wptelegram-notify-admin.php:214
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:553
+#: modules/proxy/class-wptelegram-proxy-admin.php:246
+msgid "Name/Title"
+msgstr "Nom/Títol"
+
+#: modules/notify/class-wptelegram-notify-admin.php:215
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:554
+#: modules/proxy/class-wptelegram-proxy-admin.php:247
+msgid "Chat Type"
+msgstr "Tipus de Conversa"
+
+#: modules/notify/class-wptelegram-notify-admin.php:216
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:555
+#: modules/proxy/class-wptelegram-proxy-admin.php:248
+msgid "Test Status"
+msgstr "Estat de la Prova"
+
+#: modules/notify/class-wptelegram-notify-admin.php:244
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:444
+#: modules/proxy/class-wptelegram-proxy-admin.php:276
+msgid "You can use any text, emojis or these macros in any order:"
+msgstr "Pots usar qualsevol text, emojis o aquests macros en qualsevol ordre:"
+
+#: modules/notify/class-wptelegram-notify-admin.php:244
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:444
+#: modules/proxy/class-wptelegram-proxy-admin.php:276
+msgid "Click to insert"
+msgstr "Cica per inserir"
+
+#: modules/notify/class-wptelegram-notify-admin.php:311
+msgid "Telegram Info"
+msgstr "Informació sobre Telegram"
+
+#: modules/notify/class-wptelegram-notify-admin.php:312
+msgid "You can receive your email notifications on Telegram from %s"
+msgstr "Pots rebre les teves notificacions per e-mail a Telegram de %s"
+
+#: modules/notify/class-wptelegram-notify-admin.php:318
+msgid "Telegram Chat ID"
+msgstr "Chat ID de Telegram"
+
+#: modules/notify/class-wptelegram-notify-admin.php:319
+msgid "Please enter your Telegram Chat ID"
+msgstr "Si us plau, escriu la teva Chat ID de Telegram"
+
+#: modules/notify/class-wptelegram-notify-admin.php:342
+msgid "Get your Chat ID from %s and enter it above."
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:343
+msgid "Start a conversation with %s to receive notifications."
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:369
+msgid "via %s"
+msgstr ""
+
+#: modules/notify/class-wptelegram-notify-admin.php:414
+msgid "Please Enter a valid Chat ID"
+msgstr "Si us plau, escriu una Chat ID vàlida"
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:112
+msgid "With this module, you can configure how the posts are sent to Telegram"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:139
+msgid "Telegram Destination"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:146
+msgid "Channel Username"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:147
+msgid "Telegram Channel Username or Chat ID. Username must start with %s."
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:147
+msgid "If more than one, separate them by comma"
+msgstr "Si n'hi ha més d'un, separa'ls amb comes"
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:170
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:200
+msgid "Rules"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:175
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:588
+msgid "Send when"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:176
+msgid "When the post should be sent to Telegram"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:184
+msgid "A new post is published"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:185
+msgid "An existing post is updated"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:189
+msgid "Post type"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:192
+msgid "Which post types should be sent."
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:234
 msgid "Excerpt Source"
 msgstr "Origen de l'Extracte"
 
-#: admin/class-wptelegram-admin-settings.php:240
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:241
 msgid "Post Content"
 msgstr "Contingut de la Publicació"
 
-#: admin/class-wptelegram-admin-settings.php:241
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:242
 msgid "Post Content before Read More tag"
 msgstr "Contingut de la Publicació abans de l'etiqueta Llegeix Més"
 
-#: admin/class-wptelegram-admin-settings.php:242
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:243
 msgid "Post Excerpt"
 msgstr "Extracte de la Publicació"
 
-#: admin/class-wptelegram-admin-settings.php:247
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:247
 msgid "Excerpt Length"
 msgstr "Longitud de l'Extracte"
 
-#: admin/class-wptelegram-admin-settings.php:248
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:248
 msgid ""
 "Number of words for the excerpt. Won't be used when Caption Source is \"Post "
 "Content before Read More tag\""
@@ -194,610 +561,374 @@ msgstr ""
 "Nombre de paraules de l'extracte. No es farà servir quan l'Origen de la "
 "Llegenda sigui \"Envia la Publicació abans de l'etiqueta Llegeix Més\""
 
-#: admin/class-wptelegram-admin-settings.php:259
-msgid "Parse Mode"
-msgstr "Mode d'anàlisi"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:261
+#, fuzzy
+msgid "Excerpt Newlines"
+msgstr "Longitud de l'Extracte"
 
-#: admin/class-wptelegram-admin-settings.php:260
-msgid "Learn more"
-msgstr "Saber-ne més"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:262
+msgid "Preserve newlines in Post Excerpt."
+msgstr ""
 
-#: admin/class-wptelegram-admin-settings.php:265
-#: admin/class-wptelegram-admin-settings.php:295
-msgid "None"
-msgstr "Cap"
-
-#: admin/class-wptelegram-admin-settings.php:266
-msgid "Markdown style"
-msgstr "estil de Marcatge"
-
-#: admin/class-wptelegram-admin-settings.php:267
-msgid "HTML style"
-msgstr "estil HTML"
-
-#: admin/class-wptelegram-admin-settings.php:272
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:271
 msgid "Featured Image"
 msgstr "Imatge Destacada"
 
-#: admin/class-wptelegram-admin-settings.php:273
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:272
 msgid "Send Featured Image (if exists)"
 msgstr "Envia la Imatge Destacada (si n'hi ha)"
 
-#: admin/class-wptelegram-admin-settings.php:280
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:281
 msgid "Image Position"
 msgstr "Posició de la Imatge"
 
-#: admin/class-wptelegram-admin-settings.php:285
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:288
 msgid "Before the Text"
 msgstr "Abans del Text"
 
-#: admin/class-wptelegram-admin-settings.php:286
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:289
 msgid "After the Text"
 msgstr "A Sota del Text"
 
-#: admin/class-wptelegram-admin-settings.php:292
-msgid "Attach the image below the text"
-msgstr "Adjunta la imatge a sota del text"
-
-#: admin/class-wptelegram-admin-settings.php:295
-msgid "Useful if you want everything in one message."
-msgstr "Útil si ho vols tot en un únic missatge."
-
-#: admin/class-wptelegram-admin-settings.php:295
-msgid "If enabled:"
-msgstr "Si està activat:"
-
-#: admin/class-wptelegram-admin-settings.php:295
-msgid "Caption cannot be used"
-msgstr "La llegenda no es pot usar"
-
-#: admin/class-wptelegram-admin-settings.php:295
-msgid "Parse Mode should NOT be"
-msgstr "El Mode d'Anàlisi NO hauria de ser"
-
-#: admin/class-wptelegram-admin-settings.php:295
-#: admin/class-wptelegram-admin-settings.php:327
-msgid "Disable Web Page Preview"
-msgstr "Desactiva la Previsualització de la Pàgina Web"
-
-#: admin/class-wptelegram-admin-settings.php:295
-msgid "should not be checked"
-msgstr "no s'hauria de comprovar"
-
-#: admin/class-wptelegram-admin-settings.php:299
-msgid "How to send the image?"
-msgstr "Com enviar la imatge?"
-
-#: admin/class-wptelegram-admin-settings.php:304
-msgid "With Caption"
-msgstr "Amb Llegenda"
-
-#: admin/class-wptelegram-admin-settings.php:305
-msgid "Without Caption"
-msgstr "Sense Llegenda"
-
-#: admin/class-wptelegram-admin-settings.php:310
-msgid "Caption Source"
-msgstr "Origen de la Llegenda"
-
-#: admin/class-wptelegram-admin-settings.php:313
-msgid "Telegram limits photo caption to 200 characters."
-msgstr "Telegram limita la llegenda de la foto a 200 caracters."
-
-#: admin/class-wptelegram-admin-settings.php:313
-msgid ""
-"If the Media Library caption is not used and the Message Template exceeds "
-"the limit, the remaining part of the Template will be sent separately after "
-"the photo without breaking the words."
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:293
+msgid "Single message"
 msgstr ""
-"Si la llegenda de la Biblioteca de Medis no s'utilitza i la Plantilla del "
-"Missatge supera el límit, la part restant de la Plantilla s'enviarà "
-"separadament després de la foto sense separar les paraules."
 
-#: admin/class-wptelegram-admin-settings.php:313
-msgid ""
-"If \"Image Position\" is set to \"After the Text\", then \"Only Media Library"
-"\" caption can be used."
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:294
+msgid "Send both text and image in single message"
 msgstr ""
-"Si l'opció \"Posició de la Imatge\" és \"Després del Text\", aleshores només "
-"es pot usar la llegenda \"Només Biblioteca de Medis\"."
 
-#: admin/class-wptelegram-admin-settings.php:316
-msgid "Only Media Library"
-msgstr "Només la Biblioteca de Medis"
-
-#: admin/class-wptelegram-admin-settings.php:317
-msgid "Media Library or Message Template (former preferred if not empty)"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:303
+msgid "Categories as hashtags"
 msgstr ""
-"Biblioteca de Medis o Plantilla del Missatge (millor el primer si no es "
-"deixa buit)"
 
-#: admin/class-wptelegram-admin-settings.php:318
-msgid "Only Message Template"
-msgstr "Només la Plantilla del Missatge"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:304
+msgid "Send categories as hashtags."
+msgstr ""
 
-#: admin/class-wptelegram-admin-settings.php:323
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:334
+msgid "Inline Keyboard"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:339
+msgid "Inline Button"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:340
+msgid "Add Inline URL Button"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:341
+msgid "Add an inline clickable button for the post URL just below the message."
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:349
+msgid "Inline button text"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:350
+msgid "View Post"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:365
 msgid "Miscellaneous"
 msgstr "Miscel·lània"
 
-#: admin/class-wptelegram-admin-settings.php:327
-msgid "of the link in text"
-msgstr "de l'enllaç en el text"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:370
+msgid "When editing a post"
+msgstr "Quan s'editi un missatge"
 
-#: admin/class-wptelegram-admin-settings.php:328
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:371
+msgid "Show an ON/OFF switch on the post edit screen"
+msgstr "Mostra un botó ON/OFF a la pantalla d'edició de la publicació"
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:372
+msgid ""
+"You can use this switch to override the above settings for a particular post"
+msgstr ""
+"Pots usar aquest botó per sobreeescriure els ajustaments anteriors per una "
+"publicació concreta"
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:379
+msgid "Plugin generated posts"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:380
+msgid "Enable this option if you use a plugin to generate posts"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:387
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:855
+msgid "Delay in Posting"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:388
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:856
+msgid "Minute(s)"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:401
+msgid "Other settings"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:406
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:575
+msgid "Disable Web Page Preview"
+msgstr "Desactiva la Previsualització de la Pàgina Web"
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:407
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:834
 msgid "Disable Notifications"
 msgstr "Desactiva les Notificacions"
 
-#: admin/class-wptelegram-admin-settings.php:329
-msgid "Do not send the second message as a reply to the first"
-msgstr "No enviïs el segon missatge com a rèplica del primer"
-
-#: admin/class-wptelegram-admin-settings.php:337
-msgid "Chat ID"
-msgstr "Chat ID"
-
-#: admin/class-wptelegram-admin-settings.php:338
-msgid "If more than one, separate them by comma. Read the instructions above"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:430
+msgid "WordPress cron should not be disabled!"
 msgstr ""
-"Si n'hi ha més d'un, separal's amb comes. Llegeix les instruccions anteriors."
 
-#: admin/class-wptelegram-admin-settings.php:361
-msgid "Email(s) to watch"
-msgstr "E-mail(s) que cal comprovar"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:433
+msgid "The delay starts after the post gets published."
+msgstr ""
 
-#: admin/class-wptelegram-admin-settings.php:362
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:446
+msgid "You can also use conditional logic in the template"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:460
+msgid "Post Data"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:474
+msgid "Taxonomy Terms"
+msgstr ""
+
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:482
+msgid "Custom Fields"
+msgstr ""
+
+#. translators: 1  taxonomy, 2  {terms:taxonomy}
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:489
 msgid ""
-"WP Telegram will watch the Email Notifications sent from this site, if the "
-"email is sent to one of the above email ids, it will be sent to you on "
-"Telegram by your bot. It does not matter whether the email was successfully "
-"sent or not."
+"Replace %1$s in %2$s by the name of the taxonomy to insert its terms "
+"attached to the post."
 msgstr ""
-"WP Telegram comprovarà les notificacions per e-mail que s'han enviat des "
-"d'aquest lloc, si l'e-mail s'envia a un dels e-mails anteriors, el bot te "
-"l'enviarà a tu per Telegram. No depèn de sí l'e-mail s'acaba enviant "
-"satisfactòriament o no."
 
-#: admin/class-wptelegram-admin-settings.php:362
-msgid "If you want to receive notification for every sent email, write"
-msgstr "Si vols rebre notificacions dels e-mails enviats, escriu"
-
-#: admin/class-wptelegram-admin-settings.php:362
-msgid "Usually it should be the admin email"
-msgstr "Habitualment hauria de ser l'e-mail de l'administrador"
-
-#: admin/class-wptelegram-admin-settings.php:369
-msgid "Hashtag (optional)"
-msgstr "Etiqueta (opcional)"
-
-#: admin/class-wptelegram-admin-settings.php:370
-msgid "Add a hashtag at the end of the message."
-msgstr "Afegeix una etiqueta al final del missatge."
-
-#: admin/class-wptelegram-admin-settings.php:370
-msgid "Must begin with"
-msgstr "Ha de començar amb"
-
-#: admin/class-wptelegram-admin-settings.php:376
-msgid "Notifications to Users"
-msgstr "Notificacions als usuaris"
-
-#: admin/class-wptelegram-admin-settings.php:377
-#, php-format
-msgid "User can enter the Telegram information on %sprofile%s page"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:489
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:492
+msgid "For example %1$s and %2$s in WooCommerce"
 msgstr ""
-"L'usuari pot escriure la informació de Telegram a la pàgina de %sprofile%s"
 
-#: admin/class-wptelegram-admin-settings.php:378
-msgid "Allow users to receive their email notifications on Telegram"
+#. translators: 1  custom_field, 2  {cf:custom_field}
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:492
+msgid "Replace %1$s in %2$s by the name of the Custom Field."
 msgstr ""
-"Permet que els usuaris rebin les seves notificacions per e-mail a Telegram"
 
-#: admin/class-wptelegram-admin-settings.php:396
-msgid "In this section you can change the settings related to Telegram."
-msgstr ""
-"En aquesta secció pots canviar els ajustaments relacionats amb Telegram."
-
-#: admin/class-wptelegram-admin-settings.php:396
-msgid ""
-"To send messages to a Telegram Channel, group, supergroup or a private chat, "
-"follow the steps below."
-msgstr ""
-"Per enviar missatges a un Canal, grup, supergrup o conversa privada de "
-"Telegram, segueix els passos descrits a sota."
-
-#: admin/class-wptelegram-admin-settings.php:397
-msgid "ATTENTION!"
-msgstr "ATENCIÓ!"
-
-#: admin/class-wptelegram-admin-settings.php:399
-msgid "Create a Channel/group/supergroup"
-msgstr "Crea un Canal/grup/supergrup"
-
-#: admin/class-wptelegram-admin-settings.php:399
-msgid "If you haven't"
-msgstr "Si no has"
-
-#: admin/class-wptelegram-admin-settings.php:400
-#, php-format
-msgid "Create a Bot by sending %s command to %s"
-msgstr "Crea un Bot enviant la comanda %s a %s"
-
-#: admin/class-wptelegram-admin-settings.php:402
-#, php-format
-msgid "After completing the steps %s will provide you the Bot Token."
-msgstr "Quan s'hagin completat els passos %s et proporcionarà el Bot Token."
-
-#: admin/class-wptelegram-admin-settings.php:403
-msgid "Copy the token and paste into the Bot Token field below."
-msgstr "Copia el token i enganxa'l a sota al camp Bot Token."
-
-#: admin/class-wptelegram-admin-settings.php:403
-msgid "For ease, use"
-msgstr "Per comoditat, usa"
-
-#: admin/class-wptelegram-admin-settings.php:404
-msgid "Add the Bot as Administrator to your Channel/Group"
-msgstr "Afegeix el Bot com administrador al teu Canal/Grup"
-
-#: admin/class-wptelegram-admin-settings.php:405
-msgid ""
-"Enter the Channel Username(s) or Chat ID(s) separated by comma in the field "
-"below"
-msgstr ""
-"Escriu el(s) nom(s) d'usuari del(s) Canal(s) o la(les) Chat ID(s) separats "
-"amb comes en el camp a sota :"
-
-#: admin/class-wptelegram-admin-settings.php:407
-#, php-format
-msgid "Username must start with %s"
-msgstr "El nom d'usuari ha de començar amb %s"
-
-#: admin/class-wptelegram-admin-settings.php:408
-msgid ""
-"You can also use the Chat ID of a private chat with the Bot, see "
-"Notification Settings"
-msgstr ""
-"També pots usar la Chat ID d'una conversa privada amb el Bot, comprova-ho "
-"als Ajustaments de Notificacions"
-
-#: admin/class-wptelegram-admin-settings.php:411
-#, php-format
-msgid "Hit %s below"
-msgstr "Prem %s a sota"
-
-#: admin/class-wptelegram-admin-settings.php:411
-msgid "Save Changes"
-msgstr "Desa els canvis"
-
-#: admin/class-wptelegram-admin-settings.php:412
-msgid "That's it. Happy WPTelegram :)"
-msgstr "Ja està. Gaudeix de WP Telegram :)"
-
-#: admin/class-wptelegram-admin-settings.php:425
-msgid "Test result:"
-msgstr "Resultat de la Prova:"
-
-#: admin/class-wptelegram-admin-settings.php:426
-#: includes/wptelegram-functions.php:166
-msgid "Invalid Bot Token"
-msgstr "Bot Token invàlid"
-
-#: admin/class-wptelegram-admin-settings.php:437
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:546
 msgid "Members Count:"
 msgstr "Nombre de Membres:"
 
-#: admin/class-wptelegram-admin-settings.php:443
-msgid "Chat_id"
-msgstr "Chat_id"
-
-#: admin/class-wptelegram-admin-settings.php:444
-msgid "Name/Title"
-msgstr "Nom/Títol"
-
-#: admin/class-wptelegram-admin-settings.php:445
-msgid "Chat Type"
-msgstr "Tipus de Conversa"
-
-#: admin/class-wptelegram-admin-settings.php:446
-msgid "Test Status"
-msgstr "Estat de la Prova"
-
-#: admin/class-wptelegram-admin-settings.php:461
-msgid ""
-"In this section you can set/change the settings related to Notifications "
-"sent to Telegram"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:574
+msgid "%1$s should not be %2$s"
 msgstr ""
-"En aquesta secció pots establir/canviar els ajustaments relacionats amb "
-"Notificacions enviades a Telegram"
 
-#: admin/class-wptelegram-admin-settings.php:462
-#: public/partials/wptelegram-profile-fields.php:36
-msgid "INSTRUCTIONS!"
-msgstr "INSTRUCCIONS!"
-
-#: admin/class-wptelegram-admin-settings.php:463
-msgid ""
-"IMPORTANT! First complete at least first 4 steps in Telegram Settings "
-"section, otherwise notifications won't be sent"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:575
+msgid "%s should not be checked"
 msgstr ""
-"IMPORTANT! Primer completa almenys els 4 primers passos de la secció "
-"Ajustaments de Telegram, altrament les notificacions no s'enviaran"
 
-#: admin/class-wptelegram-admin-settings.php:465
-msgid "Every Telegram user or group has a unique ID called"
-msgstr "Cada usuari o grup de Telegram té una única ID anomenada"
-
-#: admin/class-wptelegram-admin-settings.php:466
-msgid "It is different from a username and is visible only to bots."
-msgstr "És diferent a un nom d'usuari i només és visible per als bots."
-
-#: admin/class-wptelegram-admin-settings.php:467
-msgid "This chat_id is used by the bots to send messages to a user or group."
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:594
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:75
+msgid "AND"
 msgstr ""
-"Els bots utilitzen aquesta chat_id per enviar missatges a un usuari o grup."
 
-#: admin/class-wptelegram-admin-settings.php:468
-msgid ""
-"In order to receive notifications through your bot, you need to find your"
-msgstr "Per tal de rebre notificacions del teu bot, has de trobar la teva"
-
-#: admin/class-wptelegram-admin-settings.php:469
-msgid "Follow these steps:"
-msgstr "Segueix aquests passos:"
-
-#: admin/class-wptelegram-admin-settings.php:471
-#: public/partials/wptelegram-profile-fields.php:38
-#, php-format
-msgid "Send a message to %s"
-msgstr "Envia un missatge a %s"
-
-#: admin/class-wptelegram-admin-settings.php:472
-#: public/partials/wptelegram-profile-fields.php:39
-msgid "It will send you your Telegram chat_id."
-msgstr "t'enviarà el teu chat_id de Telegram."
-
-#: admin/class-wptelegram-admin-settings.php:473
-#, php-format
-msgid ""
-"If you want to receive notifications into a group, then add %s to the group "
-"and it will send you the group ID."
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:754
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:798
+msgid "Send to Telegram"
 msgstr ""
-"Si vols que un grup rebi notificacions, afegeix %s al grup i t'enviarà la ID "
-"del grup."
 
-#: admin/class-wptelegram-admin-settings.php:475
-msgid "Do not forget to add your own bot to the group."
-msgstr "No oblidis afegir el teu propi bot al grup."
-
-#: admin/class-wptelegram-admin-settings.php:477
-msgid "Enter the received chat_id in the field below"
-msgstr "Escriu el chat_id que has rebut al camp de sota"
-
-#: admin/class-wptelegram-admin-settings.php:478
-msgid ""
-"Start the conversation with your bot, bots cannot initialize a conversation."
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:803
+msgid "Yes"
 msgstr ""
-"Inicia la conversa amb el teu bot, els bots no poden iniciar una conversa."
 
-#: admin/class-wptelegram-admin-settings.php:581
-msgid "You can use any text, emojis or these macros in any order:"
-msgstr "Pots usar qualsevol text, emojis o aquests macros en qualsevol ordre:"
-
-#: admin/class-wptelegram-admin-settings.php:581
-msgid "Click to insert"
-msgstr "Cica per inserir"
-
-#: admin/class-wptelegram-admin-settings.php:585
-#, php-format
-msgid ""
-"Replace %s in %s by the name of the taxonomy from which you want to get the "
-"terms attached to the post."
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:804
+msgid "No"
 msgstr ""
-"Substitueix %s a %s pel nom de la taxonomia de la qual vols obtenir els "
-"elements adjunts a la publicació."
 
-#: admin/class-wptelegram-admin-settings.php:585
-#: admin/class-wptelegram-admin-settings.php:586
-#, php-format
-msgid "For example %s"
-msgstr "Per exemple %s"
-
-#: admin/class-wptelegram-admin-settings.php:586
-#, php-format
-msgid ""
-"Replace %s in %s by the name of the Custom Field, the value of which you "
-"want to add to the template."
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:811
+msgid "Override settings"
 msgstr ""
-"Substitueix %s a %s pel nom del Camp Personalitzat, el valor del qual vols "
-"afegir a la plantilla."
 
-#: admin/class-wptelegram-admin-settings.php:687
-msgid "Override default settings"
-msgstr "Sobreescriu els ajustaments predeterminats"
-
-#: admin/class-wptelegram-admin-settings.php:690
-msgid "Message"
-msgstr "Missatge"
-
-#: admin/class-wptelegram-admin-settings.php:694
-msgid "Send"
-msgstr "Envia"
-
-#: admin/class-wptelegram-admin-settings.php:698
-msgid "Do not Send"
-msgstr "No enviïs"
-
-#: admin/class-wptelegram-admin-settings.php:703
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:822
 msgid "Send to"
 msgstr "Envia a"
 
-#: admin/class-wptelegram-admin-settings.php:709
-msgid "All Channels/Chats"
-msgstr "Tots els Canals/Converses"
-
-#: admin/class-wptelegram-admin-settings.php:724
-msgid "No Channels/Chat IDs found"
-msgstr "No s'han trobat IDs de Canals/Converses"
-
-#: admin/class-wptelegram-admin-settings.php:728
-msgid "Template"
-msgstr "Plantilla"
-
-#: admin/class-wptelegram-admin.php:137
-msgid "Settings"
-msgstr "Ajustaments"
-
-#: admin/class-wptelegram-admin.php:215 admin/class-wptelegram-admin.php:225
-msgid "WP Telegram Settings"
-msgstr "Ajustaments de WP Telegram"
-
-#: admin/class-wptelegram-admin.php:216
-#: admin/partials/wptelegram-admin-header.php:11
-#: admin/partials/wptelegram-admin-header.php:37
-#: includes/class-wptelegram.php:79
-msgid "WP Telegram"
-msgstr "WP Telegram"
-
-#: admin/class-wptelegram-admin.php:226
-msgid "Core"
-msgstr "Nucli"
-
-#: admin/class-wptelegram-admin.php:239
-msgid "Sorry, you are not allowed to access this page."
-msgstr "No estàs autoritzat a accedir a aquesta pàgina."
-
-#: admin/class-wptelegram-admin.php:269
-msgid "Remove settings on uninstall"
-msgstr "Elimina els ajustaments en desinstal·lar"
-
-#: admin/class-wptelegram-admin.php:314
-msgid "WP Telegram Options"
-msgstr "Opcions de WP Telegram"
-
-#: admin/class-wptelegram-admin.php:356
-msgid "WP Telegram failed to communicate."
-msgstr "S'ha produït un error de comunicació amb WP Telegram."
-
-#: admin/class-wptelegram-admin.php:358
-msgid "Reason: "
-msgstr "Motiu:"
-
-#: admin/class-wptelegram-admin.php:363 public/class-wptelegram-public.php:159
-msgid "Error: "
-msgstr "Error:"
-
-#: admin/partials/wptelegram-admin-display.php:55
-#: admin/partials/wptelegram-admin-display.php:133
-msgid "Please wait..."
-msgstr "Si us plau, espera ..."
-
-#: admin/partials/wptelegram-admin-display.php:64
-msgid "Bot Token is empty"
-msgstr "El Bot Token està buit"
-
-#: admin/partials/wptelegram-admin-display.php:73
-#: admin/partials/wptelegram-admin-display.php:162
-msgid "Error: Could not connect"
-msgstr "Error: No s'ha pogut connectar"
-
-#: admin/partials/wptelegram-admin-display.php:123
-msgid "Bot Token is invalid"
-msgstr "El Bot Token és invàlid"
-
-#: admin/partials/wptelegram-admin-display.php:127
-msgid "A message will be sent to the chat_ids. You can modify the text below"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:844
+msgid "Files"
 msgstr ""
-"S'enviarà un missatge a totes les chat_ids. Pots modificar el text a sota"
 
-#: admin/partials/wptelegram-admin-display.php:127
-msgid "This is a test message"
-msgstr "Aquest és un missatge de prova"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:845
+msgid "Files to be sent after the message"
+msgstr ""
 
-#: admin/partials/wptelegram-admin-display.php:152
-msgid "Bot Token or chat_ids is empty"
-msgstr "Està buit el Bot Token o la chat_id"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:991
+msgid "Create a Channel/group/supergroup"
+msgstr "Crea un Canal/grup/supergrup"
 
-#: admin/partials/wptelegram-admin-display.php:175
-msgid "Success"
-msgstr "Satisfactori"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:992
+msgid "Add the Bot as Administrator to your Channel/Group"
+msgstr "Afegeix el Bot com administrador al teu Canal/Grup"
 
-#: admin/partials/wptelegram-admin-display.php:180
-msgid "Failure"
-msgstr "Error"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:993
+msgid "Enter the Channel Username in the field below"
+msgstr ""
 
-#: admin/partials/wptelegram-admin-header.php:19
-msgid "Need help?"
-msgstr "Necessites ajuda?"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:995
+msgid "Username must start with %s"
+msgstr "El nom d'usuari ha de començar amb %s"
 
-#: admin/partials/wptelegram-admin-header.php:19
-msgid "Shout in"
-msgstr "Difon"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:996
+msgid "You can also use the Chat ID of a group or private chat."
+msgstr ""
 
-#: admin/partials/wptelegram-admin-header.php:26
-msgid "Get connected"
-msgstr "Mantén-te connectat"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:996
+msgid "Get it from %s"
+msgstr ""
 
-#: admin/partials/wptelegram-admin-header.php:33
-msgid "Follow"
-msgstr "Segueix"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:999
+msgid "That's it. You are ready to rock :)"
+msgstr ""
 
-#: admin/partials/wptelegram-admin-header.php:37
-msgid "Join"
-msgstr "Afegeix-me"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:1030
+msgid "There was some error!"
+msgstr ""
 
-#: includes/wptelegram-bot-api/classes/class-wptelegram_bot_api.php:134
-msgid "Bot Token is required to make a request"
-msgstr "Cal un Bot Token per fer la petició"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:1036
+msgid "Channel"
+msgstr ""
 
-#: includes/wptelegram-functions.php:164
-#, php-format
-msgid "Your host seems to block requests to %s"
-msgstr "El teu servidor sembla que està bloquejant peticions a %s"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:1037
+msgid "Error code"
+msgstr ""
 
-#: public/class-wptelegram-public.php:159
-msgid "Please Enter a valid Chat ID"
-msgstr "Si us plau, escriu una Chat ID vàlida"
+#: modules/p2tg/class-wptelegram-p2tg-admin.php:1038
+msgid "Error message"
+msgstr ""
 
-#: public/partials/wptelegram-profile-fields.php:21
-msgid "Telegram Info"
-msgstr "Informació sobre Telegram"
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:55
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:88
+msgid "OR"
+msgstr ""
 
-#: public/partials/wptelegram-profile-fields.php:22
-#, php-format
-msgid "You can receive your email notifications on Telegram from %s"
-msgstr "Pots rebre les teves notificacions per e-mail a Telegram de %s"
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:90
+msgid "Add"
+msgstr ""
 
-#: public/partials/wptelegram-profile-fields.php:26
-msgid "Telegram Chat ID"
-msgstr "Chat ID de Telegram"
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:179
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:180
+msgid "Post"
+msgstr ""
 
-#: public/partials/wptelegram-profile-fields.php:30
-msgid "Please enter your Telegram Chat ID"
-msgstr "Si us plau, escriu la teva Chat ID de Telegram"
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:181
+msgid "Post Category"
+msgstr ""
 
-#: public/partials/wptelegram-profile-fields.php:40
-msgid "Enter the received chat_id in the field above"
-msgstr "Escriu la chat_id que has rebut al camp anterior"
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:182
+msgid "Post Tag"
+msgstr ""
 
-#: public/partials/wptelegram-profile-fields.php:41
-#, php-format
-msgid "Also start a conversation with %s to receive notifications"
-msgstr "També inicia una conversa amb %s per rebre notificacions"
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:183
+msgid "Post Format"
+msgstr ""
 
-#~ msgid ""
-#~ "Get notifications and send posts automatically to Telegram when published "
-#~ "or updated, whether to a Telegram Channel, Group, Supergroup or private "
-#~ "chat, with full control..."
-#~ msgstr ""
-#~ "Obtén notificacions i envia publicacions automàticament a Telegram quan "
-#~ "es publiqui o s'actualitzi, ja sigui a un Canal, Supergrup o conversa "
-#~ "privada de Telegram, amb control total ..."
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:184
+msgid "Post Author"
+msgstr ""
 
-#~ msgid "https://t.me/manzoorwanijk"
-#~ msgstr "https://t.me/manzoorwanijk"
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:186
+msgid "Custom Taxonomy"
+msgstr ""
 
-#~ msgid "Manzoor Wani"
-#~ msgstr "Manzoor Wani"
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:201
+msgid "is in"
+msgstr ""
 
-#~ msgid "https://t.me/WPTelegram"
-#~ msgstr "https://t.me/WPTelegram"
+#: modules/p2tg/class-wptelegram-p2tg-rules.php:202
+msgid "is not in"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:63
+msgid ""
+"The module will help you bypass the ban on Telegram by making use of proxy."
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:68
+msgid "DISCLAIMER!"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:85
+msgid "Proxy Method"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:95
+msgid "Google Script is preferred"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:97
+#: modules/proxy/class-wptelegram-proxy-admin.php:103
+msgid "Google Script"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:98
+#: modules/proxy/class-wptelegram-proxy-admin.php:118
+msgid "PHP Proxy"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:110
+msgid "Google Script URL"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:112
+msgid "The requests to Telegram will be sent via your Google Script."
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:112
+msgid "See this tutorial"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:125
+msgid "Proxy Host"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:128
+msgid "Host IP or domain name like %s"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:133
+msgid "Proxy Port"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:136
+msgid "Target Port like %s"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:141
+msgid "Proxy Type"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:156
+msgid "Username"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:159
+#: modules/proxy/class-wptelegram-proxy-admin.php:167
+msgid "Leave empty if not required"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:164
+msgid "Password"
+msgstr ""
+
+#: modules/proxy/class-wptelegram-proxy-admin.php:182
+msgid "Use the proxy at your own risk!"
+msgstr ""
+
+#~ msgid "Shout in"
+#~ msgstr "Difon"
