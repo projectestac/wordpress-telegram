@@ -31,17 +31,6 @@ class WPTelegram_Notify_Admin extends WPTelegram_Module_Base {
 	}
 
 	/**
-	 * Register the stylesheets for the admin area.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_styles( $hook_suffix ) {
-
-		parent::enqueue_style( $this->module_name, $this->slug );
-
-	}
-
-	/**
 	 * Register the JavaScript for the admin area.
 	 *
 	 * @since    1.0.0
@@ -69,15 +58,27 @@ class WPTelegram_Notify_Admin extends WPTelegram_Module_Base {
 			'option_key'	=> $this->plugin_name . '_' . $this->module_name,
 			'icon_url'		=> WPTELEGRAM_URL . '/admin/icons/icon-16x16-white.svg',
 			'capability'	=> 'manage_options',
-			'classes'       => 'wptelegram-box',
+			'classes'		=> 'wptelegram-box',
+			'display_cb'	=> array( WPTG()->helpers, 'render_cmb2_options_page' ),
+			'desc'			=> __( 'The module will watch the Email Notifications sent from this site and deliver them on your Telegram', 'wptelegram' ),
 		);
 		$cmb2 = new_cmb2_box( $box );
 
 		$cmb2->add_field( array(
-			'type'          => 'title',
-			'id'            => 'intro_title',
-			'before_row'    => array( $this, 'render_header' ),
-			'after'         => array( __CLASS__, 'intro' ),
+			'name' 		=> __( 'INSTRUCTIONS!','wptelegram' ),
+			'type' 		=> 'title',
+			'id'   		=> 'instructions_title',
+			'classes'	=> 'highlight',
+		) );
+
+		// Instructions
+		$cmb2->add_field( array(
+			'name'			=> '',
+			'type'			=> 'text', // fake
+			'show_names'	=> false,
+			'save_field'	=> false,
+			'id'			=> 'telegram_guide',
+			'render_row_cb'	=> array( __CLASS__, 'render_telegram_guide' ),
 		) );
 
 		$cmb2->add_field( array(
@@ -101,6 +102,7 @@ class WPTelegram_Notify_Admin extends WPTelegram_Module_Base {
 			'desc'              => WPTG()->helpers->get_test_button_html( __( 'Send Test', 'wptelegram' ), '', 'chat_ids' ) . '<br>' . __( 'Telegram User or Group Chat ID.', 'wptelegram' ),
 			'id'                => 'chat_ids',
 			'type'              => 'text_medium',
+			'sanitization_cb'   => array( WPTG()->helpers, 'sanitize_channels' ),
 			'after'             => array( $this, 'after_chat_cb' ),
 			'before_row'        => WPTG()->helpers->add_grid_col_to_row(),
 			'after_row'         => WPTG()->helpers->close_grid_col_and_row(),
@@ -115,7 +117,7 @@ class WPTelegram_Notify_Admin extends WPTelegram_Module_Base {
 			'desc'	=> __( 'Allow users to receive their email notifications on Telegram', 'wptelegram' ),
 			'after'	=> sprintf( __( 'Use %s to let them connect their Telegram account.', 'wptelegram' ), '<a href="' . esc_attr( 'https://wordpress.org/plugins/wptelegram-login' ) . '" target="_blank">WP Telegram Login & Register</a>' ) . '<br>' . sprintf( __( 'They can also enter their Telegram Chat ID manually on %s page', 'wptelegram' ), sprintf( '<a href="' . esc_url( get_edit_profile_url( get_current_user_id() ) . '#into-title' ) . '" target="_blank">%s</a>', __( 'profile', 'wptelegram' ) ) ),
 			'id'	=> 'user_notifications',
-			'type'	=> 'switch',
+			'type'	=> 'custom_switch',
 			'sanitization_cb'	=> array( $this, 'sanitize_checkbox' ),
 		) );
 
@@ -155,27 +157,6 @@ class WPTelegram_Notify_Admin extends WPTelegram_Module_Base {
 	}
 
 	/**
-	 * Render the settings page header
-	 * @param  object $field_args Current field args
-	 * @param  object $field      Current field object
-	 */
-	public function render_header( $field_args, $field ) {
-
-		$title = WPTG()->get_plugin_title();
-		$version = WPTG()->get_version();
-
-		$plugin_url = WPTELEGRAM_URL;
-		$text_domain = 'wptelegram';
-
-		include_once WPTELEGRAM_DIR . '/admin/partials/wptelegram-admin-header.php';
-		?>
-		<div class="cmb-row wptelegram-header-desc">
-			<p><?php echo __( 'The module will watch the Email Notifications sent from this site and deliver them on your Telegram', 'wptelegram' ); ?></p>
-		</div>
-		<?php
-	}
-
-	/**
 	 * Handles checkbox sanitization
 	 *
 	 * @param  mixed      $value      The unsanitized value from the form.
@@ -194,24 +175,24 @@ class WPTelegram_Notify_Admin extends WPTelegram_Module_Base {
 	 * @param  object $field_args Current field args
 	 * @param  object $field      Current field object
 	 */
-	public static function intro( $field_args, $field ) { ?>
-		<p style="color:#f10e0e;"><b><?php echo __( 'INSTRUCTIONS!','wptelegram'); ?></b></p>
-		<ol style="list-style-type: disc">
-			<li><?php _e( 'To receive notifications privately:', 'wptelegram' ); ?>
-				<ol>
-					<li><?php printf( __( 'Get your Chat ID from %s and enter it below.', 'wptelegram' ), '<a href="https://t.me/MyChatInfoBot" target="_blank">@MyChatInfoBot</a>' ); ?></li>
-					<li><span style="color:#f10e0e;"><?php esc_html_e( 'Send YOUR OWN BOT a message to start the conversation.', 'wptelegram' );?></span></li>
-				</ol>
-			</li>
-			<li><?php _e( 'To receive notifications into a group:', 'wptelegram' ); ?>
-				<ol>
-					<li><?php printf( __( 'Add %s to the group to get its Chat ID.', 'wptelegram' ), '<b>@MyChatInfoBot</b>' ); ?></li>
-					<li><?php printf( __( 'Enter the Chat ID in %s field below.', 'wptelegram' ), '<b>"' . __( 'Send it to', 'wptelegram' ) . '"</b>' ); ?></li>
-					<li><?php esc_html_e( 'Add YOUR OWN BOT to the group.', 'wptelegram' );?></span></li>
-				</ol>
-			</li>
-		</ol>
-
+	public static function render_telegram_guide( $field_args, $field ) { ?>
+		<div class="cmb-row cmb-type-text cmb2-id-telegram_guide">
+			<ol style="list-style-type: disc">
+				<li><?php _e( 'To receive notifications privately:', 'wptelegram' ); ?>
+					<ol>
+						<li><?php printf( __( 'Get your Chat ID from %s and enter it below.', 'wptelegram' ), '<a href="https://t.me/MyChatInfoBot" target="_blank">@MyChatInfoBot</a>' ); ?></li>
+						<li><span style="color:#f10e0e;"><?php esc_html_e( 'Send YOUR OWN BOT a message to start the conversation.', 'wptelegram' );?></span></li>
+					</ol>
+				</li>
+				<li><?php _e( 'To receive notifications into a group:', 'wptelegram' ); ?>
+					<ol>
+						<li><?php printf( __( 'Add %s to the group to get its Chat ID.', 'wptelegram' ), '<b>@MyChatInfoBot</b>' ); ?></li>
+						<li><?php printf( __( 'Enter the Chat ID in %s field below.', 'wptelegram' ), '<b>"' . __( 'Send it to', 'wptelegram' ) . '"</b>' ); ?></li>
+						<li><?php esc_html_e( 'Add YOUR OWN BOT to the group.', 'wptelegram' );?></span></li>
+					</ol>
+				</li>
+			</ol>
+		</div>
 		<?php
 	}
 
@@ -285,7 +266,7 @@ class WPTelegram_Notify_Admin extends WPTelegram_Module_Base {
 
 		$html = '';
 		foreach ( $macros as $macro ) {
-			$html .= '<a class="btn" href="#"><code>' . esc_html__( $macro ) . '</code></a>';
+			$html .= '<a class="btn" href="#"><code>' . esc_html( $macro ) . '</code></a>';
 		}
 		return $html;
 	}

@@ -34,7 +34,7 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 
 		parent::__construct( $plugin_title, $plugin_name, $version );
 
-        $this->sub_dir = 'admin';
+		$this->sub_dir = 'admin';
 	}
 
 	/**
@@ -51,7 +51,7 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 		// load only on plugin pages
 		if ( WPTG()->helpers->is_settings_page() ) {
 
-			parent::enqueue_style( $this->plugin_name . '-cmb2-grid-view', 'bootstrap' );
+			parent::enqueue_style( $this->plugin_name . '-cmb2-grid-view', 'bootstrap', 'bootstrap' );
 
 			parent::enqueue_style( $this->plugin_name.'-select2', 'select2', 'select2' );
 		}
@@ -106,17 +106,17 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 		);
 	}
 
-    /**
-     * Add action links to the plugin page
-     *
-     * @since  1.6.1
-     */
-    public function plugin_action_links( $links ) {
-    	$settings_link = '<a href="' . menu_page_url( $this->plugin_name, false ) . '">' . esc_html( __( 'Settings', 'wptelegram' ) ) . '</a>';
+	/**
+	 * Add action links to the plugin page
+	 *
+	 * @since  1.6.1
+	 */
+	public function plugin_action_links( $links ) {
+		$settings_link = '<a href="' . menu_page_url( $this->plugin_name, false ) . '">' . esc_html( __( 'Settings', 'wptelegram' ) ) . '</a>';
 		array_unshift( $links, $settings_link );
 
 		return $links;
-    }
+	}
 
 	/**
 	 * Initialize CMB2 Conditionals
@@ -170,22 +170,38 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 
 		$box = array(
 			'id'			=> $this->plugin_name,
-			'title'			=> esc_html__( $this->plugin_title ),
+			'title'			=> $this->plugin_title,
 			'object_types'	=> array( 'options-page' ),
 			'option_key'	=> $this->plugin_name,
 			'icon_url'		=> WPTELEGRAM_URL . '/admin/icons/icon-16x16-white.svg',
 			'capability'	=> 'manage_options',
 			'message_cb'	=> array( $this, 'custom_settings_messages' ),
-            'classes'       => 'wptelegram-box',
+			'classes'       => 'wptelegram-box',
+			'display_cb'	=> array( WPTG()->helpers, 'render_cmb2_options_page' ),
+			'desc'			=> __( 'With this plugin, you can send posts to Telegram and receive notifications and do lot more :)', 'wptelegram' ),
 		);
 		$cmb2 = new_cmb2_box( $box );
+
+		$cmb2->add_field( array(
+			'name' 		=> __( 'INSTRUCTIONS!','wptelegram' ),
+			'type' 		=> 'title',
+			'id'   		=> 'instructions_title',
+			'classes'	=> 'highlight',
+		) );
+
+		$cmb2->add_field( array(
+			'name'			=> '',
+			'type'			=> 'text', // fake
+			'show_names'	=> false,
+			'save_field'	=> false,
+			'id'			=> 'telegram_guide',
+			'render_row_cb'	=> array( __CLASS__, 'render_telegram_guide' ),
+		) );
 
 		$cmb2->add_field( array(
 			'name'			=> __( 'Telegram Options', 'wptelegram' ),
 			'type'			=> 'title',
 			'id'			=> 'tg_title',
-			'before_row'	=> array( $this, 'render_header' ),
-			'after'			=> array( __CLASS__, 'get_telegram_guide' ),
 		) );
 		
 		$cmb2->add_field( array(
@@ -193,15 +209,15 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 			'desc'				=> WPTG()->helpers->get_test_button_html( __( 'Test Token', 'wptelegram' ), 'bot_token' ),
 			'id'				=> 'bot_token',
 			'type'				=> 'text_medium',
-            'before_row'        => WPTG()->helpers->open_grid_row_with_col( 7 ),
-            'after_row'         => WPTG()->helpers->close_grid_col(),
+			'before_row'        => WPTG()->helpers->open_grid_row_with_col( 7 ),
+			'after_row'         => WPTG()->helpers->close_grid_col(),
 			'sanitization_cb'	=> array( $this, 'sanitize_values' ),
 			'after_field'		=> array( __CLASS__, 'render_after_field' ),
-            'attributes'        => array(
-                'required'          => 'required',
-                'data-validation'   => 'bot_token',
-            ),
-            'classes'           => 'medium-width bot_token large-font',
+			'attributes'        => array(
+				'required'          => 'required',
+				'data-validation'   => 'bot_token',
+			),
+			'classes'           => 'medium-width bot_token large-font',
 		) );
 		
 		$cmb2->add_field( array(
@@ -210,15 +226,15 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 			'id'				=> 'bot_username',
 			'after'				=> sprintf( __( 'Use %s to set automatically.', 'wptelegram' ), '<b>' . __( 'Test Token', 'wptelegram' ) . '</b>' ),
 			'type'				=> 'text_medium',
-            'before_row'        => WPTG()->helpers->add_grid_col_to_row( 5 ),
-            'after_row'         => WPTG()->helpers->close_grid_col_and_row(),
+			'before_row'        => WPTG()->helpers->add_grid_col_to_row( 5 ),
+			'after_row'         => WPTG()->helpers->close_grid_col_and_row(),
 			'sanitization_cb'	=> array( $this, 'sanitize_values' ),
 			'before_field'		=> '<code>@</code>',
 			'after_field'		=> array( __CLASS__, 'render_after_field' ),
-            'attributes'        => array(
-                'data-validation'   => 'bot_username',
-            ),
-            'classes'			=> 'readonly bot_username large-font',
+			'attributes'        => array(
+				'data-validation'   => 'bot_username',
+			),
+			'classes'			=> 'readonly bot_username large-font',
 		) );
 
 		$cmb2->add_field( array(
@@ -245,9 +261,7 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 
 		$modules = WPTelegram_Modules::get_all_modules();
 
-		foreach ( $modules as $id => $name ) {
-
-			$args = compact( 'id', 'name' );
+		foreach ( $modules as $id => $details ) {
 
 			$file_path = WPTELEGRAM_MODULES_DIR . '/' . $id . '/class-wptelegram-' . $id . '.php';
 
@@ -255,8 +269,13 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 				continue;
 			}
 
-			$args['type'] = 'switch';
-			$args['after_field'] = array( __CLASS__, 'render_after_module' );
+			$args = array(
+				'id'			=> $id,
+				'name'			=> $details['title'],
+				'desc2'			=> $details['desc'],
+				'type'			=> 'custom_switch',
+				'after_field'	=> array( __CLASS__, 'render_after_module' ),
+			);
 
 			$cmb2->add_group_field( $group_field_id, $args );
 		}
@@ -274,7 +293,7 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 				'desc'				=> __( 'Turn off to upload the files/images instead of passing the url.', 'wptelegram' ),
 				'after'				=> '<p class="description">' . __( 'Google Script proxy does not support file upload.', 'wptelegram' ) . '</p>',
 				'id'				=> 'send_files_by_url',
-				'type'				=> 'switch',
+				'type'				=> 'custom_switch',
 				'default'			=> 'on',
 				'sanitization_cb'	=> array( $this, 'sanitize_checkbox' ),
 			),
@@ -283,8 +302,8 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 				'id'                => 'enable_logs',
 				'type'              => 'multicheck',
 				'select_all_button' => false,
-	            'before_row'        => WPTG()->helpers->open_grid_row_with_col(),
-	            'after_row'         => WPTG()->helpers->close_grid_col(),
+				'before_row'        => WPTG()->helpers->open_grid_row_with_col(),
+				'after_row'         => WPTG()->helpers->close_grid_col(),
 				'options'           => array(
 					'bot_api'	=> __( 'Bot API', 'wptelegram' ),
 					'p2tg'		=> __( 'Post to Telegram', 'wptelegram' ),
@@ -294,14 +313,14 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 				'name'			=> __( 'Debug Info', 'wptelegram' ),
 				'id'			=> 'debug_info',
 				'type'			=> 'text', // fake
-	            'before_row'	=> WPTG()->helpers->add_grid_col_to_row(),
-	            'after_row'		=> WPTG()->helpers->close_grid_col_and_row(),
-	            'render_row_cb'	=> array( $this, 'render_debug_info' ),
+				'before_row'	=> WPTG()->helpers->add_grid_col_to_row(),
+				'after_row'		=> WPTG()->helpers->close_grid_col_and_row(),
+				'render_row_cb'	=> array( $this, 'render_debug_info' ),
 			),
 			array(
 				'name'				=> __( 'Remove settings on uninstall', 'wptelegram' ),
 				'id'				=> 'clean_uninstall',
-				'type'				=> 'switch',
+				'type'				=> 'custom_switch',
 				'default'			=> 'on',
 				'sanitization_cb'	=> array( $this, 'sanitize_checkbox' ),
 			),
@@ -343,7 +362,7 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 			case 'bot_token':
 				if ( empty( $value ) ) {
 					$status = 'empty';
-				} elseif ( ! preg_match( '/\A\d{9}:[\w-]{35}\Z/', $value ) ) {
+				} elseif ( ! preg_match( '/\A\d{9,11}:[\w-]{35}\Z/', $value ) ) {
 					$status = 'invalid';
 				}
 				break;
@@ -403,7 +422,7 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 				foreach ( (array) $invalid_fields as $field => $status ) {
 					$field_name = $cmb->get_field(
 						array(
-							'id' => $field,
+							'id'     => $field,
 							'cmb_id' => $cmb->prop( 'id' ),
 						)
 					)->args( 'name' );
@@ -425,22 +444,83 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 
 	/**
 	 * Render the settings page header
-	 * @param  object $field_args Current field args
-	 * @param  object $field      Current field object
 	 */
-	public function render_header( $field_args, $field ) {
+	public function render_plugin_header( $cmb_id, $object_id, $object_type, $cmb2 ) {
 
-		$title = $this->plugin_title;
-		$version = $this->version;
+		$pattern = '/^wptelegram(?:_(?:p2tg|proxy|notify))?$/';
 
-		$plugin_url = WPTELEGRAM_URL;
-		$text_domain = 'wptelegram';
+		if ( 'options-page' === $object_type && preg_match( $pattern, $object_id ) ) {
+			
+			$header = new WPTelegram_Admin_Header( WPTG() );
+			$header->render();
 
-		include_once WPTELEGRAM_DIR . '/admin/partials/wptelegram-admin-header.php';
+			if ( $desc = $cmb2->prop( 'desc' ) ) {
+				echo '<div class="cmb-row wptelegram-header-desc wptelegram-box">';
+				echo '<p>', $desc, '</p>';
+				echo '</div>';
+			}
+		}
+	}
+
+	/**
+	 * Render the settings page sidebar
+	 */
+	public function render_plugin_sidebar( $hookup ) {
+
+		$object_type = $hookup->cmb->object_type();
+		$object_id = $hookup->cmb->object_id();
+
+		$pattern = '/^wptelegram(?:_(?:p2tg|proxy|notify))?$/';
+		if ( 'options-page' !== $object_type || ! preg_match( $pattern, $object_id ) ) {
+			return;
+		}
 		?>
-		<div class="cmb-row wptelegram-header-desc">
-			<p><?php echo __( 'With this plugin, you can send posts to Telegram and receive notifications and do lot more :)', 'wptelegram' ); ?></p>
+		<div class="wptelegram-box wptelegram-column-2">
+			<div class="inner">
+				<div class="cell">
+					<h2><?php echo WPTG()->get_plugin_title(); ?></h2>
+				</div>
+				<div class="cell">
+					<p><?php _e( 'Integrate your WordPress website perfectly with Telegram.', 'wptelegram' ); ?></p>
+				</div>
+				<div class="cell">
+					<p>
+						<?php printf( __( 'Do you like %s?', 'wptelegram' ), WPTG()->get_plugin_title() ); ?>
+						<br>
+						<a href="https://wordpress.org/support/plugin/wptelegram/reviews/#new-post" target="_blank"><?php _e( 'Give it a rating', 'wptelegram' ); ?><br><span style="color:orange;font-size:1.6em;">★★★★★</span></a>
+					</p>
+				</div>
+				<div class="cell">
+					<p>
+						<?php _e( 'Need help?', 'wptelegram' ); ?>
+						<br>
+						<b><?php _e( 'Get LIVE support on Telegram', 'wptelegram' ); ?></b>
+						<br>
+						<a href="https://t.me/WPTelegramChat" class="telegram-follow-button btn" target="_blank">
+						<img src="<?php echo esc_url( WPTG()->get_url() . '/admin/icons/tg-icon.svg' ); ?>" alt="WPTelegramChat" />&nbsp;@WPTelegramChat</a>
+					</p>
+				</div>
+				<?php if ( 'wptelegram' === $object_id ) : ?>
+					<div class="cell">
+						<iframe src="https://www.youtube.com/embed/MFTQo3ObWmc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+					</div>
+				<?php endif; ?>
+
+				<?php do_action( 'wptelegram_settings_sidebar_row', $object_id, $hookup ); ?>
+
+
+				<div class="cell">
+					<h3><?php _e( 'What is NEW?', 'wptelegram' ); ?></h3>
+					<p>Conditional Logic in Message Template</p>
+					<iframe src="https://www.youtube.com/embed/rAFCY4haTiM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+				</div>
+				
+			</div>
+			<div class="footer">
+				<p><?php printf( __( 'Enjoy %s', 'wptelegram' ), WPTG()->get_plugin_title() ); ?> 🙂</p>
+			</div>
 		</div>
+		<div style="clear: both;"></div>
 		<?php
 	}
 
@@ -450,49 +530,47 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 	 * @param  object $field_args Current field args
 	 * @param  object $field      Current field object
 	 */
-	public static function get_telegram_guide( $field_args, $field ) { ?>
-		<p style="color:#f10e0e;"><b><?php echo __( 'INSTRUCTIONS!','wptelegram'); ?></b></p>
-		<ol style="list-style-type: decimal;">
-			<li><?php printf( __( 'Create a Bot by sending %s command to %s', 'wptelegram' ), '<code>/newbot</code>', '<a href="https://t.me/BotFather"  target="_blank">@BotFather</a>' );
-			?></li>
-			<li><?php printf( __( 'After completing the steps %s will provide you the Bot Token.', 'wptelegram' ), '@BotFather' ); ?></li>
-			<li><?php esc_html_e( 'Copy the token and paste into the Bot Token field below.', 'wptelegram' ); ?>&nbsp;<?php printf( __( 'For ease, use %s', 'wptelegram' ), '<a href="' . esc_url( 'https://desktop.telegram.org' ) . '" target="_blank">Telegram Desktop</a>' ); ?></li>
-		 	<li><?php esc_html_e( 'Test your bot token below.', 'wptelegram' ); ?>
-		 	</li>
-		 	<li><?php esc_html_e( 'Activate the modules you want to use.', 'wptelegram' ); ?>
-		 	</li>
-			<li><?php printf( __( 'Hit %s below', 'wptelegram' ), '<b>' . __( 'Save Changes' ) . '</b>' ); ?></li>
-		 	<li><?php esc_html_e( 'Configure the activated modules.', 'wptelegram' ); ?>
-			<li><?php esc_html_e( "That's it! :)", 'wptelegram' ); ?></li>
-		</ol>
-
+	public static function render_telegram_guide( $field_args, $field ) { ?>
+		<div class="cmb-row cmb-type-text cmb2-id-telegram_guide">
+			<ol style="list-style-type: decimal;">
+				<li><?php printf( __( 'Create a Bot by sending %s command to %s', 'wptelegram' ), '<code>/newbot</code>', '<a href="https://t.me/BotFather"  target="_blank">@BotFather</a>' );
+				?></li>
+				<li><?php printf( __( 'After completing the steps %s will provide you the Bot Token.', 'wptelegram' ), '@BotFather' ); ?></li>
+				<li><?php esc_html_e( 'Copy the token and paste into the Bot Token field below.', 'wptelegram' ); ?>&nbsp;<?php printf( __( 'For ease, use %s', 'wptelegram' ), '<a href="' . esc_url( 'https://desktop.telegram.org' ) . '" target="_blank">Telegram Desktop</a>' ); ?></li>
+			 	<li><?php esc_html_e( 'Test your bot token below.', 'wptelegram' ); ?></li>
+			 	<li><?php esc_html_e( 'Activate the modules you want to use.', 'wptelegram' ); ?></li>
+				<li><?php printf( __( 'Hit %s below', 'wptelegram' ), '<b>' . __( 'Save Changes', 'wptelegram' ) . '</b>' ); ?></li>
+			 	<li><?php esc_html_e( 'Configure the activated modules.', 'wptelegram' ); ?></li>
+				<li><?php esc_html_e( "That's it! :)", 'wptelegram' ); ?></li>
+			</ol>
+		</div>
 	 	<?php
 	}
-    
-    /**
-     * Output a the after field html
-     * 
-     * @param  object $field_args Current field args
-     * @param  object $field      Current field object
-     */
-    public static function render_after_field( $field_args, $field ) {
-        $_id = $field->_id(); ?>
+	
+	/**
+	 * Output a the after field html
+	 * 
+	 * @param  object $field_args Current field args
+	 * @param  object $field      Current field object
+	 */
+	public static function render_after_field( $field_args, $field ) {
+		$_id = $field->_id(); ?>
 
-        <?php if ( 'bot_token' == $_id ) : ?>
-            <p class="as-row">
-                <span class="hidden wptelegram-info <?php echo $_id; ?>-test"><?php esc_html_e( 'Test Result:', 'wptelegram' ); ?>&nbsp;</span>
-                <span class="hidden wptelegram-info <?php echo $_id; ?>-info"></span>
-                
-                <span class="hidden wptelegram-info error <?php echo $_id; ?>-err"><?php esc_html_e( 'Invalid Bot Token', 'wptelegram' ); ?></span>
-            </p>
+		<?php if ( 'bot_token' == $_id ) : ?>
+			<p class="as-row">
+				<span class="hidden wptelegram-info <?php echo $_id; ?>-test"><?php esc_html_e( 'Test Result:', 'wptelegram' ); ?>&nbsp;</span>
+				<span class="hidden wptelegram-info <?php echo $_id; ?>-info"></span>
+				
+				<span class="hidden wptelegram-info error <?php echo $_id; ?>-err"><?php esc_html_e( 'Invalid Bot Token', 'wptelegram' ); ?></span>
+			</p>
 
-        <?php elseif ( 'bot_username' == $_id ) : ?>
-            <p>
-                <span class="hidden wptelegram-info error <?php echo $_id; ?>-err"><?php esc_html_e( 'Invalid Bot Username', 'wptelegram' ); ?></span>
-            </p>
-        <?php endif; ?>
-        <?php
-    }
+		<?php elseif ( 'bot_username' == $_id ) : ?>
+			<p>
+				<span class="hidden wptelegram-info error <?php echo $_id; ?>-err"><?php esc_html_e( 'Invalid Bot Username', 'wptelegram' ); ?></span>
+			</p>
+		<?php endif; ?>
+		<?php
+	}
 	
 	/**
 	 * Output a the after field html
@@ -509,9 +587,16 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 
 			$settings_url = admin_url( 'admin.php?page=wptelegram_' . $id );
 
-			echo '<span class="tab"></span>';
-			printf( '<span><a href="%s">%s</a></span>', esc_url( $settings_url ), __( 'Settings', 'wptelegram' ) );
+			$atts = sprintf( 'href="%s" class="active"', esc_url( $settings_url ) );
+		} else {
+			$atts = 'class="in-active"';
 		}
+
+		echo '<span class="tab"></span>';
+		printf( '<span><a %s>%s</a></span>', $atts, __( 'Settings', 'wptelegram' ) );
+
+		echo '<span class="tab"></span>';
+		printf( '<span class="cmb2-metabox-description">%s</span>', $field->args( 'desc2' ) );
 	}
 
 	/**
@@ -547,27 +632,27 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 	 *
 	 * @since    1.0.0
 	 */
-    public function ajax_handle_test() {
+	public function ajax_handle_test() {
 
-    	check_ajax_referer( 'wptelegram', 'nonce' );
+		check_ajax_referer( 'wptelegram', 'nonce' );
 
-    	$params = WPTG()->utils->sanitize( $_POST );
+		$params = WPTG()->utils->sanitize( $_POST );
 
-		$body = '[]';
+		$body = array();
 		$code = 200;
 
-    	if ( isset( $params['bot_token'], $params['api_method'] ) ) {
+		if ( isset( $params['bot_token'], $params['api_method'] ) ) {
 
-    		$bot_api = new WPTelegram_Bot_API( $params['bot_token'] );
+			$bot_api = new WPTelegram_Bot_API( $params['bot_token'] );
 
-    		if ( empty( $params['api_params'] ) ) {
-    			$params['api_params'] = array();
-    		}
-    		
-    		$res = call_user_func( array( $bot_api, $params['api_method'] ), $params['api_params'] );
+			if ( empty( $params['api_params'] ) ) {
+				$params['api_params'] = array();
+			}
+			
+			$res = call_user_func( array( $bot_api, $params['api_method'] ), $params['api_params'] );
 
 			if ( is_wp_error( $res ) ) {
-				
+
 				$body = WPTG()->utils->error_to_response( $res );
 				$code = $body['error_code'];
 
@@ -577,22 +662,22 @@ class WPTelegram_Admin extends WPTelegram_Core_Base {
 				$code = $res->get_response_code();
 			}
 
-    	} else {
+		} else {
 
-    		$body = array(
+			$body = array(
 				'ok'			=> false,
 				'error_code'	=> 403,
 				'description'	=> __( 'Bot Token is empty', 'wptelegram' ), // lets just be lax and only tell about bot token ;)
 			);
 			$code = $body['error_code'];
-    	}
+		}
 
-    	@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
+		@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 
-    	WPTG()->utils->set_status_header( $code );
-    	// avoid php errors if any
-    	ob_clean();
+		WPTG()->utils->set_status_header( $code );
+		// avoid php errors if any
+		ob_clean();
 		echo json_encode( $body );
 		die();
-    }
+	}
 }

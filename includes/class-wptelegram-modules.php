@@ -64,9 +64,18 @@ class WPTelegram_Modules {
 	public static function get_all_modules() {
 
 		return array(
-			'p2tg'		=> __( 'Post to Telegram', 'wptelegram' ),
-			'notify'	=> __( 'Private Notifications', 'wptelegram' ),
-			'proxy'		=> __( 'Proxy', 'wptelegram' ),
+			'p2tg'		=> array(
+				'title'	=> __( 'Post to Telegram', 'wptelegram' ),
+				'desc'	=> __( 'Send the posts automatically to a Telegram Channel or group.', 'wptelegram' ),
+			),
+			'notify'	=> array(
+				'title'	=> __( 'Private Notifications', 'wptelegram' ),
+				'desc'	=> __( 'Send your email notifications to Telegram.', 'wptelegram' ),
+			),
+			'proxy'		=> array(
+				'title'	=> __( 'Proxy', 'wptelegram' ),
+				'desc'	=> __( 'Bypass the ban on Telegram by making use of proxy.', 'wptelegram' ),
+			),
 		);
 	}
 
@@ -105,9 +114,9 @@ class WPTelegram_Modules {
 
 				if ( class_exists( $class ) ) {
 
-					$obj = new $class( $_module, $path, $all_modules[ $_module ] );
+					$module = new $class( $_module, $path, $all_modules[ $_module ]['title'] );
 
-					$obj->run();
+					$module->run();
 
 					define( strtoupper( $class ) . '_LOADED', true );
 				}

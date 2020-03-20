@@ -9,6 +9,13 @@ if ( ! class_exists( 'PW_CMB2_Field_Select2' ) ) {
 	class PW_CMB2_Field_Select2 {
 
 		/**
+		 * Whether already hooked up or not
+		 *
+		 * @since 1.0.0
+		 */
+		protected static $hooked_up = false;
+
+		/**
 		 * Current version number
 		 */
 		const VERSION = '3.0.3';
@@ -17,11 +24,20 @@ if ( ! class_exists( 'PW_CMB2_Field_Select2' ) ) {
 		 * Initialize the plugin by hooking into CMB2
 		 */
 		public function __construct() {
-			add_filter( 'cmb2_render_pw_select', array( $this, 'render_pw_select' ), 10, 5 );
-			add_filter( 'cmb2_render_pw_multiselect', array( $this, 'render_pw_multiselect' ), 10, 5 );
-			add_filter( 'cmb2_sanitize_pw_multiselect', array( $this, 'pw_multiselect_sanitize' ), 10, 4 );
-			add_filter( 'cmb2_types_esc_pw_multiselect', array( $this, 'pw_multiselect_escaped_value' ), 10, 3 );
-			add_filter( 'cmb2_repeat_table_row_types', array( $this, 'pw_multiselect_table_row_class' ), 10, 1 );
+
+			$this->hook_up();
+		}
+		
+		public function hook_up(){
+			if ( ! self::$hooked_up ) {
+				add_filter( 'cmb2_render_pw_select', array( $this, 'render_pw_select' ), 10, 5 );
+				add_filter( 'cmb2_render_pw_multiselect', array( $this, 'render_pw_multiselect' ), 10, 5 );
+				add_filter( 'cmb2_sanitize_pw_multiselect', array( $this, 'pw_multiselect_sanitize' ), 10, 4 );
+				add_filter( 'cmb2_types_esc_pw_multiselect', array( $this, 'pw_multiselect_escaped_value' ), 10, 3 );
+				add_filter( 'cmb2_repeat_table_row_types', array( $this, 'pw_multiselect_table_row_class' ), 10, 1 );
+
+				self::$hooked_up = true;
+			}
 		}
 
 		/**

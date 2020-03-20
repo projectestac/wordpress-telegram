@@ -1,22 +1,21 @@
 <?php
-
 /**
  * Handles the options access of the plugin
  *
- * @link	   https://t.me/manzoorwanijk
- * @since	  1.0.0
+ * @link https://t.me/manzoorwanijk
+ * @since 1.0.0
  *
- * @package		WPTelegram
- * @subpackage	WPTelegram/includes
+ * @package    WPTelegram
+ * @subpackage WPTelegram/includes
  */
 
 /**
  * Allows an easy access to plugin options/settings
  * which are in the form of an array
  *
- * @package		WPTelegram
- * @subpackage	WPTelegram/includes
- * @author		Manzoor Wani
+ * @package    WPTelegram
+ * @subpackage WPTelegram/includes
+ * @author     Manzoor Wani
  */
 class WPTelegram_Options implements Iterator, ArrayAccess {
 
@@ -37,14 +36,29 @@ class WPTelegram_Options implements Iterator, ArrayAccess {
 	protected $data;
 
 	/**
+	 * Whether the data should be stored as json or as serialized.
+	 *
+	 * Non UTF-8 (old) databases do not support multibyte characters
+	 * (like emojis) when using the default (serialization) method.
+	 *
+	 * @since 1.0.0
+	 * @var string Whether to store data as json.
+	 */
+	protected $store_as_json;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.0.0
-	 * 
-	 * @param	string	$option_key
+	 *
+	 * @param string $option_key    The option key name.
+	 * @param string $store_as_json Whether to store data as json.
 	 */
-	public function __construct( $option_key = '' ) {
-		// make sure we have an array to avoid adding values to null
+	public function __construct( $option_key = '', $store_as_json = false ) {
+
+		$this->store_as_json = $store_as_json;
+
+		// Make sure we have an array to avoid adding values to null.
 		$this->data = array();
 
 		if ( ! empty( $option_key ) ) {
@@ -53,11 +67,11 @@ class WPTelegram_Options implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Checks if an option key exists
+	 * Checks if an option key exists.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $key Option key
+	 * @param string $key Option key.
 	 *
 	 * @return bool Whether the option key exists.
 	 */
@@ -66,14 +80,14 @@ class WPTelegram_Options implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Retrieves an option by key
+	 * Retrieves an option by key.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  string $key	 Options array key
-	 * @param  mixed  $default Optional default value
+	 * @param string $key     Options array key.
+	 * @param mixed  $default Optional default value.
 	 *
-	 * @return mixed		   Option value
+	 * @return mixed Option value
 	 */
 	public function get( $key = '', $default = false ) {
 		if ( 'all' === $key || empty( $key ) ) {
@@ -86,36 +100,37 @@ class WPTelegram_Options implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Sets an option by key
+	 * Sets an option by key.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  string $key	 Options array key
-	 * @param  mixed  $value Option value
+	 * @param string $key   Options array key.
+	 * @param mixed  $value Option value.
 	 *
-	 * @return mixed		   Option value
+	 * @return mixed Option value
 	 */
 	public function set( $key, $value = '' ) {
 
-		if ( empty( $this->option_key ) ) {
-			return false;
+		if ( ! empty( $this->option_key ) ) {
+
+			$this->data[ $key ] = apply_filters( strtolower( __CLASS__ ) . "_{$this->option_key}_set_{$key}", $value );
+
+			return $this->update_data();
 		}
 
-		$this->data[ $key ] = apply_filters( strtolower( __CLASS__ ) . "_{$this->option_key}_set_{$key}", $value );
+		$this->data[ $key ] = $value;
 
-		return $this->update_data();
+		return $this;
 	}
 
 	/**
-	 * Unset/remove an option by key
+	 * Remove an option by key.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  string $key	Options array key
-	 *
-	 * @return mixed		Option value
+	 * @param string $key Options array key.
 	 */
-	public function _unset( $key ) {
+	public function remove( $key ) {
 
 		unset( $this->data[ $offset ] );
 
@@ -132,22 +147,23 @@ class WPTelegram_Options implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Set the option key
+	 * Set the option key.
 	 *
 	 * @since 1.0.0
-	 * 
-	 * @param string	$option_key Option name in the database
+	 *
+	 * @param string $option_key Option name in the database.
 	 */
 	public function set_option_key( $option_key ) {
 		$this->option_key = $option_key;
 		$this->set_data();
+
+		return $this;
 	}
 
 	/**
 	 * Gets all options.
 	 *
 	 * @since 1.0.0
-	 *
 	 */
 	public function get_data() {
 		return (array) $this->get();
@@ -158,36 +174,56 @@ class WPTelegram_Options implements Iterator, ArrayAccess {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param array   $options The options array.
+	 * @param boolean $unslash Whether to unslash the data.
 	 */
-	public function set_data( array $options = array() ) {
+	public function set_data( array $options = array(), $unslash = false ) {
 		if ( empty( $options ) && ! empty( $this->option_key ) ) {
-			$this->data = get_option( $this->option_key, array() );
+
+			$default = $this->store_as_json ? '' : array();
+
+			$data = get_option( $this->option_key, $default );
+
+			if ( $this->store_as_json ) {
+				$data = wp_unslash( json_decode( $data, true ) );
+			}
+
+			$this->data = (array) $data;
 		} else {
+			if ( $unslash ) {
+				$options = wp_unslash( $options );
+			}
 			$this->data = (array) $options;
 		}
+
+		return $this;
 	}
 
 	/**
-	 * Updates the options in the database
+	 * Updates the options in the database.
 	 *
 	 * @since 1.0.0
 	 */
 	public function update_data() {
 
-		// make sure we have something to work upon
+		// Make sure we have something to work upon.
 		if ( ! empty( $this->option_key ) ) {
+			$data = $this->get_data();
+			if ( $this->store_as_json ) {
+				$data = json_encode( wp_unslash( $data ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			}
 
-			return update_option( $this->option_key, $this->get_data() );
+			return update_option( $this->option_key, $data );
 		}
 		return false;
 	}
 
 	/**
-	 * Magic method for accessing options as object props
+	 * Magic method for accessing options as object props.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $key Options array key
+	 * @param string $key Options array key.
 	 *
 	 * @return mixed Value of the option
 	 */
@@ -196,34 +232,34 @@ class WPTelegram_Options implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Magic method for setting options as object props
+	 * Magic method for setting options as object props.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $key	Options array key
-	 * @param string $value	Option value
+	 * @param string $key   Options array key.
+	 * @param string $value Option value.
 	 */
 	public function __set( $key, $value ) {
 		return $this->set( $key, $value );
 	}
 
 	/**
-	 * Magic method for un-setting options as object props
+	 * Magic method for un-setting options as object props.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $key	Options array key
+	 * @param string $key Options array key.
 	 */
 	public function __unset( $key ) {
 		return $this->_unset( $key );
 	}
 
 	/**
-	 * Magic method to check for existence of a key
+	 * Magic method to check for existence of a key.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $key	Options array key
+	 * @param string $key Options array key.
 	 */
 	public function __isset( $key ) {
 		return $this->exists( $key );
@@ -231,13 +267,13 @@ class WPTelegram_Options implements Iterator, ArrayAccess {
 
 	/**
 	 * Allows the object being called as a function
-	 * to retrieve an option
+	 * to retrieve an option.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  string $key	 Options array key
+	 * @param string $key Options array key.
 	 *
-	 * @return mixed		 Option value
+	 * @return mixed Option value.
 	 */
 	public function __invoke( $key ) {
 		return $this->get( $key );
@@ -248,12 +284,12 @@ class WPTelegram_Options implements Iterator, ArrayAccess {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return string		   json encoded
+	 * @return string json encoded.
 	 */
 	public function __toString() {
-		return json_encode( $this->get_data() );
+		return json_encode( $this->get_data() ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 	}
- 
+
 	/**
 	 * Determines whether an offset value exists.
 	 *
