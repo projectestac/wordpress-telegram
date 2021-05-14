@@ -1,3 +1,25 @@
 #adminmenu #toplevel_page_wptelegram div.wp-menu-image::before{content:' ';background-image:url('../icons/icon-36x34.png');background-repeat:no-repeat;background-position:0 0;width:36px;height:36px;padding:0 !important;transition:none}
 #adminmenu #toplevel_page_wptelegram:not(.current):hover div.wp-menu-image::before{background-position:0 -68px}
 #adminmenu #toplevel_page_wptelegram.current div.wp-menu-image::before{background-position:0 -34px}
+
+/*
+XTEC ************ AFEGIT - Hidden options
+2021.05.13 @aginard
+*/
+.css-gwj5nq, /* Big side block */
+.css-iidis7, /* Text "Want an absolute integration with Telegram?" */
+.css-7sm1e7, /* Text "Want to add more bots?" */
+.chakra-tabs__tablist :nth-child(4), /* Tab "Proxy" */
+.chakra-tabs__tab-panels :nth-child(5) > :nth-child(1), /* Information text in tab "Advanded Settings" */
+.chakra-tabs__tab-panels :nth-child(5) > :nth-child(3), /* Tag <hr> in tab "Advanded Settings" */
+.chakra-tabs__tab-panels :nth-child(5) > :nth-child(4), /* Option advanded.enable_logs in tab "Advanded Settings" */
+.chakra-tabs__tab-panels :nth-child(5) > :nth-child(5), /* Tag <hr> in tab "Advanded Settings" */
+.chakra-tabs__tab-panels :nth-child(5) > :nth-child(6), /* Option debugging info in tab "Advanded Settings" */
+.chakra-tabs__tab-panels :nth-child(5) > :nth-child(7), /* Tag <hr> in tab "Advanded Settings" */
+.chakra-tabs__tab-panels :nth-child(5) > :nth-child(8)  /* Option advanced.clean_uninstall in tab "Advanded Settings" */
+{
+    display: none;
+}
+/*
+************ FI
+*/
