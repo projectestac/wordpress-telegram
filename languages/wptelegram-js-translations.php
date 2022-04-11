@@ -22,7 +22,7 @@ $generated_i18n_strings = array(
 
 	// Reference: domains/wptelegram/core/main/src/services/fields.ts:29
 	// Reference: domains/wptelegram/shared/core-pro/src/components/proxy/Proxy.tsx:46
-	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:35
+	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:36
 	__( 'Proxy Method', 'wptelegram' ),
 
 	// Reference: domains/wptelegram/core/main/src/services/fields.ts:30
@@ -104,7 +104,7 @@ $generated_i18n_strings = array(
 	__( 'Hit %s below.', 'wptelegram' ),
 
 	// Reference: domains/wptelegram/core/main/src/ui/basics/Instructions.tsx:68
-	// Reference: domains/wptelegram/core/p2tg-gb/src/OverrideSettings.tsx:110
+	// Reference: domains/wptelegram/core/p2tg-gb/src/OverrideSettings.tsx:119
 	// Reference: domains/wptelegram/shared/core-pro/src/components/P2TGInstructions.tsx:59
 	// Reference: packages/components/src/Submit/SubmitButton.tsx:15
 	__( 'Save Changes', 'wptelegram' ),
@@ -150,7 +150,7 @@ $generated_i18n_strings = array(
 	// Reference: domains/wptelegram/core/main/src/ui/p2tg/MessageSettings.tsx:21
 	__( 'Message Settings', 'wptelegram' ),
 
-	// Reference: domains/wptelegram/core/main/src/ui/p2tg/Miscellaneous.tsx:15
+	// Reference: domains/wptelegram/core/main/src/ui/p2tg/Miscellaneous.tsx:20
 	__( 'Miscellaneous', 'wptelegram' ),
 
 	// Reference: domains/wptelegram/core/main/src/ui/p2tg/P2TG.tsx:21
@@ -222,7 +222,15 @@ $generated_i18n_strings = array(
 	// Reference: domains/wptelegram/core/p2tg-gb/src/Files.tsx:46
 	__( 'Files', 'wptelegram' ),
 
-	// Reference: domains/wptelegram/core/p2tg-gb/src/OverrideSettings.tsx:102
+	// Reference: domains/wptelegram/core/p2tg-gb/src/OverrideSettings.tsx:103
+	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:41
+	__( 'Featured Image', 'wptelegram' ),
+
+	// Reference: domains/wptelegram/core/p2tg-gb/src/OverrideSettings.tsx:106
+	// Reference: domains/wptelegram/shared/core-pro/src/components/ImageSettings.tsx:35
+	__( 'Send Featured Image (if exists).', 'wptelegram' ),
+
+	// Reference: domains/wptelegram/core/p2tg-gb/src/OverrideSettings.tsx:111
 	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:29
 	__( 'Message Template', 'wptelegram' ),
 
@@ -286,8 +294,14 @@ $generated_i18n_strings = array(
 	// Reference: domains/wptelegram/shared/core-pro/src/components/SingleMessage.tsx:47
 	__( 'After the Text', 'wptelegram' ),
 
-	// Reference: domains/wptelegram/shared/core-pro/src/components/ImageSettings.tsx:35
-	__( 'Send Featured Image (if exists).', 'wptelegram' ),
+	// Reference: domains/wptelegram/shared/core-pro/src/components/KeyboardButton.tsx:67
+	__( 'Edit button', 'wptelegram' ),
+
+	// Reference: domains/wptelegram/shared/core-pro/src/components/KeyboardButton.tsx:74
+	__( 'Copy button', 'wptelegram' ),
+
+	// Reference: domains/wptelegram/shared/core-pro/src/components/KeyboardButton.tsx:81
+	__( 'Delete button', 'wptelegram' ),
 
 	// Reference: domains/wptelegram/shared/core-pro/src/components/MessageTemplate.tsx:16
 	__( 'Structure of the message to be sent.', 'wptelegram' ),
@@ -369,8 +383,12 @@ $generated_i18n_strings = array(
 	__( 'HTML style', 'wptelegram' ),
 
 	// Reference: domains/wptelegram/shared/core-pro/src/components/ParseModeField.tsx:48
+	// Reference: domains/wptelegram/shared/core-pro/src/components/ProtectContent.tsx:19
 	// Reference: domains/wptelegram/shared/core-pro/src/components/TemplateInfo.tsx:37
 	__( 'Learn more', 'wptelegram' ),
+
+	// Reference: domains/wptelegram/shared/core-pro/src/components/ProtectContent.tsx:22
+	__( 'Protects the contents of sent messages from forwarding and saving.', 'wptelegram' ),
 
 	// Reference: domains/wptelegram/shared/core-pro/src/components/SingleMessage.tsx:27
 	__( 'Send both text and image in single message.', 'wptelegram' ),
@@ -557,30 +575,30 @@ $generated_i18n_strings = array(
 	__( 'Post edit switch', 'wptelegram' ),
 
 	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:34
+	__( 'Protect content', 'wptelegram' ),
+
+	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:35
 	__( 'Proxy Host', 'wptelegram' ),
 
-	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:36
+	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:37
 	__( 'Password', 'wptelegram' ),
 
-	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:37
+	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:38
 	__( 'Proxy Port', 'wptelegram' ),
 
-	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:38
+	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:39
 	__( 'Proxy Type', 'wptelegram' ),
 
-	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:39
+	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:40
 	__( 'Username', 'wptelegram' ),
 
-	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:40
-	__( 'Featured Image', 'wptelegram' ),
-
-	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:41
+	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:42
 	__( 'Send files by URL', 'wptelegram' ),
 
-	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:42
+	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:43
 	__( 'Single message', 'wptelegram' ),
 
-	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:43
+	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:44
 	__( 'Notifications to Users', 'wptelegram' ),
 
 	// Reference: domains/wptelegram/shared/core-pro/src/services/fields.ts:9

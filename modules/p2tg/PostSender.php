@@ -17,13 +17,14 @@ use WPTelegram\Core\includes\Utils as MainUtils;
 use WPTelegram\BotAPI\API;
 use WPTelegram\BotAPI\Response;
 use WP_Post;
+use WPTelegram\BotAPI\Client;
 
 /**
  * The Post Handling functionality of the plugin.
  *
  * @package     WPTelegram
  * @subpackage  WPTelegram\Core\modules\p2tg
- * @author      Manzoor Wani <@manzoorwanijk>
+ * @author      WP Socio
  */
 class PostSender extends BaseClass {
 
@@ -205,9 +206,15 @@ class PostSender extends BaseClass {
 					$this->form_data['delay'] = MainUtils::sanitize( $_POST[ Main::PREFIX . 'delay' ], true ); // phpcs:ignore
 				}
 
-				// if notifications to be disabled.
+				// if notifications are to be disabled.
 				if ( isset( $_POST[ Main::PREFIX . 'disable_notification' ] ) ) { // phpcs:ignore
 					$this->form_data['disable_notification'] = true;
+				}
+
+				// if send featured image.
+				if ( isset( $_POST[ Main::PREFIX . 'send_featured_image' ] ) ) { // phpcs:ignore
+					$send_featured_image = MainUtils::sanitize( $_POST[ Main::PREFIX . 'send_featured_image' ] ); // phpcs:ignore
+					$this->form_data['send_featured_image'] = 'on' === $send_featured_image;
 				}
 			}
 		}
@@ -236,9 +243,10 @@ class PostSender extends BaseClass {
 			'inline_button_url'        => '',
 			'inline_url_button'        => false,
 			'message_template'         => '',
-			'parse_mode'               => null,
+			'parse_mode'               => '',
 			'plugin_posts'             => false,
 			'post_types'               => $array,
+			'protect_content'          => false,
 			'rules'                    => $array,
 			'send_featured_image'      => true,
 			'send_when'                => $array,
@@ -890,6 +898,11 @@ class PostSender extends BaseClass {
 				$options['delay'] = $this->form_data['delay'];
 			}
 
+			// if send_featured_image overridden.
+			if ( isset( $this->form_data['send_featured_image'] ) ) {
+				$options['send_featured_image'] = $this->form_data['send_featured_image'];
+			}
+
 			// if notifications to be disabled.
 			$options['disable_notification'] = ! empty( $this->form_data['disable_notification'] );
 		}
@@ -1065,15 +1078,18 @@ class PostSender extends BaseClass {
 
 		$disable_web_page_preview = $this->options->get( 'disable_web_page_preview' );
 		$disable_notification     = $this->options->get( 'disable_notification' );
+		$protect_content          = $this->options->get( 'protect_content' );
 
 		$method_params = [
 			'sendPhoto'   => compact(
 				'parse_mode',
-				'disable_notification'
+				'disable_notification',
+				'protect_content'
 			),
 			'sendMessage' => compact(
 				'parse_mode',
 				'disable_notification',
+				'protect_content',
 				'disable_web_page_preview'
 			),
 		];
@@ -1095,7 +1111,7 @@ class PostSender extends BaseClass {
 					preg_match( '/.{1,1024}(?=\s|$)/us', $text, $match );
 					$caption = $match[0];
 
-				} elseif ( 'after' === $image_position && null !== $parse_mode ) {
+				} elseif ( 'after' === $image_position && '' !== $parse_mode ) {
 
 					$text = $this->add_hidden_image_url( $text, $image_source, $parse_mode );
 
@@ -1341,6 +1357,7 @@ class PostSender extends BaseClass {
 		$macro_keys = [
 			'ID',
 			'post_title',
+			'post_slug',
 			'post_date',
 			'post_date_gmt',
 			'post_author',
@@ -1625,7 +1642,11 @@ class PostSender extends BaseClass {
 	 */
 	public function modify_http_api_curl( &$handle, $r, $url ) {
 
-		$to_telegram   = ( 0 === strpos( $url, 'https://api.telegram.org/bot' ) );
+		$telegram_api_client = new Client();
+
+		// If it's a request to Telegram API base URL.
+		$to_telegram = 0 === strpos( $url, $telegram_api_client->get_base_url() );
+
 		$by_wptelegram = ! empty( $r['headers']['wptelegram_bot'] );
 		// if the request is sent to Telegram by WP Telegram.
 		if ( $to_telegram && $by_wptelegram ) {

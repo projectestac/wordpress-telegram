@@ -1,11 +1,11 @@
 === WP Telegram (Auto Post and Notifications) ===
-Contributors: manzoorwanijk
-Donate link: https://paypal.me/manzoorwanijk
+Contributors: wpsocio, irshadahmad21
+Donate link: https://wpsocio.com
 Tags: telegram, notifications, posts, channel, group
-Requires at least: 5.3
-Tested up to: 5.7.2
+Requires at least: 5.7
+Tested up to: 5.9.2
 Requires PHP: 7.0
-Stable tag: 3.1.0
+Stable tag: 3.1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,7 +91,7 @@ https://www.youtube.com/watch?v=gVJCtwkorMA
 *	Twitter [@WPTelegram](https://twitter.com/WPTelegram)
 
 **Contribution**
-Development occurs on [Github](https://github.com/manzoorwanijk/wptelegram), and all contributions welcome.
+Development occurs on [Github](https://github.com/wpsocio/wptelegram), and all contributions welcome.
 
 **Translations**
 
@@ -204,6 +204,33 @@ Yes, all you need to do is to setup **Private Notifications** module and use the
 13. Post Edit Page (Block Editor)
 
 == Changelog ==
+
+= 3.1.8 =
+- Fixed PHP error on plugin update
+- Fixed Post to Telegram rule search bug
+
+= 3.1.7 =
+- Added "Protect content" option to Post to Telegram.
+
+= 3.1.6 =
+- Misc bug fixes
+- Fixed some typos
+
+= 3.1.5 =
+- Added override option for Send Featured Image.
+
+= 3.1.4 =
+- Fixed posts not sent when Formatting is None
+
+= 3.1.3 =
+- Added `{post_slug}` macro
+
+= 3.1.2 =
+- Fixed admin page not shown just after upgrade
+- Fixed multiple empty lines in post content and excerpt
+
+= 3.1.1 =
+- Fixed file upload for CloudFlare proxy
 
 = 3.1.0 =
 - Added CloudFlare Proxy support 🚀

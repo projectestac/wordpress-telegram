@@ -2,7 +2,7 @@
 /**
  * Plugin settings endpoint for WordPress REST API.
  *
- * @link       https://manzoorwani.dev
+ * @link       https://wpsocio.com
  * @since      1.7.0
  *
  * @package    WPTelegram\Core
@@ -23,7 +23,7 @@ use WP_REST_Server;
  *
  * @package    WPTelegram\Core
  * @subpackage WPTelegram\Core\includes
- * @author     Manzoor Wani <@manzoorwanijk>
+ * @author     WP Socio
  */
 class SettingsController extends RESTController {
 
@@ -138,6 +138,7 @@ class SettingsController extends RESTController {
 				'post_edit_switch'         => true,
 				'delay'                    => $is_wp_cron_disabled ? 0 : 0.5,
 				'disable_notification'     => false,
+				'protect_content'          => false,
 			],
 			'notify'       => [
 				'active'             => false,
@@ -345,6 +346,9 @@ class SettingsController extends RESTController {
 						'minimum' => 0,
 					],
 					'disable_notification'     => [
+						'type' => 'boolean',
+					],
+					'protect_content'          => [
 						'type' => 'boolean',
 					],
 				],

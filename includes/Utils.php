@@ -2,7 +2,7 @@
 /**
  * WPTelegram Utilities
  *
- * @link       https://manzoorwani.dev
+ * @link       https://wpsocio.com
  * @since     1.0.0
  *
  * @package WPTelegram
@@ -18,7 +18,7 @@ use WP_Error;
 /**
  * WPTelegram Utilities
  *
- * @link       https://manzoorwani.dev
+ * @link       https://wpsocio.com
  * @since     1.0.0
  *
  * @package WPTelegram
@@ -78,7 +78,7 @@ class Utils {
 
 		} elseif ( is_string( $input ) && preg_match( '/^(?:true|false)$/i', $input ) ) {
 
-			return ( 'true' === strtolower( $input ) ) ? true : false;
+			return 'true' === strtolower( $input );
 		}
 
 		return $input;
@@ -93,7 +93,7 @@ class Utils {
 	 *
 	 * @since    3.0.3
 	 */
-	public static function fitler_rest_errors( $response, $handler, $request ) {
+	public static function filter_rest_errors( $response, $handler, $request ) {
 
 		$matches_route    = 0 === strpos( ltrim( $request->get_route(), '/' ), RESTController::REST_NAMESPACE );
 		$is_invalid_param = is_wp_error( $response ) && 'rest_invalid_param' === $response->get_error_code();
@@ -245,9 +245,6 @@ class Utils {
 			$text    = preg_replace( $pattern, '${1}', $text ) . $more;
 		}
 
-		// remove multiple newlines.
-		$text = preg_replace( '/\n[\n\r\s]*\n[\n\r\s]*\n/u', "\n\n", $text );
-
 		return apply_filters( 'wptelegram_utils_trim_words', $text, $num_words, $more, $original_text );
 	}
 
@@ -324,7 +321,7 @@ class Utils {
 	 *
 	 * @param string $parse_mode Parse mode.
 	 *
-	 * @return string|NULL
+	 * @return string
 	 */
 	public static function valid_parse_mode( $parse_mode ) {
 
@@ -334,7 +331,7 @@ class Utils {
 			case 'HTML':
 				break;
 			default:
-				$parse_mode = null;
+				$parse_mode = '';
 				break;
 		}
 		return $parse_mode;

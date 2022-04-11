@@ -5,7 +5,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://manzoorwani.dev
+ * @link       https://wpsocio.com
  * @since      1.0.0
  *
  * @package    WPTelegram
@@ -28,7 +28,7 @@ use WPTelegram\Core\admin\Admin;
  * @since      1.0.0
  * @package    WPTelegram
  * @subpackage WPTelegram\Core\includes
- * @author     Manzoor Wani <@manzoorwanijk>
+ * @author     WP Socio
  */
 final class Main {
 
@@ -285,9 +285,11 @@ final class Main {
 
 		add_action( 'rest_api_init', [ $plugin_admin, 'register_rest_routes' ] );
 
-		add_filter( 'rest_request_before_callbacks', [ Utils::class, 'fitler_rest_errors' ], 10, 3 );
+		add_filter( 'rest_request_before_callbacks', [ Utils::class, 'filter_rest_errors' ], 10, 3 );
 
 		add_filter( 'plugin_action_links_' . WPTELEGRAM_BASENAME, [ $plugin_admin, 'plugin_action_links' ] );
+
+		add_filter( 'upgrader_process_complete', [ $plugin_admin, 'fire_plugin_version_upgrade' ], 10, 2 );
 
 		add_action( 'init', [ $plugin_admin, 'initiate_logger' ] );
 

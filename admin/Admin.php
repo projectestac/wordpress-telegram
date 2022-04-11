@@ -2,7 +2,7 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://manzoorwani.dev
+ * @link       https://wpsocio.com
  * @since      1.0.0
  *
  * @package    WPTelegram
@@ -23,7 +23,7 @@ use WPTelegram\Core\includes\Logger;
  *
  * @package    WPTelegram\Core
  * @subpackage WPTelegram\Core\admin
- * @author     Manzoor Wani
+ * @author     WP Socio
  */
 class Admin extends BaseClass {
 
@@ -83,6 +83,33 @@ class Admin extends BaseClass {
 		array_unshift( $links, $settings_link );
 
 		return $links;
+	}
+
+	/**
+	 * Fires up plugin version upgrade by sending a non-blocking request to home page
+	 * immediately after the plugin is upgraded to a new version.
+	 *
+	 * @since  3.1.2
+	 *
+	 * @param mixed $upgrader WP Upgrader instance.
+	 * @param array $args     Array of bulk item update data.
+	 */
+	public function fire_plugin_version_upgrade( $upgrader, $args ) {
+		if ( 'update' === $args['action'] && 'plugin' === $args['type'] && ! empty( $args['plugins'] ) ) {
+			foreach ( $args['plugins'] as $basename ) {
+				if ( WPTELEGRAM_BASENAME === $basename ) {
+					wp_remote_get(
+						site_url(),
+						[
+							'timeout'   => 0.01,
+							'blocking'  => false,
+							'sslverify' => false,
+						]
+					);
+					break;
+				}
+			}
+		}
 	}
 
 	/**
