@@ -14,6 +14,8 @@
 
 namespace WPTelegram\Core\includes;
 
+use WPSocio\WPUtils\ViteWPReactAssets as Assets;
+use WPSocio\WPUtils\Options;
 use WPTelegram\Core\admin\Admin;
 
 /**
@@ -152,6 +154,7 @@ final class Main {
 		if ( self::$initiated ) {
 			return;
 		}
+		self::$initiated = true;
 
 		$plugin_upgrade = Upgrade::instance();
 
@@ -163,7 +166,18 @@ final class Main {
 		add_action( 'plugins_loaded', [ $this, 'hookup' ], 20 );
 		add_action( 'plugins_loaded', [ $modules, 'load' ], 20 );
 
-		self::$initiated = true;
+		do_action( 'wptelegram_loaded' );
+	}
+
+	/**
+	 * Whether an upgrade is going on.
+	 *
+	 * @since 4.0.19
+	 *
+	 * @return bool
+	 */
+	public function doing_upgrade() {
+		return defined( 'WPTELEGRAM_DOING_UPGRADE' ) && WPTELEGRAM_DOING_UPGRADE;
 	}
 
 	/**
@@ -173,8 +187,13 @@ final class Main {
 	 * @access   public
 	 */
 	public function hookup() {
-		// If an upgrade is going on.
-		if ( defined( 'WPTELEGRAM_DOING_UPGRADE' ) && WPTELEGRAM_DOING_UPGRADE ) {
+
+		$plugin_admin = Admin::instance();
+
+		// Ensure that the menu is always there.
+		add_action( 'admin_menu', [ $plugin_admin, 'add_plugin_admin_menu' ], 8 );
+
+		if ( $this->doing_upgrade() ) {
 			return;
 		}
 		$this->define_admin_hooks();
@@ -192,17 +211,6 @@ final class Main {
 		 * Helper functions
 		 */
 		require_once $this->dir( '/includes/helper-functions.php' );
-
-		/**
-		 * The class responsible for loading \WPTelegram\BotAPI library
-		 */
-		require_once $this->dir( '/includes/wptelegram-bot-api/src/index.php' );
-
-		/**
-		 * The library responsible for converting HTML to plain text
-		 */
-		require_once $this->dir( '/includes/html2text/html2text.php' );
-
 	}
 
 	/**
@@ -251,7 +259,10 @@ final class Main {
 	 * @access   private
 	 */
 	private function set_assets() {
-		$this->assets = new Assets( $this->dir( '/assets' ), $this->url( '/assets' ) );
+		$this->assets = new Assets(
+			$this->dir( '/assets/build' ),
+			$this->url( '/assets/build' )
+		);
 	}
 
 	/**
@@ -281,24 +292,23 @@ final class Main {
 
 		$plugin_admin = Admin::instance();
 
-		add_action( 'admin_menu', [ $plugin_admin, 'add_plugin_admin_menu' ], 8 );
-
 		add_action( 'rest_api_init', [ $plugin_admin, 'register_rest_routes' ] );
 
 		add_filter( 'rest_request_before_callbacks', [ Utils::class, 'filter_rest_errors' ], 10, 3 );
 
 		add_filter( 'plugin_action_links_' . WPTELEGRAM_BASENAME, [ $plugin_admin, 'plugin_action_links' ] );
 
-		add_filter( 'upgrader_process_complete', [ $plugin_admin, 'fire_plugin_version_upgrade' ], 10, 2 );
-
-		add_action( 'init', [ $plugin_admin, 'initiate_logger' ] );
+		add_action( 'after_setup_theme', [ $plugin_admin, 'initiate_logger' ] );
 
 		$asset_manager = AssetManager::instance();
 
-		add_action( 'admin_init', [ $asset_manager, 'register_assets' ] );
+		// Ensure that the assets are registered before any other hooks.
+		add_action( 'admin_init', [ $asset_manager, 'register_assets' ], 5 );
 
-		add_action( 'admin_enqueue_scripts', [ $asset_manager, 'enqueue_admin_styles' ] );
-		add_action( 'admin_enqueue_scripts', [ $asset_manager, 'enqueue_admin_scripts' ] );
+		add_action( 'admin_enqueue_scripts', [ $asset_manager, 'enqueue_admin_assets' ] );
+
+		// Load the integrations.
+		new Integrations();
 	}
 
 	/**

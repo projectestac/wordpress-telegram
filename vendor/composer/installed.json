@@ -1,0 +1,176 @@
+{
+    "packages": [
+        {
+            "name": "wpsocio/telegram-format-text",
+            "version": "dev-main",
+            "version_normalized": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../packages/php/telegram-format-text",
+                "reference": "c709a57d9a0e5f5b2db6e82c65febf063b1b8b87"
+            },
+            "require-dev": {
+                "pestphp/pest": "^1.22",
+                "wp-coding-standards/wpcs": "^3.0.1"
+            },
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "WPSocio\\TelegramFormatText\\": "src/"
+                }
+            },
+            "scripts": {
+                "lint": [
+                    "\"vendor/bin/phpcs\" --standard=../../../phpcs.xml --extensions=php ."
+                ],
+                "lint:skip-warnings": [
+                    "\"vendor/bin/phpcs\" --standard=../../../phpcs.xml --extensions=php -n ."
+                ],
+                "lint:fix": [
+                    "\"vendor/bin/phpcbf\" --standard=../../../phpcs.xml --extensions=php ."
+                ],
+                "test": [
+                    "\"vendor/bin/pest\""
+                ],
+                "release:major": [
+                    "composer run-script release -- --type=major"
+                ],
+                "release:minor": [
+                    "composer run-script release -- --type=minor"
+                ],
+                "release:patch": [
+                    "composer run-script release -- --type=patch"
+                ],
+                "release": [
+                    "@php bin/release.php"
+                ],
+                "snapshots": [
+                    "@php bin/snapshots.php"
+                ]
+            },
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "description": "HTML to Text converter/formatter for Telegram Bot API",
+            "transport-options": {
+                "relative": true
+            },
+            "install-path": "../wpsocio/telegram-format-text"
+        },
+        {
+            "name": "wpsocio/wp-utils",
+            "version": "dev-main",
+            "version_normalized": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../packages/php/wp-utils",
+                "reference": "f7768dcc7d44830a0c58b7f6e0696bdc846781b8"
+            },
+            "require-dev": {
+                "pestphp/pest": "^1.22",
+                "wp-coding-standards/wpcs": "^3.0.1"
+            },
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "WPSocio\\WPUtils\\": "src/"
+                }
+            },
+            "scripts": {
+                "lint": [
+                    "\"vendor/bin/phpcs\" --standard=../../../phpcs.xml --extensions=php ."
+                ],
+                "lint:skip-warnings": [
+                    "\"vendor/bin/phpcs\" --standard=../../../phpcs.xml --extensions=php -n ."
+                ],
+                "lint:fix": [
+                    "\"vendor/bin/phpcbf\" --standard=../../../phpcs.xml --extensions=php ."
+                ],
+                "test": [
+                    "\"vendor/bin/pest\""
+                ]
+            },
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "WP Socio"
+                }
+            ],
+            "description": "Utilities for WordPress plugins and themes",
+            "transport-options": {
+                "relative": true
+            },
+            "install-path": "../wpsocio/wp-utils"
+        },
+        {
+            "name": "wpsocio/wptelegram-bot-api",
+            "version": "dev-main",
+            "version_normalized": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../packages/php/wptelegram-bot-api",
+                "reference": "97410f5a4695b6eccea70e769a7aae2536ba42f2"
+            },
+            "require-dev": {
+                "pestphp/pest": "^1.22",
+                "wp-coding-standards/wpcs": "^3.0.1",
+                "z4kn4fein/php-semver": "^2.0"
+            },
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "WPTelegram\\BotAPI\\": "src/"
+                },
+                "files": [
+                    "init.php"
+                ]
+            },
+            "scripts": {
+                "lint": [
+                    "\"vendor/bin/phpcs\" --standard=../../../phpcs.xml --extensions=php ."
+                ],
+                "lint:skip-warnings": [
+                    "\"vendor/bin/phpcs\" --standard=../../../phpcs.xml --extensions=php -n ."
+                ],
+                "lint:fix": [
+                    "\"vendor/bin/phpcbf\" --standard=../../../phpcs.xml --extensions=php ."
+                ],
+                "test": [
+                    "composer --version"
+                ],
+                "release:major": [
+                    "composer run-script release -- --type=major"
+                ],
+                "release:minor": [
+                    "composer run-script release -- --type=minor"
+                ],
+                "release:patch": [
+                    "composer run-script release -- --type=patch"
+                ],
+                "release": [
+                    "@php bin/release.php"
+                ]
+            },
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "WP Socio"
+                }
+            ],
+            "description": "Telegram Bot API library for WordPress.",
+            "transport-options": {
+                "relative": true
+            },
+            "install-path": "../wpsocio/wptelegram-bot-api"
+        }
+    ],
+    "dev": false,
+    "dev-package-names": []
+}

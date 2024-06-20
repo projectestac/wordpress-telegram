@@ -12,6 +12,9 @@
 namespace WPTelegram\Core\includes;
 
 use WPTelegram\Core\includes\restApi\RESTController;
+use WPSocio\TelegramFormatText\HtmlConverter;
+use WPSocio\TelegramFormatText\Converter\Utils as FormatTextUtils;
+use WPSocio\TelegramFormatText\Exceptions\ConverterException;
 use WP_REST_Request;
 use WP_Error;
 
@@ -24,65 +27,57 @@ use WP_Error;
  * @package WPTelegram
  * @subpackage WPTelegram\Core\includes
  */
-class Utils {
+class Utils extends \WPSocio\WPUtils\Helpers {
 
 	/**
-	 * Sanitize the input.
+	 * HTML tags allowed in Telegram messages.
 	 *
-	 * @param  mixed $input  The input.
-	 * @param  bool  $typefy Whether to convert strings to the appropriate data type.
-	 * @since  1.0.0
-	 *
-	 * @return mixed
+	 * @var string Tags.
+	 * @since 4.0.0
 	 */
-	public static function sanitize( $input, $typefy = false ) {
-
-		if ( is_array( $input ) ) {
-
-			foreach ( $input as $key => $value ) {
-
-				$input[ sanitize_text_field( $key ) ] = self::sanitize( $value, $typefy );
-			}
-			return $input;
-		}
-
-		// These are safe types.
-		if ( is_bool( $input ) || is_int( $input ) || is_float( $input ) ) {
-			return $input;
-		}
-
-		// Now we will treat it as string.
-		$input = sanitize_text_field( $input );
-
-		// avoid numeric or boolean values as strings.
-		if ( $typefy ) {
-			return self::typefy( $input );
-		}
-
-		return $input;
-	}
+	const SUPPORTED_HTML_TAGS = [
+		// Link.
+		'a'          => [
+			'href' => true,
+		],
+		// bold.
+		'b'          => [],
+		'strong'     => [],
+		// blockquote.
+		'blockquote' => [
+			'cite' => true,
+		],
+		// italic.
+		'em'         => [],
+		'i'          => [],
+		// code.
+		'pre'        => [],
+		'code'       => [
+			'class' => true,
+		],
+		// underline.
+		'u'          => [],
+		'ins'        => [],
+	];
 
 	/**
-	 * Convert the input into the proper data type
+	 * Pattern to match the smart excerpt tag.
 	 *
-	 * @param  mixed $input The input.
-	 * @since  1.0.0
+	 * @var string Pattern.
 	 *
-	 * @return mixed
+	 * @since 4.0.4
 	 */
-	public static function typefy( $input ) {
+	const EXCERPT_PATTERN = '/<excerpt>(.*?)<\/excerpt>/ius';
 
-		if ( is_numeric( $input ) ) {
+	/**
+	 * The maximum size of an image to be sent to Telegram by URL.
+	 */
+	const IMAGE_BY_URL_SIZE_LIMIT = 1024 * 1024 * 5; // 5MB.
 
-			return floatval( $input );
-
-		} elseif ( is_string( $input ) && preg_match( '/^(?:true|false)$/i', $input ) ) {
-
-			return 'true' === strtolower( $input );
-		}
-
-		return $input;
-	}
+	/**
+	 * The maximum size of an image to be sent to Telegram by file.
+	 */
+	const IMAGE_BY_FILE_SIZE_LIMIT = 1024 * 1024 * 10; // 10MB.
 
 	/**
 	 * Filter WP REST API errors.
@@ -122,133 +117,6 @@ class Utils {
 	}
 
 	/**
-	 * Sanitizes hashtag(s)
-	 *
-	 * Specifically, spaces are removed
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string|array $hashtag The string or array of strings to be sanitized.
-	 *
-	 * @return string|array The sanitized string or array of strings
-	 */
-	public static function sanitize_hashtag( $hashtag ) {
-
-		$raw_hashtag = $hashtag;
-
-		if ( is_array( $hashtag ) ) {
-			foreach ( $hashtag as &$string ) {
-				$string = self::strip_non_word_chars( $string );
-			}
-		} else {
-			$hashtag = self::strip_non_word_chars( $hashtag );
-		}
-
-		return apply_filters( 'wptelegram_utils_sanitize_hashtag', $hashtag, $raw_hashtag );
-	}
-
-	/**
-	 * Get file type from extension.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $id   The file ID.
-	 * @param string $file The file path.
-	 *
-	 * @return string
-	 */
-	public static function guess_file_type( $id, $file ) {
-
-		$filetype = get_post_mime_type( $id );
-
-		if ( empty( $filetype ) ) {
-			$filetype = wp_check_filetype( $file );
-			$filetype = $filetype['type'];
-		}
-
-		// default type.
-		$type = 'document';
-
-		if ( ! empty( $filetype ) ) {
-			$filetype = explode( '/', $filetype );
-
-			$type = reset( $filetype );
-
-			switch ( $type ) {
-				case 'video':
-				case 'audio':
-					break;
-				case 'image':
-					$type = next( $filetype ) === 'gif' ? 'animation' : 'photo';
-					break;
-				default:
-					$type = 'document';
-					break;
-			}
-		}
-
-		return apply_filters( 'wptelegram_utils_file_type', $type, $id, $file );
-	}
-
-	/**
-	 * Strips non-word characters from the string
-	 * or replaces them with underscore
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $text The target string.
-	 *
-	 * @return string
-	 */
-	public static function strip_non_word_chars( $text ) {
-		$raw_text = $text;
-		// decode all HTML entities.
-		$text = self::decode_html( $text );
-
-		// remove trailing non-word characters.
-		$text = preg_replace( '/(?:^\W+|\W+$)/u', '', $text );
-		// replace one or more continuous non-word characters by _.
-		$text = preg_replace( '/\W+/u', '_', $text );
-
-		return apply_filters( 'wptelegram_utils_strip_non_word_chars', $text, $raw_text );
-	}
-
-	/**
-	 * Trims text to a certain number of words.
-	 *
-	 * @since 2.1.0
-	 *
-	 * @param string  $text         The text to trim.
-	 * @param integer $num_words    Number of words.
-	 * @param string  $more         The end charactor to append.
-	 * @param boolean $preserve_eol Whether to preserve newlines.
-	 *
-	 * @return string|NULL
-	 */
-	public static function trim_words( $text, $num_words = 55, $more = null, $preserve_eol = false ) {
-
-		if ( ! $preserve_eol ) {
-			return wp_trim_words( $text, $num_words, $more );
-		}
-
-		if ( null === $more ) {
-			$more = '&hellip;';
-		}
-
-		$original_text = $text;
-		$text          = trim( wp_strip_all_tags( $text ) );
-		$total_words   = preg_match_all( '/[\n\r\t\s]*[^\n\r\t\s]+/', $text );
-
-		// if total words are greater than num_words.
-		if ( $total_words > $num_words ) {
-			$pattern = '/((?:[\n\r\t\s]*[^\n\r\t\s]+){1,' . $num_words . '}).*/su';
-			$text    = preg_replace( $pattern, '${1}', $text ) . $more;
-		}
-
-		return apply_filters( 'wptelegram_utils_trim_words', $text, $num_words, $more, $original_text );
-	}
-
-	/**
 	 * Handles sanitization for message template
 	 *
 	 * @since 1.0.0
@@ -260,28 +128,21 @@ class Utils {
 	 * @return mixed Sanitized value.
 	 */
 	public static function sanitize_message_template( $value, $addslashes = false, $json_encode = false ) {
+		if ( is_object( $value ) || is_array( $value ) ) {
+			return '';
+		}
+		$value = (string) $value;
+
+		$guard = new TemplateGuard();
+
+		$value = $guard->safeguard_macros( $value );
 
 		$filtered = wp_check_invalid_utf8( $value );
 
-		if ( strpos( $filtered, '<' ) !== false ) {
-			$filtered = wp_pre_kses_less_than( $filtered );
+		$filtered = trim( wp_kses( $filtered, self::SUPPORTED_HTML_TAGS ) );
 
-			$filtered = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', $filtered );
-			// This will strip extra whitespace for us.
-			$filtered = strip_tags( $filtered, '<b><strong><i><em><a><code><pre>' );
-		}
-		$filtered = trim( $filtered );
-
-		$found = false;
-		while ( preg_match( '/%[a-f0-9]{2}/i', $filtered, $match ) ) {
-			$filtered = str_replace( $match[0], '', $filtered );
-			$found    = true;
-		}
-
-		if ( $found ) {
-			// Strip out the whitespace that may now exist after removing the octets.
-			$filtered = trim( preg_replace( '/\s+/', ' ', $filtered ) );
-		}
+		// Restore the macros with the original values.
+		$filtered = $guard->restore_macros( $filtered );
 
 		if ( $json_encode ) {
 			// json_encode to avoid errors when saving multi-byte emojis into database with no multi-byte support.
@@ -297,24 +158,6 @@ class Utils {
 	}
 
 	/**
-	 * Escape the Markdown symbols
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param  string $string The string to be escaped.
-	 * @return string
-	 */
-	public static function esc_markdown( $string ) {
-
-		$markdown_search  = [ '_', '*', '[' ];
-		$markdown_replace = [ '\_', '\*', '\[' ];
-
-		$esc_string = str_replace( $markdown_search, $markdown_replace, $string );
-
-		return apply_filters( 'wptelegram_esc_markdown', $esc_string, $string );
-	}
-
-	/**
 	 * Get a valid parse mode
 	 *
 	 * @since 1.0.0
@@ -325,149 +168,7 @@ class Utils {
 	 */
 	public static function valid_parse_mode( $parse_mode ) {
 
-		switch ( $parse_mode ) {
-			case 'Markdown':
-			case 'MarkdownV2':
-			case 'HTML':
-				break;
-			default:
-				$parse_mode = '';
-				break;
-		}
-		return $parse_mode;
-	}
-
-	/**
-	 * Filter Text to make it ready for parsing.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $text       Message text.
-	 * @param string $parse_mode Parse mode.
-	 *
-	 * @return string
-	 */
-	public static function filter_text_for_parse_mode( $text, $parse_mode ) {
-
-		$unfiltered_text = $text;
-
-		if ( 'HTML' === $parse_mode ) {
-
-			$allowable_tags = [ 'em', 'strong', 'b', 'i', 'a', 'pre', 'code' ];
-
-			// remove unnecessary tags.
-			$text = strip_tags( $text, '<' . implode( '><', $allowable_tags ) . '>' );
-
-			foreach ( $allowable_tags as $tag ) {
-
-				// remove $tag if <a> is nested in it.
-				$pattern = '#(<' . $tag . '>)((.+)?<a\s+(?:[^>]*?\s+)?href=["\']?([^\'"]*)["\']?.*?>(.*?)<\/a>(.+)?)(<\/' . $tag . '>)#iu';
-
-				$text = preg_replace( $pattern, '$2', $text );
-			}
-
-			$pattern = '#(?:<\/?)(?:(?:a(?:[^<>]+?)?>)|(?:b>)|(?:strong>)|(?:i>)|(?:em>)|(?:pre>)|(?:code>))(*SKIP)(*FAIL)|[<>&]+#iu';
-
-			$text = preg_replace_callback(
-				$pattern,
-				function ( $match ) {
-
-					return htmlentities( $match[0], ENT_NOQUOTES, 'UTF-8', false );
-				},
-				$text
-			);
-
-		} else {
-
-			$text = wp_strip_all_tags( $text );
-
-			if ( 'Markdown' === $parse_mode ) {
-
-				$text = preg_replace_callback(
-					'/\*(.+?)\*/su',
-					function ( $match ) {
-						return str_replace( [ '\\[', '\\_' ], [ '[', '_' ], $match[0] );
-					},
-					$text
-				);
-			}
-		}
-		return apply_filters( 'wptelegram_filter_text_for_parse_mode', $text, $unfiltered_text, $parse_mode );
-	}
-
-	/**
-	 * Returns Jed-formatted localization data.
-	 *
-	 * @source gutenberg_get_jed_locale_data()
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param  string $domain Translation domain.
-	 *
-	 * @return array
-	 */
-	public static function get_jed_locale_data( $domain ) {
-		$translations = get_translations_for_domain( $domain );
-
-		$locale = [
-			'' => [
-				'domain' => $domain,
-				'lang'   => is_admin() ? get_user_locale() : get_locale(),
-			],
-		];
-
-		if ( ! empty( $translations->headers['Plural-Forms'] ) ) {
-			$locale['']['plural_forms'] = $translations->headers['Plural-Forms'];
-		}
-
-		foreach ( $translations->entries as $msgid => $entry ) {
-			$locale[ $msgid ] = $entry->translations;
-		}
-
-		return $locale;
-	}
-
-	/**
-	 * Create a regex from the given pattern.
-	 *
-	 * @since    3.0.0
-	 *
-	 * @param string  $pattern     The pattern to match.
-	 * @param boolean $allow_empty Whether to allow an ampty string.
-	 * @param boolean $match_full  Whether to match the complete word.
-	 * @param string  $delim       The delimiter to use.
-	 *
-	 * @return string
-	 */
-	public static function enhance_regex( $pattern, $allow_empty = false, $match_full = true, $delim = '' ) {
-		if ( $allow_empty ) {
-			$pattern = '(?:' . $pattern . ')?';
-		}
-		if ( $match_full ) {
-			$pattern = '\A' . $pattern . '\Z';
-		}
-		if ( $delim ) {
-			$pattern = $delim . $pattern . $delim;
-		}
-		return $pattern;
-	}
-
-	/**
-	 * Convert a key value array to value label options.
-	 *
-	 * @since    3.0.0
-	 *
-	 * @param array $data The values to be converted.
-	 */
-	public static function array_to_select_options( $data ) {
-
-		$options = [];
-
-		foreach ( $data as $value => $label ) {
-
-			$options[] = compact( 'value', 'label' );
-		}
-		return $options;
+		return 'HTML' === $parse_mode ? 'HTML' : '';
 	}
 
 	/**
@@ -496,39 +197,283 @@ class Utils {
 	}
 
 	/**
-	 * Whether the current screen is a post edit page.
+	 * The HTMLConverter instance
 	 *
-	 * @since 3.0.3
+	 * @param string $options The options for HtmlConverter.
+	 * @param string $id      The identifier of the converter options.
 	 *
-	 * @param string|string[] $post_type The post type to check.
-	 *
-	 * @return bool
+	 * @return HtmlConverter The HTMLConverter instance.
 	 */
-	public static function is_post_edit_page( $post_type = null ) {
+	public static function get_html_converter( $options = [], $id = 'default' ) {
 
-		global $pagenow, $typenow;
+		$defaults = [
+			'format_to'          => 'text',
+			'table_row_sep'      => "\n" . str_repeat( '-', 30 ) . "\n",
+			'throw_on_doc_error' => true,
+		];
 
-		$is_edit_page = 'post-new.php' === $pagenow || 'post.php' === $pagenow;
+		$options = wp_parse_args( $options, $defaults );
+		$options = apply_filters( 'wptelegram_html_converter_options', $options, $id );
+		$options = apply_filters( "wptelegram_{$id}_html_converter_options", $options );
 
-		if ( $is_edit_page ) {
-			if ( $post_type ) {
-				return in_array( $typenow, (array) $post_type, true );
-			}
-			return true;
-		}
-		return false;
+		$converter = new HtmlConverter( $options );
+		// Use this filter to add your own HTML converters.
+		$converter = apply_filters( 'wptelegram_html_converter', $converter, $options, $id );
+		$converter = apply_filters( "wptelegram_{$id}_html_converter", $converter, $options );
+
+		return $converter;
 	}
 
 	/**
-	 * Decode HTML entities.
+	 * Prepare the content for sending to Telegram.
 	 *
-	 * @since 3.0.9
+	 * @param string $content The content to prepare.
+	 * @param array  $options The options {
+	 *     Optional. The options to prepare the content.
 	 *
-	 * @param string $text The text to decode HTML entities in.
+	 *     @type string $elipsis      The elipsis to use. Default '…'.
+	 *     @type string $format_to    The format to convert to. Default 'text'.
+	 *     @type string $id           The identifier of the converter options. Default 'default'.
+	 *     @type int    $limit        The limit of the content. Default 55.
+	 *     @type string $limit_by     The limit type. Default 'words'.
+	 *     @type bool   $preserve_eol Whether to preserve new lines. Default true.
+	 * }
 	 *
-	 * @return string The text with HTML entities decoded.
+	 * @return string The prepared content.
 	 */
-	public static function decode_html( $text ) {
-		return html_entity_decode( $text, ENT_QUOTES, 'UTF-8' );
+	public static function prepare_content( $content, $options = [] ) {
+
+		$defaults = [
+			'elipsis'         => '…',
+			'format_to'       => 'text',
+			'id'              => 'default',
+			'limit'           => 55,
+			'limit_by'        => 'words',
+			'text_hyperlinks' => 'strip',
+			'preserve_eol'    => true,
+		];
+
+		$options = wp_parse_args( $options, $defaults );
+
+		$converter = self::get_html_converter( $options, $options['id'] );
+
+		$result = trim( strip_shortcodes( $content ) );
+
+		try {
+			$result = $converter->convert( $result );
+		} catch ( ConverterException $exception ) {
+
+			// Since there was an error, we supposedly cannot format to HTML.
+			$result = wp_strip_all_tags( HtmlConverter::prepareHtml( $result ) );
+
+			$result = FormatTextUtils::decodeHtmlEntities( HtmlConverter::cleanUp( $result ) );
+
+			// If we were supposed to format to HTML,
+			// we need to ensure that special characters are escaped.
+			if ( 'HTML' === $options['format_to'] ) {
+				$result = FormatTextUtils::htmlSpecialChars( $result );
+			}
+
+			do_action( 'wptelegram_prepare_content_error', $exception, $content, $options );
+
+			// override formatting.
+			$options['format_to'] = 'text';
+		}
+
+		// Remove new lines if not preserving them.
+		if ( ! $options['preserve_eol'] ) {
+			$result = preg_replace( '/[\n\r]+/u', ' ', $result );
+		}
+
+		// if there is limit set.
+		if ( $options['limit'] && $options['limit'] > 0 ) {
+			if ( 'HTML' === $options['format_to'] ) {
+				// We are formatting to HTML, so we will use the safe trim to avoid breaking the HTML.
+				$result = $converter->safeTrim( $result, $options['limit_by'], $options['limit'] );
+			} else {
+				$result_before_limit = $result;
+				// We are formatting to text.
+				$result = FormatTextUtils::limitTextBy( $result, $options['limit_by'], $options['limit'] );
+
+				// Add the elipsis if the text is trimmed.
+				if ( $result !== $result_before_limit ) {
+					$result = trim( $result ) . $options['elipsis'];
+				}
+			}
+		}
+
+		return apply_filters( 'wptelegram_prepare_content', $result, $content, $options );
+	}
+
+	/**
+	 * Smartly trim the content inside <excerpt></excerpt> until the whole content is less than the limit.
+	 *
+	 * @param string $content The content to trim.
+	 * @param array  $options The options. See prepare_content() for more info.
+	 *
+	 * @return string The prepared content.
+	 */
+	public static function smart_trim_excerpt( $content, $options = [] ) {
+
+		if ( ! preg_match( self::EXCERPT_PATTERN, $content, $match ) ) {
+			return self::prepare_content( $content, $options );
+		}
+
+		$placeholder = '{:excerpt:}';
+		$delimiter   = '{::excerpt::}';
+
+		$excerpt = $match[1];
+
+		/**
+		 * Add a placeholder for the excerpt.
+		 *
+		 * $content: `This is the starting content. <excerpt>This is the excerpt.</excerpt> This is the rest of the content.`.
+		 *
+		 * $result: `This is the starting content. {:excerpt:} This is the rest of the content.`
+		 */
+		$result = preg_replace( self::EXCERPT_PATTERN, $placeholder, $content );
+
+		/**
+		 * Place the excerpt at the end of the content separated by delimiter.
+		 *
+		 * $result: `This is the starting content. {:excerpt:} This is the rest of the content.{::excerpt::}This is the excerpt`
+		 */
+		$result = $result . $delimiter . $excerpt;
+
+		/**
+		 * Since the excerpt is at the end, it will be trimmed first.
+		 *
+		 * $result: `This is the starting content. {:excerpt:} This is the rest of the content.{::excerpt::}This is…`
+		 */
+		$result = self::prepare_content( $result, $options );
+
+		/**
+		 * If the delimiter is found, we will split the content to get the excerpt.
+		 *
+		 * $result: `This is the starting content. {:excerpt:} This is the rest of the content.{::excerpt::}This is…`
+		 * OR
+		 * $result: `This is the starting content. {:excerpt:} This is the rest of the…`
+		 */
+		if ( false !== strpos( $result, $delimiter ) ) {
+			/**
+			 * The first part is the trimmed content and the second part is the trimmed excerpt.
+			 *
+			 * $result: `This is the starting content. {:excerpt:} This is the rest of the content.`
+			 *
+			 * $trimmed_excerpt: `This is…`
+			 */
+			list( $result, $trimmed_excerpt) = array_pad( explode( $delimiter, $result ), 2, '' );
+
+		} else {
+			/**
+			 * Sorry, it was all nuked.
+			 *
+			 * $result: `This is the starting content. {:excerpt:} This is the rest of the…`
+			 */
+			$trimmed_excerpt = '';
+		}
+		// Escape the placeholder.
+		$placeholder = preg_quote( $placeholder, '/' );
+		// Remove the new line if the excerpt is empty.
+		$placeholder = '/' . ( $trimmed_excerpt ? $placeholder : $placeholder . '[\n\r]?' ) . '/ius';
+
+		/**
+		 * Replace the placeholder with the trimmed excerpt.
+		 *
+		 * $result: `This is the starting content. This is… This is the rest of the content.`
+		 * OR
+		 * $result: `This is the starting content. This is the rest of the…`
+		 */
+		$result = preg_replace( $placeholder, FormatTextUtils::preparePregReplacement( $trimmed_excerpt ), $result );
+
+		return apply_filters( 'wptelegram_smart_trim_excerpt', $result, $content, $options );
+	}
+
+	/**
+	 * Split content into multiple chunks in order to send to Telegram as multiple messages.
+	 *
+	 * @since 4.0.4
+	 *
+	 * @param string $content The content to split.
+	 * @param string $parse_mode The parse mode.
+	 *
+	 * @return string[] The split content.
+	 */
+	public static function split_content( $content, $parse_mode = '' ) {
+		$limit = self::get_max_text_length( 'text' );
+
+		// Remove <excerpt>...</excerpt> tags.
+		$content = preg_replace( self::EXCERPT_PATTERN, '${1}', $content );
+
+		// break text after every nth character given by the limit and preserve words.
+		preg_match_all( '/.{1,' . $limit . '}(?:\s|$)/su', $content, $matches );
+
+		$parts = $matches[0];
+
+		// If the parse mode is HTML, we need to do some extra work
+		// to make sure the HTML tags are not broken.
+		if ( 'HTML' === $parse_mode ) {
+			$parts = array_map( 'force_balance_tags', $parts );
+		}
+
+		return $parts;
+	}
+
+	/**
+	 * Get the maximum length of the text to send to Telegram.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $for     The type of the text. Can be 'text' or 'caption' Default 'text'.
+	 * @param int    $padding Safety padding to add to the limit. Default 20 characters.
+	 *
+	 * @return int The maximum length of the text to send to Telegram.
+	 */
+	public static function get_max_text_length( $for = 'text', $padding = 20 ) {
+
+		$length = 'caption' === $for ? HtmlConverter::TG_CAPTION_MAX_LENGTH : HtmlConverter::TG_TEXT_MAX_LENGTH;
+
+		// Add the safety padding.
+		$length -= abs( (int) $padding );
+
+		return (int) apply_filters( 'wptelegram_max_text_length', $length, $for, $padding );
+	}
+
+	/**
+	 * Get the attachment limited by the maximum size.
+	 *
+	 * @param int    $id The attachment ID.
+	 * @param int    $filesize The maximum file size.
+	 * @param string $return The return type. Can be 'path' or 'url'. Default null.
+	 *
+	 * @return string|false The attachment path or URL.
+	 */
+	public static function get_attachment_by_filesize( $id, $filesize, $return = null ) {
+		if ( null === $return ) {
+			$return = self::send_files_by_url() ? 'url' : 'path';
+		}
+
+		return parent::get_attachment_by_filesize( $id, $filesize, $return );
+	}
+
+	/**
+	 * Get the limit of the image size to send to Telegram.
+	 *
+	 * @return int
+	 */
+	public static function get_image_size_limit() {
+
+		return self::send_files_by_url() ? self::IMAGE_BY_URL_SIZE_LIMIT : self::IMAGE_BY_FILE_SIZE_LIMIT;
+	}
+
+	/**
+	 * Whether to send files by URL.
+	 *
+	 * @since 4.0.14
+	 */
+	public static function send_files_by_url() {
+		$send_files_by_url = WPTG()->options()->get_path( 'advanced.send_files_by_url', true );
+
+		return (bool) apply_filters( 'wptelegram_send_files_by_url', $send_files_by_url );
 	}
 }

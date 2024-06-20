@@ -13,7 +13,7 @@
 
 namespace WPTelegram\Core\modules;
 
-use WPTelegram\Core\includes\Options;
+use WPSocio\WPUtils\Options;
 
 /**
  * The module core class.

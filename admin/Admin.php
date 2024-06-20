@@ -49,7 +49,7 @@ class Admin extends BaseClass {
 			'manage_options',
 			$this->plugin->name(),
 			[ $this, 'display_plugin_admin_page' ],
-			'none',
+			'',
 			80
 		);
 	}
@@ -60,6 +60,18 @@ class Admin extends BaseClass {
 	 * @since 3.0.0
 	 */
 	public function display_plugin_admin_page() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		if ( $this->plugin()->doing_upgrade() ) {
+			return printf(
+				'<h1>%1$s %2$s</h1>',
+				esc_html__( 'Plugin data has been upgraded.', 'wptelegram' ),
+				esc_html__( 'Please reload the page.', 'wptelegram' )
+			);
+		}
+
 		?>
 			<div id="wptelegram-settings"></div>
 		<?php
@@ -77,39 +89,12 @@ class Admin extends BaseClass {
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
 			menu_page_url( $this->plugin->name(), false ),
-			esc_html( __( 'Settings', 'wptelegram' ) )
+			esc_html__( 'Settings', 'wptelegram' )
 		);
 
 		array_unshift( $links, $settings_link );
 
 		return $links;
-	}
-
-	/**
-	 * Fires up plugin version upgrade by sending a non-blocking request to home page
-	 * immediately after the plugin is upgraded to a new version.
-	 *
-	 * @since  3.1.2
-	 *
-	 * @param mixed $upgrader WP Upgrader instance.
-	 * @param array $args     Array of bulk item update data.
-	 */
-	public function fire_plugin_version_upgrade( $upgrader, $args ) {
-		if ( 'update' === $args['action'] && 'plugin' === $args['type'] && ! empty( $args['plugins'] ) ) {
-			foreach ( $args['plugins'] as $basename ) {
-				if ( WPTELEGRAM_BASENAME === $basename ) {
-					wp_remote_get(
-						site_url(),
-						[
-							'timeout'   => 0.01,
-							'blocking'  => false,
-							'sslverify' => false,
-						]
-					);
-					break;
-				}
-			}
-		}
 	}
 
 	/**

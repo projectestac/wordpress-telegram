@@ -13,10 +13,10 @@ namespace WPTelegram\Core\modules\p2tg;
 
 use WPTelegram\Core\modules\BaseClass;
 use WPTelegram\Core\includes\Utils as MainUtils;
-use WPTelegram\Core\includes\Options;
 use WPTelegram\Core\includes\AssetManager;
 use WPTelegram\Core\modules\p2tg\restApi\RulesController;
 use WP_Post;
+use WPSocio\WPUtils\Options;
 
 /**
  * The admin-specific functionality of the module.
@@ -34,7 +34,7 @@ class Admin extends BaseClass {
 	 *
 	 * @since  1.0.0
 	 * @access private
-	 * @var    array   $saved_options Options
+	 * @var    Options   $saved_options Options
 	 */
 	private static $saved_options = null;
 
@@ -57,9 +57,7 @@ class Admin extends BaseClass {
 			&& did_action( 'cmb2_init' )
 			&& ! did_action( 'enqueue_block_editor_assets' )
 		) {
-			$handle = AssetManager::ADMIN_P2TG_CLASSIC_JS_HANDLE;
-
-			wp_enqueue_script( $handle );
+			WPTG()->assets()->enqueue( AssetManager::P2TG_CLASSIC_EDITOR_ENTRY );
 		}
 	}
 
@@ -76,16 +74,13 @@ class Admin extends BaseClass {
 
 		$screens = $this->get_override_meta_box_screens();
 
-		if ( MainUtils::is_post_edit_page( $screens ) ) {
-			$handle = AssetManager::ADMIN_P2TG_GB_JS_HANDLE;
-
-			wp_enqueue_script( $handle );
-
-			// Pass data to JS.
-			$data = AssetManager::instance()->get_dom_data( 'BLOCKS' );
-
-			AssetManager::add_dom_data( $handle, $data );
+		if ( ! MainUtils::is_post_edit_page( $screens ) ) {
+			return;
 		}
+
+		WPTG()->assets()->enqueue( AssetManager::P2TG_BLOCK_EDITOR_ENTRY );
+
+		AssetManager::instance()->add_inline_script( AssetManager::P2TG_BLOCK_EDITOR_ENTRY );
 	}
 
 	/**
@@ -133,9 +128,9 @@ class Admin extends BaseClass {
 	 *
 	 * @return array
 	 */
-	public function update_dom_data( $data, $for ) {
+	public function update_inline_script_data( $data, $for ) {
 
-		if ( 'SETTINGS_PAGE' === $for ) {
+		if ( AssetManager::ADMIN_SETTINGS_ENTRY === $for ) {
 			$data['uiData'] = array_merge(
 				$data['uiData'],
 				[
@@ -145,7 +140,8 @@ class Admin extends BaseClass {
 					'is_wp_cron_disabled' => defined( 'DISABLE_WP_CRON' ) && constant( 'DISABLE_WP_CRON' ),
 				]
 			);
-		} elseif ( 'BLOCKS' === $for ) {
+		} elseif ( AssetManager::P2TG_BLOCK_EDITOR_ENTRY === $for ) {
+
 			$blocks_fields  = [
 				'channels',
 				'disable_notification',
@@ -203,7 +199,7 @@ class Admin extends BaseClass {
 			$term_macros[] = "{terms:{$taxonomy}}";
 		}
 
-		$macro_groups = [
+		$macro_groups                  = [
 			'post'  => [
 				'label'  => __( 'Post Data', 'wptelegram' ),
 				'macros' => [
@@ -232,11 +228,29 @@ class Admin extends BaseClass {
 				],
 			],
 		];
-		/* translators: 1  taxonomy, 2  {terms:taxonomy} */
-		$macro_groups['terms']['info'] = sprintf( __( 'Replace %1$s in %2$s by the name of the taxonomy to insert its terms attached to the post.', 'wptelegram' ), '<code>taxonomy</code>', '<code>{terms:taxonomy}</code>' ) . ' ' . sprintf( __( 'For example %1$s and %2$s in WooCommerce', 'wptelegram' ), '<code>{terms:product_cat}</code>', '<code>{terms:product_tag}</code>' );
+		$macro_groups['terms']['info'] = sprintf(
+			/* translators: 1  taxonomy, 2  {terms:taxonomy} */
+			__( 'Replace %1$s in %2$s by the name of the taxonomy to insert its terms attached to the post.', 'wptelegram' ),
+			'<code>taxonomy</code>',
+			'<code>{terms:taxonomy}</code>'
+		) . ' ' . sprintf(
+			/* translators: 1  code, 2  code */
+			__( 'For example %1$s and %2$s in WooCommerce', 'wptelegram' ),
+			'<code>{terms:product_cat}</code>',
+			'<code>{terms:product_tag}</code>'
+		);
 
-		/* translators: 1  custom_field, 2  {cf:custom_field} */
-		$macro_groups['cf']['info'] = sprintf( __( 'Replace %1$s in %2$s by the name of the Custom Field.', 'wptelegram' ), '<code>custom_field</code>', '<code>{cf:custom_field}</code>' ) . ' ' . sprintf( __( 'For example %1$s and %2$s in WooCommerce', 'wptelegram' ), '<code>{cf:_regular_price}</code>', '<code>{cf:_sale_price}</code>' );
+			$macro_groups['cf']['info'] = sprintf(
+			/* translators: 1  custom_field, 2  {cf:custom_field} */
+				__( 'Replace %1$s in %2$s by the name of the Custom Field.', 'wptelegram' ),
+				'<code>custom_field</code>',
+				'<code>{cf:custom_field}</code>'
+			) . ' ' . sprintf(
+				/* translators: 1  code, 2  code */
+				__( 'For example %1$s and %2$s in WooCommerce', 'wptelegram' ),
+				'<code>{cf:_regular_price}</code>',
+				'<code>{cf:_sale_price}</code>'
+			);
 
 		/**
 		 * If you add your own macro_groups using this filter
@@ -582,7 +596,9 @@ class Admin extends BaseClass {
 	 */
 	public static function send2tg_default() {
 
-		$send_when = WPTG()->options()->get_path( 'p2tg.send_when', [] );
+		$send_when     = WPTG()->options()->get_path( 'p2tg.send_when', [] );
+		$send_new      = in_array( 'new', $send_when, true );
+		$send_existing = in_array( 'existing', $send_when, true );
 
 		$default = 'yes';
 
@@ -594,23 +610,26 @@ class Admin extends BaseClass {
 			// if saved in meta e.g. for future or draft.
 			$send2tg = get_post_meta( $post_id, Main::PREFIX . 'send2tg', true );
 			$post    = get_post( $post_id );
-			if ( $send2tg ) {
+
+			if ( $send2tg && in_array( $send2tg, [ 'yes', 'no' ], true ) ) {
 
 				$default = $send2tg;
 			} elseif ( $post instanceof WP_Post ) {
 
-				// whether already sent to Telegram.
-				$sent = get_post_meta( $post_id, Main::PREFIX . 'sent2tg', true );
+				$is_new = Utils::is_post_new( $post );
 
-				if ( ! in_array( 'existing', $send_when, true ) || ! empty( $sent ) ) {
+				$is_new_and_dont_send_new           = $is_new && ! $send_new;
+				$is_existing_and_dont_send_existing = ! $is_new && ! $send_existing;
+
+				if ( $is_new_and_dont_send_new || $is_existing_and_dont_send_existing ) {
 					$default = 'no';
 				}
 			}
-		} elseif ( ! in_array( 'new', $send_when, true ) ) {
+		} elseif ( ! $send_new ) {
 			$default = 'no';
 		}
 
-		return (string) apply_filters( 'wptelegram_p2tg_send2tg_default', $default, $send_when );
+		return (string) apply_filters( 'wptelegram_p2tg_send2tg_default', $default, $send_when, $post_id );
 	}
 
 	/**

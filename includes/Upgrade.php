@@ -54,6 +54,9 @@ class Upgrade extends BaseClass {
 				'2.1.9',
 				'2.2.0',
 				'3.0.0',
+				'3.0.8',
+				'4.0.0',
+				'4.1.0',
 			];
 		}
 
@@ -80,7 +83,7 @@ class Upgrade extends BaseClass {
 	 *
 	 * @since    2.0.0
 	 *
-	 * @param string  $version        The plugin verion to upgrade to.
+	 * @param string  $version        The plugin version to upgrade to.
 	 * @param boolean $is_new_install Whether it's a fresh install of the plugin.
 	 */
 	private function upgrade_to( $version, $is_new_install ) {
@@ -353,7 +356,7 @@ class Upgrade extends BaseClass {
 			$filename = WP_CONTENT_DIR . "/wptelegram-{$type}.log";
 			$filename = apply_filters( "wptelegram_logger_{$type}_log_filename", $filename );
 			if ( file_exists( $filename ) ) {
-				unlink( $filename );
+				wp_delete_file( $filename );
 			}
 		}
 	}
@@ -580,5 +583,106 @@ class Upgrade extends BaseClass {
 
 			WPTG()->options()->set( 'advanced', $advanced );
 		}
+	}
+
+	/**
+	 * Upgrade to 4.0.0
+	 *
+	 * - Change parse_mode from Markdown to HTML.
+	 *
+	 * @since    4.0.0
+	 */
+	protected function upgrade_to_4_0_0() {
+		$sections = [ 'p2tg', 'notify' ];
+
+		$markdown_v1_to_html_map = [
+			'*'   => 'b',
+			'_'   => 'i',
+			'```' => 'pre',
+			'`'   => 'code',
+		];
+
+		foreach ( $sections as $section ) {
+			$options = WPTG()->options()->get( $section );
+
+			if ( isset( $options['parse_mode'] ) && 'Markdown' === $options['parse_mode'] ) {
+
+				$template = $options['message_template'];
+
+				// Escape the HTML chars.
+				$template = htmlspecialchars( $template, ENT_NOQUOTES, 'UTF-8' );
+
+				$macro_map = [];
+
+				if ( preg_match_all( '/\{[^\}]+?\}/iu', $template, $matches ) ) {
+
+					$total = count( $matches[0] );
+					// Replace the macros with temporary placeholders.
+					// This is to prevent the markdown chars in macros from being replaced.
+					// For example, if the macro is {post_title}, "_" will get replaced with "<i>". This is not desired.
+					for ( $i = 0; $i < $total; $i++ ) {
+						$macro_map[ "{:MACRO{$i}:}" ] = $matches[0][ $i ];
+					}
+				}
+
+				// Replace the macros with temporary placeholders.
+				$template = str_replace( array_values( $macro_map ), array_keys( $macro_map ), $template );
+
+				// Convert links to html.
+				$template = preg_replace( '/\[([^\]]+?)\]\(([^\)]+?)\)/ui', '<a href="${2}">${1}</a>', $template );
+
+				foreach ( $markdown_v1_to_html_map as $char => $tag ) {
+					if ( false === strpos( $template, $char ) ) {
+						continue;
+					}
+					$placeholder = '{:' . $tag . ':}';
+					// Replace the escaped chars  with temporary placeholders.
+					$template = str_replace( '\\' . $char, $placeholder, $template );
+
+					$regex_char = preg_quote( $char, '/' );
+
+					// Create a regex pattern to match the chars.
+					// The pattern is like: /_([^_]+?)_/ius and replaces it with <i>${1}</i>.
+					$pattern = sprintf( '/%1$s([^%1$s]+?)%1$s/ius', $regex_char );
+					// Replace the markdown v1 chars with html.
+					$replace = sprintf( '<%1$s>${1}</%1$s>', $tag );
+
+					$template = preg_replace( $pattern, $replace, $template );
+					// Replace the temporary placeholders with the chars.
+					$template = str_replace( $placeholder, $char, $template );
+				}
+
+				// Replace the macros with the original values.
+				$template = str_replace( array_keys( $macro_map ), array_values( $macro_map ), $template );
+
+				$template = stripslashes( $template );
+
+				// Update the message template.
+				$options['message_template'] = $template;
+				// Set the parse mode to HTML.
+				$options['parse_mode'] = 'HTML';
+
+				// Update the options.
+				WPTG()->options()->set( $section, $options );
+			}
+		}
+	}
+
+	/**
+	 * Upgrade to 4.1.0
+	 *
+	 * - Upgrade to link_preview_options
+	 *
+	 * @since    4.1.0
+	 */
+	protected function upgrade_to_4_1_0() {
+		$p2tg_settings = WPTG()->options()->get( 'p2tg' );
+
+		$p2tg_settings['link_preview_disabled'] = isset( $p2tg_settings['disable_web_page_preview'] ) ? boolval( $p2tg_settings['disable_web_page_preview'] ) : false;
+
+		unset( $p2tg_settings['disable_web_page_preview'] );
+
+		// Update the options.
+		WPTG()->options()->set( 'p2tg', $p2tg_settings );
 	}
 }

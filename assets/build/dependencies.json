@@ -1,0 +1,22 @@
+{
+  "js/settings/index.ts": [
+    "react",
+    "react-dom",
+    "jquery",
+    "wp-api-fetch",
+    "wp-i18n"
+  ],
+  "js/p2tg-block-editor/index.ts": [
+    "wp-plugins",
+    "wp-i18n",
+    "wp-components",
+    "wp-edit-post",
+    "wp-element",
+    "wp-editor",
+    "wp-data",
+    "wp-media-utils"
+  ],
+  "js/p2tg-classic-editor/index.ts": [
+    "jquery"
+  ]
+}

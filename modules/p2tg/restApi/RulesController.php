@@ -179,7 +179,7 @@ class RulesController extends RESTController {
 	 * Get all post authors.
 	 *
 	 * @since  3.0.0
-	 * @param string $search The serach query.
+	 * @param string $search The search query.
 	 * @param array  $include Limit the result to given IDs.
 	 * @return array
 	 */
@@ -222,8 +222,8 @@ class RulesController extends RESTController {
 		$term_list = [];
 
 		$terms = get_terms(
-			$taxonomy,
 			[
+				'taxonomy'   => $taxonomy,
 				'hide_empty' => 0,
 				'orderby'    => 'term_group',
 				'search'     => $search,
@@ -257,7 +257,7 @@ class RulesController extends RESTController {
 
 					foreach ( $terms as $parent_term ) {
 
-						$i++;
+						++$i;
 
 						if ( $parent_term->term_id === $parent_id ) {
 							$term_name = $parent_term->name . ( is_rtl() ? ' ← ' : ' → ' ) . $term_name;

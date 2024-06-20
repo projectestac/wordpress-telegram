@@ -10,7 +10,9 @@
  * Plugin Name:       WP Telegram
  * Plugin URI:        https://t.me/WPTelegram
  * Description:       Integrate your WordPress website perfectly with Telegram. Send posts automatically to Telegram when published or updated, whether to a Telegram Channel, Group or private chat, with full control. Get your email notifications on Telegram.
- * Version:           3.1.8
+ * Version:           4.1.6
+ * Requires at least: 6.4
+ * Requires PHP:      7.4
  * Author:            WP Socio
  * Author URI:        https://wpsocio.com
  * License:           GPL-2.0+
@@ -24,9 +26,11 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'WPTELEGRAM_VER', '3.1.8' );
+define( 'WPTELEGRAM_VER', '4.1.6' );
 
-defined( 'WPTELEGRAM_BASENAME' ) || define( 'WPTELEGRAM_BASENAME', plugin_basename( __FILE__ ) );
+defined( 'WPTELEGRAM_MAIN_FILE' ) || define( 'WPTELEGRAM_MAIN_FILE', __FILE__ );
+
+defined( 'WPTELEGRAM_BASENAME' ) || define( 'WPTELEGRAM_BASENAME', plugin_basename( WPTELEGRAM_MAIN_FILE ) );
 
 define( 'WPTELEGRAM_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 
@@ -42,10 +46,10 @@ if ( ! defined( 'WPTELEGRAM_USER_ID_META_KEY' ) ) {
  * Include autoloader.
  */
 require WPTELEGRAM_DIR . '/autoload.php';
+require_once dirname( WPTELEGRAM_MAIN_FILE ) . '/vendor/autoload.php';
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-wptelegram-activator.php
  */
 function activate_wptelegram() {
 	\WPTelegram\Core\includes\Activator::activate();
@@ -53,7 +57,6 @@ function activate_wptelegram() {
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-wptelegram-deactivator.php
  */
 function deactivate_wptelegram() {
 	\WPTelegram\Core\includes\Deactivator::deactivate();
@@ -80,8 +83,13 @@ function WPTG() { // phpcs:ignore
 	return \WPTelegram\Core\includes\Main::instance();
 }
 
-// Fire.
-WPTG()->init();
+$requirements = new WPTelegram\Core\includes\Requirements( WPTELEGRAM_MAIN_FILE );
 
-define( 'WPTELEGRAM_LOADED', true );
+if ( $requirements->satisfied() ) {
+	// Fire.
+	WPTG()->init();
 
+	define( 'WPTELEGRAM_LOADED', true );
+} else {
+	add_filter( 'after_plugin_row_' . WPTELEGRAM_BASENAME, [ $requirements, 'display_requirements' ] );
+}
