@@ -1,1 +1,29 @@
 #adminmenu #toplevel_page_wptelegram div.wp-menu-image:before{background-image:url(../icons/icon-36x34.png);background-position:0 0;background-repeat:no-repeat;content:" ";height:36px;padding:0!important;transition:none;width:36px}#adminmenu #toplevel_page_wptelegram:not(.current):hover div.wp-menu-image:before{background-position:0 -68px}#adminmenu #toplevel_page_wptelegram.current div.wp-menu-image:before{background-position:0 -34px}
+
+/*
+XTEC ************ AFEGIT - Hidden options
+2021.05.13 @aginard
+*/
+form#wptelegram-settings-form > div > :nth-child(2), /* Big side block */
+form#wptelegram-settings-form > div > div > p, /* Text "Want an absolute integration with Telegram?" */
+form#wptelegram-settings-form > div > div > div > div > div > div > p, /* Text "Want to add more bots?" */
+form#wptelegram-settings-form > div > div > div > div > div > div > div > div > section:nth-child(2) > div > p, /* Tab "Post to Telegram", text "Want to use different channels for different categories?" */
+form#wptelegram-settings-form > div > div > div > div > div > div > div > div > section:nth-child(3) > div > p, /* Tab "Post to Telegram", text "WP Telegram Pro supports multiple instances of Post to Telgram with different rules" */
+form#wptelegram-settings-form > div > div > div > div > div > div > div > div > section:nth-child(5) > div > p, /* Tab "Post to Telegram", text "Want to add more buttons?" */
+form#wptelegram-settings-form > div > div > div > div > div > div > div > div > section:nth-child(6) > div > div:nth-child(4), /* Tab "Post to Telegram", <hr> */
+form#wptelegram-settings-form > div > div > div > div > div > div > div > div > section:nth-child(6) > div > div:nth-child(5), /* Tab "Post to Telegram", delay option */
+form#wptelegram-settings-form > div > div > div > div > div > div > div > div > section:nth-child(6) > div > p, /* Tab "Post to Telegram", text "WP Telegram Pro supports delay per channel" */
+form#wptelegram-settings-form > div > div > div > div > button:nth-child(4), /* Tab "Proxy" */
+form#wptelegram-settings-form > div > div > div > div:nth-child(6) > div > div:nth-child(1), /* Information text in tab "Advanced Settings" */
+form#wptelegram-settings-form > div > div > div > div:nth-child(6) > div > div > div:nth-child(2), /* Tag <hr> in tab "Advanced Settings" */
+form#wptelegram-settings-form > div > div > div > div:nth-child(6) > div > div > div:nth-child(3), /* Option logs in tab "Advanced Settings" */
+form#wptelegram-settings-form > div > div > div > div:nth-child(6) > div > div > div:nth-child(4), /* Tag <hr> in tab "Advanced Settings" */
+form#wptelegram-settings-form > div > div > div > div:nth-child(6) > div > div > div:nth-child(5), /* Option debugging info in tab "Advanced Settings" */
+form#wptelegram-settings-form > div > div > div > div:nth-child(6) > div > div > div:nth-child(6), /* Tag <hr> in tab "Advanced Settings" */
+form#wptelegram-settings-form > div > div > div > div:nth-child(6) > div > div > div:nth-child(7)  /* Option advanced.clean_uninstall in tab "Advanced Settings" */
+{
+    display: none;
+}
+/*
+************ FI
+*/
