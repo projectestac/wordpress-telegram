@@ -4,8 +4,8 @@ Donate link: https://wpsocio.com/donate
 Tags: telegram, notifications, posts, channel, group
 Requires at least: 6.4
 Requires PHP: 7.4
-Tested up to: 6.5.2
-Stable tag: 4.1.6
+Tested up to: 6.6.1
+Stable tag: 4.1.14
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -203,7 +203,7 @@ Automatic updates should work smoothly, but we still recommend you back up your 
 
 == Changelog ==
 
-= 4.1.6 =
-- Fixed the is new post logic for draft posts
+= 4.1.14 =
+- Fixed the fatal error during upgrade
 
 [See full changelog](https://github.com/wpsocio/wptelegram/blob/main/CHANGELOG.md)

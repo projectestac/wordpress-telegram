@@ -1,5 +1,59 @@
 # Changelog
 
+## 4.1.14
+
+### Patch Changes
+
+- [#161](https://github.com/wpsocio/wp-projects/pull/161) [`116db7b`](https://github.com/wpsocio/wp-projects/commit/116db7b7bbf374f080b123a428ff33fbb39e56e8) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed the fatal error during upgrade
+
+## 4.1.13
+
+### Patch Changes
+
+- [#158](https://github.com/wpsocio/wp-projects/pull/158) [`a825c39`](https://github.com/wpsocio/wp-projects/commit/a825c3909e2f990bd7932e10b8db665fa3e083e0) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed the issue of scaled image being preferred over original image
+
+## 4.1.12
+
+### Patch Changes
+
+- [#156](https://github.com/wpsocio/wp-projects/pull/156) [`d14a2f9`](https://github.com/wpsocio/wp-projects/commit/d14a2f9f13087a18c184a0ca23a2f981288ffe5e) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed Message Template info not expanding
+
+## 4.1.11
+
+### Patch Changes
+
+- [#151](https://github.com/wpsocio/wp-projects/pull/151) [`7f06002`](https://github.com/wpsocio/wp-projects/commit/7f06002dd4b9b31cc4c4fc9320444ac7e1885c26) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed settings page and post editor crash for older Wp versions
+
+## 4.1.10
+
+### Patch Changes
+
+- [#146](https://github.com/wpsocio/wp-projects/pull/146) [`bb3677f`](https://github.com/wpsocio/wp-projects/commit/bb3677f466665e3e766cb54922773b89e23d4aaf) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed empty translations loaded via l10n.php files
+
+- [#150](https://github.com/wpsocio/wp-projects/pull/150) [`44e433a`](https://github.com/wpsocio/wp-projects/commit/44e433aefcec4a3d0ab5470485ca1b30b40a0a22) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Restored translations for plugin name after l10n fix
+
+## 4.1.9
+
+### Patch Changes
+
+- [#142](https://github.com/wpsocio/wp-projects/pull/142) [`b0b652e`](https://github.com/wpsocio/wp-projects/commit/b0b652e5fe4db1eb8f7c032baca6bc32ad471872) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Post to Telegram: Changed default custom rule from post to post category
+
+- [#135](https://github.com/wpsocio/wp-projects/pull/135) [`38f4591`](https://github.com/wpsocio/wp-projects/commit/38f4591c18b9b044338e7e5f4a71090d6847bcab) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Removed translation for plugin title to ensure the menu item it not invisible
+
+## 4.1.8
+
+### Patch Changes
+
+- [#132](https://github.com/wpsocio/wp-projects/pull/132) [`f20821c`](https://github.com/wpsocio/wp-projects/commit/f20821c66913adf7bd37817f78bf23de3605f4ea) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Improved logging for delay in posting
+
+- [#129](https://github.com/wpsocio/wp-projects/pull/129) [`ce6c4e1`](https://github.com/wpsocio/wp-projects/commit/ce6c4e1538037f006fa6e95a11c3745074e327b5) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed logging to remove only the old entries when file size limit is reached.
+
+## 4.1.7
+
+### Patch Changes
+
+- [#126](https://github.com/wpsocio/wp-projects/pull/126) [`69a8e23`](https://github.com/wpsocio/wp-projects/commit/69a8e237e61fe7f2cb078ebc63bd2fea8b4e9368) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed translations not working for settings page
+
 ## 4.1.6
 
 ### Patch Changes

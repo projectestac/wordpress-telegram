@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.4
+
+### Patch Changes
+
+- [#158](https://github.com/wpsocio/wp-projects/pull/158) [`a825c39`](https://github.com/wpsocio/wp-projects/commit/a825c3909e2f990bd7932e10b8db665fa3e083e0) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed get attachment by filesize to return original image if within limits
+
+## 1.0.3
+
+### Patch Changes
+
+- [#126](https://github.com/wpsocio/wp-projects/pull/126) [`69a8e23`](https://github.com/wpsocio/wp-projects/commit/69a8e237e61fe7f2cb078ebc63bd2fea8b4e9368) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed JED format for translation strings
+
 ## 1.0.2
 
 ### Patch Changes
