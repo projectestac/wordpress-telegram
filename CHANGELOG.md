@@ -1,5 +1,69 @@
 # Changelog
 
+## 4.2.5
+
+### Patch Changes
+
+- [#202](https://github.com/wpsocio/wp-projects/pull/202) [`9464ef6`](https://github.com/wpsocio/wp-projects/commit/9464ef692f97f92f907f951ca6850936a057787e) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed chat ID validation preventing from saving changes
+
+- [#196](https://github.com/wpsocio/wp-projects/pull/196) [`1d41d51`](https://github.com/wpsocio/wp-projects/commit/1d41d51f207637ad62da8e09167493a538adfee7) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Updated delay UI to show WP Cron warning as alert
+
+## 4.2.4
+
+### Patch Changes
+
+- [#191](https://github.com/wpsocio/wp-projects/pull/191) [`1d2b4bd`](https://github.com/wpsocio/wp-projects/commit/1d2b4bd2e92310d60ce9bdb4cbe10b0d71049d4f) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Updated attach files UI to show file size
+
+- [#193](https://github.com/wpsocio/wp-projects/pull/193) [`35f1abc`](https://github.com/wpsocio/wp-projects/commit/35f1abc0ad516ad2fa87bd4cbb3406fb77be1bc5) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Performance improvements
+
+## 4.2.3
+
+### Patch Changes
+
+- [#187](https://github.com/wpsocio/wp-projects/pull/187) [`d1de312`](https://github.com/wpsocio/wp-projects/commit/d1de3129e0ee009217488dc4a7aaad2c7a3538a5) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Added filters for excerpt and content options
+
+- [#190](https://github.com/wpsocio/wp-projects/pull/190) [`4e79cc9`](https://github.com/wpsocio/wp-projects/commit/4e79cc9409b98cc6ca48d4140090637263ca4d61) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed files button not working for block editor
+
+## 4.2.2
+
+### Patch Changes
+
+- [#179](https://github.com/wpsocio/wp-projects/pull/179) [`55eeace`](https://github.com/wpsocio/wp-projects/commit/55eeace687a090f4fb68b80868b61bd238ac6c0c) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Improved admin styles on smaller screens
+
+## 4.2.1
+
+### Patch Changes
+
+- [#177](https://github.com/wpsocio/wp-projects/pull/177) [`3c61709`](https://github.com/wpsocio/wp-projects/commit/3c61709b222937e457340231533947cdc69a0a6d) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed the last failed deployment
+
+## 4.2.0
+
+### Minor Changes
+
+- [#167](https://github.com/wpsocio/wp-projects/pull/167) [`c111617`](https://github.com/wpsocio/wp-projects/commit/c111617cb5395b94446e115a49d002e3f111aee0) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Improved the UI for small/mobile screens
+
+- [#167](https://github.com/wpsocio/wp-projects/pull/167) [`c111617`](https://github.com/wpsocio/wp-projects/commit/c111617cb5395b94446e115a49d002e3f111aee0) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Refreshed the UI migrating away from Chakra UI
+
+### Patch Changes
+
+- [#167](https://github.com/wpsocio/wp-projects/pull/167) [`c111617`](https://github.com/wpsocio/wp-projects/commit/c111617cb5395b94446e115a49d002e3f111aee0) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed the issue of delay in posting not being saved when changed alone
+
+- [#167](https://github.com/wpsocio/wp-projects/pull/167) [`c111617`](https://github.com/wpsocio/wp-projects/commit/c111617cb5395b94446e115a49d002e3f111aee0) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed the issue of proxy options not showing upon changing proxy type.
+
+- [#167](https://github.com/wpsocio/wp-projects/pull/167) [`c111617`](https://github.com/wpsocio/wp-projects/commit/c111617cb5395b94446e115a49d002e3f111aee0) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed and improved the a11y issues in settings page UI
+
+## 4.1.16
+
+### Patch Changes
+
+- [#165](https://github.com/wpsocio/wp-projects/pull/165) [`314648d`](https://github.com/wpsocio/wp-projects/commit/314648dc5d9cdfad2f532f70733addb2ec5f8245) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed load_plugin_textdomain warning in dependent package
+
+## 4.1.15
+
+### Patch Changes
+
+- [#163](https://github.com/wpsocio/wp-projects/pull/163) [`75bab6b`](https://github.com/wpsocio/wp-projects/commit/75bab6b20f0cc0eccc07750d4e50bcd0b65e486d) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed load_plugin_textdomain warning
+
 ## 4.1.14
 
 ### Patch Changes
