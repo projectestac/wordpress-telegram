@@ -11,6 +11,7 @@
 
 namespace WPTelegram\Core\modules\p2tg;
 
+use WP_Post;
 use WPTelegram\Core\includes\Utils;
 
 /**
@@ -102,9 +103,12 @@ class PostData {
 
 		$value = '';
 
+		$json_encode = 0;
+
 		switch ( $field ) {
 
 			case 'id':
+			case 'post_id':
 			case 'ID':
 				$value = $this->post->ID;
 				break;
@@ -122,14 +126,44 @@ class PostData {
 				$value = $this->post->post_name;
 				break;
 
-			/* The post's local publication time */
+			/* The post's local publication date */
 			case 'post_date':
 				$value = get_the_date( '', $this->post->ID );
 				break;
 
-			/* The post's GMT publication time */
+			/* The post's GMT publication date */
 			case 'post_date_gmt':
 				$value = date_i18n( get_option( 'date_format' ), strtotime( $this->post->post_date_gmt ) );
+				break;
+
+			/* The post's local modified date */
+			case 'post_modified_date':
+				$value = date_i18n( get_option( 'date_format' ), strtotime( $this->post->post_modified ) );
+				break;
+
+			/* The post's GMT modified date */
+			case 'post_modified_date_gmt':
+				$value = date_i18n( get_option( 'date_format' ), strtotime( $this->post->post_modified_gmt ) );
+				break;
+
+			/* The post's local publication time */
+			case 'post_time':
+				$value = date_i18n( get_option( 'time_format' ), strtotime( $this->post->post_date ) );
+				break;
+
+			/* The post's GMT publication time */
+			case 'post_time_gmt':
+				$value = date_i18n( get_option( 'time_format' ), strtotime( $this->post->post_date_gmt ) );
+				break;
+
+			/* The post's local modified time */
+			case 'post_modified_time':
+				$value = date_i18n( get_option( 'time_format' ), strtotime( $this->post->post_modified ) );
+				break;
+
+			/* The post's GMT modified time */
+			case 'post_modified_time_gmt':
+				$value = date_i18n( get_option( 'time_format' ), strtotime( $this->post->post_modified_gmt ) );
 				break;
 
 			/* Post Author */
@@ -265,6 +299,9 @@ class PostData {
 
 					$_field = preg_replace( '/^' . $match[1] . ':/i', '', $field );
 
+					// If the field name ends with :json, $json_encode will become 1.
+					$_field = preg_replace( '/:json$/i', '', $_field, 1, $json_encode );
+
 					switch ( $match[1] ) {
 
 						case 'terms': // if taxonomy.
@@ -296,6 +333,20 @@ class PostData {
 							break;
 
 						case 'cf': // if custom field.
+							if ( '__debug__' === strtolower( $_field ) ) {
+								// Instead of directly using the serialized values,
+								// we will use the keys to get the unserialized values below.
+								$meta_keys = array_keys( get_post_meta( $this->post->ID ) );
+
+								$value = [];
+
+								foreach ( $meta_keys as $meta_key ) {
+									$value[ $meta_key ] = get_post_meta( $this->post->ID, $meta_key, true );
+								}
+
+								$json_encode = 1;
+								break;
+							}
 							$value = get_post_meta( $this->post->ID, $_field, true );
 							break;
 					}
@@ -303,16 +354,28 @@ class PostData {
 				break;
 		}
 
+		if ( $json_encode ) {
+			$value = wp_json_encode( $value );
+		}
+
 		$value = apply_filters( 'wptelegram_p2tg_post_data_field_value', $value, $field, $this->post, $options );
+
+		$value = apply_filters( "wptelegram_p2tg_post_data_{$field}_value", $value, $this->post, $options );
+
+		// If the value can't be converted to string.
+		if ( ! is_scalar( $value ) ) {
+			return '';
+		}
 
 		$remove_multi_eol = apply_filters( 'wptelegram_p2tg_post_data_remove_multi_eol', true, $this->post );
 
-		if ( $remove_multi_eol ) {
+		if ( $remove_multi_eol && ! $json_encode ) {
 			// remove multiple newlines.
 			$value = preg_replace( '/\n[\n\r\s]*\n[\n\r\s]*\n/u', "\n\n", $value );
 		}
 
-		return (string) apply_filters( "wptelegram_p2tg_post_data_{$field}_value", $value, $this->post, $options );
+		// If the value can be converted to string.
+		return (string) $value;
 	}
 
 	/**

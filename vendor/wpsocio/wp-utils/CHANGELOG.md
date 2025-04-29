@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.9
+
+### Patch Changes
+
+- [#247](https://github.com/wpsocio/wp-projects/pull/247) [`a1dd2c9`](https://github.com/wpsocio/wp-projects/commit/a1dd2c9a15e46839c74386621c77305d00a60ef3) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed PHP warning for undefined variable.
+
+## 1.0.8
+
+### Patch Changes
+
+- [#240](https://github.com/wpsocio/wp-projects/pull/240) [`6581a3c`](https://github.com/wpsocio/wp-projects/commit/6581a3cc18d0bfdf2af5dbdccd741130dd4a3850) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Added support for inline-style
+
+## 1.0.7
+
+### Patch Changes
+
+- [#233](https://github.com/wpsocio/wp-projects/pull/233) [`9ef60cb`](https://github.com/wpsocio/wp-projects/commit/9ef60cb4c35ae50d5941c9458c62ae818be8cd3c) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Updated the default requirements to PHP 7.4 and WP 6.0
+
 ## 1.0.6
 
 ### Patch Changes

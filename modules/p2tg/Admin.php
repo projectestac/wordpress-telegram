@@ -29,6 +29,10 @@ class Admin extends BaseClass {
 
 	const OVERRIDE_METABOX_ID = 'wptelegram_p2tg_override';
 
+	const INSTANT_POST_ACTION = 'wptelegram_p2tg_instant_post';
+
+	const INSTANT_POST_NONCE_PREFIX = 'wptelegram_p2tg_instant_post_';
+
 	/**
 	 * Saved Settings/Options e.g. in meta
 	 *
@@ -202,20 +206,12 @@ class Admin extends BaseClass {
 		$macro_groups                  = [
 			'post'  => [
 				'label'  => __( 'Post Data', 'wptelegram' ),
-				'macros' => [
-					'{ID}',
-					'{post_title}',
-					'{post_slug}',
-					'{post_date}',
-					'{post_date_gmt}',
-					'{post_author}',
-					'{post_excerpt}',
-					'{post_content}',
-					'{post_type}',
-					'{post_type_label}',
-					'{short_url}',
-					'{full_url}',
-				],
+				'macros' => array_map(
+					function ( $macro ) {
+						return '{' . $macro . '}';
+					},
+					TemplateParser::get_default_macro_keys( [ 'with_aliases' => false ] )
+				),
 			],
 			'terms' => [
 				'label'  => __( 'Taxonomy Terms', 'wptelegram' ),
@@ -229,27 +225,39 @@ class Admin extends BaseClass {
 			],
 		];
 		$macro_groups['terms']['info'] = sprintf(
-			/* translators: 1  taxonomy, 2  {terms:taxonomy} */
+			/* translators: 1 taxonomy, 2 {terms:taxonomy} */
 			__( 'Replace %1$s in %2$s by the name of the taxonomy to insert its terms attached to the post.', 'wptelegram' ),
 			'<code>taxonomy</code>',
 			'<code>{terms:taxonomy}</code>'
 		) . ' ' . sprintf(
-			/* translators: 1  code, 2  code */
+			/* translators: 1 code, 2 code */
 			__( 'For example %1$s and %2$s in WooCommerce', 'wptelegram' ),
 			'<code>{terms:product_cat}</code>',
 			'<code>{terms:product_tag}</code>'
 		);
 
 			$macro_groups['cf']['info'] = sprintf(
-			/* translators: 1  custom_field, 2  {cf:custom_field} */
+			/* translators: 1 custom_field, 2 {cf:custom_field} */
 				__( 'Replace %1$s in %2$s by the name of the Custom Field.', 'wptelegram' ),
 				'<code>custom_field</code>',
 				'<code>{cf:custom_field}</code>'
 			) . ' ' . sprintf(
-				/* translators: 1  code, 2  code */
+				/* translators: 1 code, 2 code */
 				__( 'For example %1$s and %2$s in WooCommerce', 'wptelegram' ),
 				'<code>{cf:_regular_price}</code>',
 				'<code>{cf:_sale_price}</code>'
+			) . "\n" . sprintf(
+				/* translators: 1 code, 2 code */
+				__( 'You can add %1$s to the field name to find the shape of the complex fields.', 'wptelegram' ),
+				'<code>:json</code>',
+			) . ' ' . sprintf(
+				/* translators: 1 code, 2 code */
+				__( 'For example %1$s.', 'wptelegram' ),
+				'<code>{cf:field-name:json}</code>'
+			) . "\n" . sprintf(
+				/* translators: 1 code, 2 code */
+				__( 'You can also use %1$s to find all the meta keys for a post.', 'wptelegram' ),
+				'<code>{cf:__debug__}</code>',
 			);
 
 		/**
@@ -643,5 +651,75 @@ class Admin extends BaseClass {
 		$screens = $this->module->options()->get( 'post_types', [] );
 
 		return (array) apply_filters( 'wptelegram_p2tg_override_meta_box_screens', $screens );
+	}
+
+	/**
+	 * Add instant send to Telegram action to posts.
+	 *
+	 * @since 4.2.6
+	 *
+	 * @param array   $actions Array of actions.
+	 * @param WP_Post $post Post object.
+	 * @return array
+	 */
+	public function add_instant_post_action( $actions, $post ) {
+
+		if ( ! Utils::is_status_of_type( $post, 'live' ) || ! current_user_can( 'edit_posts' ) ) {
+			return $actions;
+		}
+
+		global $typenow;
+		$post_types = $this->get_override_meta_box_screens();
+
+		$enable_instant_posting = in_array( $typenow, $post_types, true );
+		$enable_instant_posting = apply_filters( 'wptelegram_p2tg_enable_instant_posting', $enable_instant_posting, $post, $actions );
+
+		if ( $enable_instant_posting ) {
+
+			$link = add_query_arg(
+				[
+					'action' => self::INSTANT_POST_ACTION,
+					'post'   => $post->ID,
+
+				],
+				admin_url( 'admin.php' )
+			);
+
+			$link = wp_nonce_url( $link, self::INSTANT_POST_NONCE_PREFIX . $post->ID );
+
+			$actions[ self::INSTANT_POST_ACTION ] = sprintf(
+				'<a href="%1$s" >%2$s</a>',
+				$link,
+				esc_html__( 'Send to Telegram', 'wptelegram' )
+			);
+		}
+
+		return $actions;
+	}
+
+	/**
+	 * Handle the instant post action.
+	 */
+	public function handle_instant_post() {
+		if ( empty( $_REQUEST['post'] ) ) {
+			wp_die( esc_html__( 'No post provided to share!', 'wptelegram' ), 400 );
+		}
+
+		$post_id = isset( $_REQUEST['post'] ) ? absint( $_REQUEST['post'] ) : '';
+
+		check_admin_referer( self::INSTANT_POST_NONCE_PREFIX . $post_id );
+
+		$post = get_post( $post_id );
+
+		if ( ! $post ) {
+			/* translators: %s: post id */
+			wp_die( sprintf( esc_html__( 'Sharing failed, could not find the post with ID: %d', 'wptelegram' ), (int) $post_id ) );
+		}
+
+		wptelegram_p2tg_send_post( $post, 'instant', true );
+
+		// Redirect to the post list screen.
+		wp_safe_redirect( admin_url( 'edit.php?post_type=' . $post->post_type ) );
+		exit;
 	}
 }

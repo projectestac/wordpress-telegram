@@ -4,6 +4,7 @@
     "react-dom",
     "wp-i18n",
     "jquery",
+    "react-dom",
     "wp-api-fetch"
   ],
   "js/p2tg-block-editor/index.ts": [

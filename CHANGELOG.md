@@ -1,5 +1,47 @@
 # Changelog
 
+## 4.2.10
+
+### Patch Changes
+
+- [#262](https://github.com/wpsocio/wp-projects/pull/262) [`9e8c28b`](https://github.com/wpsocio/wp-projects/commit/9e8c28b026e5f8caad3cbc5062cbc5587a93ca3b) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Updated Message Template info UI to make it more visible
+
+- [#259](https://github.com/wpsocio/wp-projects/pull/259) [`cd61a8d`](https://github.com/wpsocio/wp-projects/commit/cd61a8d56970474cfed5362c7f722ff22e99bd22) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed Bot Token and Message tests not working for lowercase URLs
+
+- [#257](https://github.com/wpsocio/wp-projects/pull/257) [`150dc9f`](https://github.com/wpsocio/wp-projects/commit/150dc9f501e39e1d412da6a433d0855000e7a7ea) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed background color for the setting page
+
+- [#263](https://github.com/wpsocio/wp-projects/pull/263) [`cc3b03d`](https://github.com/wpsocio/wp-projects/commit/cc3b03d92211502a9ad9eadde93396fa861aa334) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Added support for post modified and post time variables
+
+## 4.2.9
+
+### Patch Changes
+
+- [#248](https://github.com/wpsocio/wp-projects/pull/248) [`3b97611`](https://github.com/wpsocio/wp-projects/commit/3b97611b83c693f995a6294257321a56bca5f3f4) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Improved form field spacing for small screens
+
+- [#243](https://github.com/wpsocio/wp-projects/pull/243) [`b15b82d`](https://github.com/wpsocio/wp-projects/commit/b15b82d4f6ae817f531ca9ed2ca42de6862b3e9f) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed clean up logic on uninstall
+
+## 4.2.8
+
+### Patch Changes
+
+- [#242](https://github.com/wpsocio/wp-projects/pull/242) [`9b4200c`](https://github.com/wpsocio/wp-projects/commit/9b4200c2fbad43f8f5f02253e24b97a9bc75a654) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Added support for `{cf:__debug__}`
+
+- [#237](https://github.com/wpsocio/wp-projects/pull/237) [`265291b`](https://github.com/wpsocio/wp-projects/commit/265291ba56732da83041f1aac502caad7169f733) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Add support for {cf:field-name:json} for custom fields
+
+- [#237](https://github.com/wpsocio/wp-projects/pull/237) [`265291b`](https://github.com/wpsocio/wp-projects/commit/265291ba56732da83041f1aac502caad7169f733) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fix PHP warning for array to string conversion
+
+## 4.2.7
+
+### Patch Changes
+
+- [#233](https://github.com/wpsocio/wp-projects/pull/233) [`9ef60cb`](https://github.com/wpsocio/wp-projects/commit/9ef60cb4c35ae50d5941c9458c62ae818be8cd3c) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed the i18n initialization to delay it to init
+
+## 4.2.6
+
+### Patch Changes
+
+- [#229](https://github.com/wpsocio/wp-projects/pull/229) [`c32b2f2`](https://github.com/wpsocio/wp-projects/commit/c32b2f20909b660d26a01e97ec7ccdc4da690069) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Added the instant Send to Telegram option on the post list page
+
 ## 4.2.5
 
 ### Patch Changes

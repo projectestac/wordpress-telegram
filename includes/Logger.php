@@ -135,10 +135,12 @@ class Logger extends BaseClass {
 	 */
 	public function view_log() {
 
-		// phpcs:ignore
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['action'], $_GET['hash'], $_GET['type'] ) && 'wptelegram_view_log' === $_GET['action'] && isset( $_GET['hash'] ) ) {
-			$hash = sanitize_text_field( wp_unslash( $_GET['hash'] ) ); // phpcs:ignore
-			$type = sanitize_text_field( wp_unslash( $_GET['type'] ) ); // phpcs:ignore
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$hash = sanitize_text_field( wp_unslash( $_GET['hash'] ) );
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$type = sanitize_text_field( wp_unslash( $_GET['type'] ) );
 
 			if ( ! empty( $hash ) && ! empty( $type ) ) {
 
@@ -152,7 +154,8 @@ class Logger extends BaseClass {
 
 				header( 'Content-Type: text/plain' );
 
-				exit( $contents ); // phpcs:ignore
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				exit( $contents );
 			}
 		}
 	}
@@ -170,25 +173,30 @@ class Logger extends BaseClass {
 	 */
 	protected function hookup_for_p2tg() {
 
-		add_action( 'wptelegram_p2tg_before_send_post', [ $this, 'before_p2tg_log' ], 999, 3 );
+		add_action( 'wptelegram_p2tg_before_send_post', [ $this, 'before_send' ], 999, 3 );
 
 		add_action( 'wptelegram_p2tg_set_form_data', [ $this, 'set_form_data' ], 999, 2 );
 
-		add_action( 'wptelegram_p2tg_post_sv_check_failed', [ $this, 'add_sv_check' ], 999, 3 );
+		add_action( 'wptelegram_p2tg_post_sv_check_failed', [ $this, 'sv_check_failed' ], 999, 3 );
 
-		add_action( 'wptelegram_p2tg_delay_post', [ $this, 'add_delay_post' ], 999, 3 );
+		add_action( 'wptelegram_p2tg_delay_post', [ $this, 'delay_post' ], 999, 3 );
 
-		add_filter( 'wptelegram_p2tg_rules_apply', [ $this, 'add_rules_apply' ], 999, 3 );
+		add_filter( 'wptelegram_p2tg_rules_apply', [ $this, 'rules_apply' ], 999, 3 );
+		add_filter( 'wptelegram_p2tg_bypass_post_date_rules', [ $this, 'bypass_date_rules' ], 999, 2 );
+		add_filter( 'wptelegram_p2tg_bypass_post_type_rules', [ $this, 'bypass_post_type_rules' ], 999, 2 );
+		add_filter( 'wptelegram_p2tg_rules_send_new_post', [ $this, 'send_new_post' ], 999, 2 );
+		add_filter( 'wptelegram_p2tg_rules_send_existing_post', [ $this, 'send_existing_post' ], 999, 2 );
+		add_filter( 'wptelegram_p2tg_rules_send_post_type', [ $this, 'send_post_type' ], 999, 2 );
 
-		add_filter( 'wptelegram_p2tg_featured_image_source', [ $this, 'add_featured_image_source' ], 999, 4 );
+		add_filter( 'wptelegram_p2tg_featured_image_source', [ $this, 'image_source' ], 999, 4 );
 
-		add_action( 'wptelegram_p2tg_post_finish', [ $this, 'add_post_finish' ], 999, 5 );
+		add_action( 'wptelegram_p2tg_post_finish', [ $this, 'post_finish' ], 999, 5 );
 
-		add_action( 'wptelegram_p2tg_after_send_post', [ $this, 'after_p2tg_log' ], 999, 3 );
+		add_action( 'wptelegram_p2tg_after_send_post', [ $this, 'after_send' ], 999, 3 );
 	}
 
 	/**
-	 * Get the key from post.
+	 * Create a key from post.
 	 *
 	 * @param WP_Post $post The post being handled.
 	 */
@@ -199,7 +207,7 @@ class Logger extends BaseClass {
 	/**
 	 * Get the current request type.
 	 *
-	 * @param WP_Post $post    The post being handled.
+	 * @param WP_Post $post The post being handled.
 	 */
 	private function get_request_type( $post ) {
 
@@ -221,12 +229,14 @@ class Logger extends BaseClass {
 	 * @param WP_Post $post    The post being handled.
 	 * @param string  $trigger The source trigger.
 	 */
-	public function before_p2tg_log( $result, $post, $trigger ) {
+	public function before_send( $result, $post, $trigger ) {
+		// `is_new_post` is in a static class, so we want to add it only when Sending to Telegram.
+		add_filter( 'wptelegram_p2tg_is_post_new', [ $this, 'is_new_post' ], 999, 3 );
 
-		// create a an entry from post ID and its status.
 		$key = $this->get_key( $post );
 
-		$this->p2tg_post_info[ $key ]['before'] = [
+		$this->p2tg_post_info[ $key ][] = [
+			'fn'           => __FUNCTION__,
 			'trigger'      => $trigger,
 			'request_type' => $this->get_request_type( $post ),
 		];
@@ -240,13 +250,15 @@ class Logger extends BaseClass {
 	 */
 	public function set_form_data( $form_data, $post ) {
 
-		// create a an entry from post ID and its status.
 		$key = $this->get_key( $post );
 
 		// Remove message template to make the logs clean.
 		unset( $form_data['message_template'] );
 
-		$this->p2tg_post_info[ $key ]['form_data'] = $form_data;
+		$this->p2tg_post_info[ $key ][] = [
+			'fn'        => __FUNCTION__,
+			'form_data' => $form_data,
+		];
 	}
 
 	/**
@@ -256,50 +268,203 @@ class Logger extends BaseClass {
 	 * @param WP_Post $post     The post being handled.
 	 * @param string  $trigger  The source trigger.
 	 */
-	public function add_sv_check( $validity, $post, $trigger ) {
+	public function sv_check_failed( $validity, $post, $trigger ) {
 
-		// create a an entry from post ID and its status.
 		$key = $this->get_key( $post );
 
-		$this->p2tg_post_info[ $key ]['sv'] = $validity;
+		$this->p2tg_post_info[ $key ][] = [
+			'fn'       => __FUNCTION__,
+			'validity' => $validity,
+		];
 	}
 
 	/**
 	 * Add delay post info.
 	 *
-	 * @param float   $delay       Delay in posting.
-	 * @param WP_Post $post        The post being handled.
-	 * @param array   $result      The result of delay handler.
+	 * @param float   $delay  Delay in posting.
+	 * @param WP_Post $post   The post being handled.
+	 * @param array   $result The result of delay handler.
 	 */
-	public function add_delay_post( $delay, $post, $result ) {
+	public function delay_post( $delay, $post, $result ) {
 
-		// create an entry from post ID and its status.
 		$key = $this->get_key( $post );
 
-		$this->p2tg_post_info[ $key ]['delay'] = [
+		$this->p2tg_post_info[ $key ][] = [
+			'fn'       => __FUNCTION__,
 			'duration' => $delay,
 			'result'   => $result,
 		];
 	}
 
 	/**
-	 * Add rules_apply info.
+	 * Add rules data.
 	 *
-	 * @param boolean $rules_apply The post being handled.
-	 * @param Options $options     The post being handled.
-	 * @param WP_Post $post        The post being handled.
+	 * @param WP_Post $post The post being handled.
+	 * @param array   $data The data to add.
+	 * @param array   $info The info to add.
 	 */
-	public function add_rules_apply( $rules_apply, $options, $post ) {
-
-		// create a an entry from post ID and its status.
+	private function add_rules_data( $post, $data, $info = [] ) {
 		$key = $this->get_key( $post );
 
-		$this->p2tg_post_info[ $key ]['rules'] = [
-			'apply'   => $rules_apply,
-			'sent2tg' => get_post_meta( $post->ID, P2TGMain::PREFIX . 'sent2tg', true ),
+		// If we already have rules data, we want to get the index of it.
+		$index = array_search( 'rules', array_column( $this->p2tg_post_info[ $key ] ?? [], 'fn' ), true );
+
+		// If we don't have rules data, we want to add it to the end of the array.
+		if ( false === $index ) {
+			$index = ( array_key_last( $this->p2tg_post_info[ $key ] ?? [] ) ?? -1 ) + 1;
+		}
+
+		$rules = $this->p2tg_post_info[ $key ][ $index ] ?? [];
+
+		$rules['data'] = array_merge_recursive( $rules['data'] ?? [], $data );
+
+		$this->p2tg_post_info[ $key ][ $index ] = [
+			'fn'   => 'rules',
+			'data' => $rules['data'],
+			'info' => array_merge( $rules['info'] ?? [], $info ),
 		];
+	}
+
+	/**
+	 * Add rules_apply info.
+	 *
+	 * @param boolean $rules_apply Whether the rules apply.
+	 * @param Options $options     Settings.
+	 * @param WP_Post $post        The post being handled.
+	 */
+	public function rules_apply( $rules_apply, $options, $post ) {
+
+		$this->add_rules_data(
+			$post,
+			[
+				'apply' => $rules_apply,
+			]
+		);
 
 		return $rules_apply;
+	}
+
+	/**
+	 * Add bypass_post_date_rules info.
+	 *
+	 * @param boolean $bypass_date_rules Whether to bypass date rules.
+	 * @param WP_Post $post              The post being handled.
+	 */
+	public function bypass_date_rules( $bypass_date_rules, $post ) {
+
+		$this->add_rules_data(
+			$post,
+			[
+				'bypass' => [
+					'date' => $bypass_date_rules,
+				],
+			]
+		);
+
+		return $bypass_date_rules;
+	}
+
+	/**
+	 * Add is_new_post info.
+	 *
+	 * @param boolean $is_new                 Whether the post is new.
+	 * @param WP_Post $post                   The post being handled.
+	 * @param boolean $is_more_than_a_day_old Whether the post is more than a day old.
+	 */
+	public function is_new_post( $is_new, $post, $is_more_than_a_day_old ) {
+
+		$this->add_rules_data(
+			$post,
+			[
+				'is' => $is_new ? 'new' : 'existing',
+			],
+			[
+				'a_day_old' => $is_more_than_a_day_old,
+				'sent2tg'   => get_post_meta( $post->ID, P2TGMain::PREFIX . 'sent2tg', true ),
+			]
+		);
+
+		return $is_new;
+	}
+
+	/**
+	 * Add send_new_post info.
+	 *
+	 * @param boolean $send_new Whether to send new post.
+	 * @param WP_Post $post     The post being handled.
+	 */
+	public function send_new_post( $send_new, $post ) {
+
+		$this->add_rules_data(
+			$post,
+			[
+				'send' => [
+					'new' => $send_new,
+				],
+			]
+		);
+
+		return $send_new;
+	}
+
+	/**
+	 * Add send_existing_post info.
+	 *
+	 * @param boolean $send_existing Whether to send new post.
+	 * @param WP_Post $post          The post being handled.
+	 */
+	public function send_existing_post( $send_existing, $post ) {
+
+		$this->add_rules_data(
+			$post,
+			[
+				'send' => [
+					'existing' => $send_existing,
+				],
+			]
+		);
+
+		return $send_existing;
+	}
+
+	/**
+	 * Add bypass_post_type_rules info.
+	 *
+	 * @param boolean $bypass Whether to bypass post type rules.
+	 * @param WP_Post $post                   The post being handled.
+	 */
+	public function bypass_post_type_rules( $bypass, $post ) {
+
+		$this->add_rules_data(
+			$post,
+			[
+				'bypass' => [
+					'post_type' => $bypass,
+				],
+			]
+		);
+
+		return $bypass;
+	}
+
+	/**
+	 * Add send_post_type info.
+	 *
+	 * @param boolean $send_post_type Whether the post is new.
+	 * @param WP_Post $post           The post being handled.
+	 */
+	public function send_post_type( $send_post_type, $post ) {
+
+		$this->add_rules_data(
+			$post,
+			[
+				'send' => [
+					'post_type' => $send_post_type,
+				],
+			]
+		);
+
+		return $send_post_type;
 	}
 
 	/**
@@ -307,15 +472,15 @@ class Logger extends BaseClass {
 	 *
 	 * @param string  $source            The featured image source.
 	 * @param WP_Post $post              The post being handled.
-	 * @param Options $options           The post being handled.
+	 * @param Options $options           Settings.
 	 * @param boolean $send_files_by_url The featured image source.
 	 */
-	public function add_featured_image_source( $source, $post, $options, $send_files_by_url ) {
+	public function image_source( $source, $post, $options, $send_files_by_url ) {
 
-		// create a an entry from post ID and its status.
 		$key = $this->get_key( $post );
 
-		$this->p2tg_post_info[ $key ]['image_source'] = [
+		$this->p2tg_post_info[ $key ][] = [
+			'fn'          => __FUNCTION__,
 			'send_image'  => $options->get( 'send_featured_image' ),
 			'has_image'   => has_post_thumbnail( $post->ID ),
 			'send_by_url' => $send_files_by_url,
@@ -331,15 +496,15 @@ class Logger extends BaseClass {
 	 * @param WP_Post $post            The post being handled.
 	 * @param string  $trigger         The source trigger.
 	 * @param boolean $ok              The featured image source.
-	 * @param Options $options         The post being handled.
+	 * @param Options $options         Settings.
 	 * @param array   $processed_posts The featured image source.
 	 */
-	public function add_post_finish( $post, $trigger, $ok, $options, $processed_posts ) {
+	public function post_finish( $post, $trigger, $ok, $options, $processed_posts ) {
 
-		// create a an entry from post ID and its status.
 		$key = $this->get_key( $post );
 
-		$this->p2tg_post_info[ $key ]['finish'] = [
+		$this->p2tg_post_info[ $key ][] = [
+			'fn'        => __FUNCTION__,
 			'ok'        => $ok,
 			'processed' => $processed_posts,
 		];
@@ -352,9 +517,8 @@ class Logger extends BaseClass {
 	 * @param WP_Post $post    The post being handled.
 	 * @param string  $trigger The source trigger.
 	 */
-	public function after_p2tg_log( $result, $post, $trigger ) {
+	public function after_send( $result, $post, $trigger ) {
 
-		// create a an entry from post ID and its status.
 		$key = $this->get_key( $post );
 
 		if ( is_array( $result ) ) {
@@ -377,11 +541,12 @@ class Logger extends BaseClass {
 			);
 		}
 
-		$this->p2tg_post_info[ $key ]['after'] = [
+		$this->p2tg_post_info[ $key ][] = [
+			'fn'     => __FUNCTION__,
 			'result' => $result,
 		];
 
-		$text = wp_json_encode( [ $key => $this->p2tg_post_info[ $key ] ] /*, 128*/ );
+		$text = wp_json_encode( [ $key => $this->p2tg_post_info[ $key ] ] );
 
 		$this->write_log( 'p2tg', $text );
 
@@ -391,8 +556,8 @@ class Logger extends BaseClass {
 	/**
 	 * Handle the debug action.
 	 *
-	 * @param Response $response  The API response.
-	 * @param API      $tg_api    The post being handled.
+	 * @param Response $response The API response.
+	 * @param API      $tg_api   The post being handled.
 	 */
 	public function add_bot_api_debug( $response, $tg_api ) {
 
