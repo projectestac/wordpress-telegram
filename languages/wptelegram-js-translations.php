@@ -10,19 +10,19 @@ $generated_i18n_strings = array(
 	// Reference: ../../packages/js/services/api-fetch/index.ts:41
 	__( 'Error:', 'wptelegram' ),
 
-	// Reference: ../../packages/js/services/telegram/telegram-utils.ts:126
+	// Reference: ../../packages/js/services/telegram/telegram-utils.ts:122
 	__( 'A message will be sent to the Channel/Group/Chat. You can modify the text below', 'wptelegram' ),
 
-	// Reference: ../../packages/js/services/telegram/telegram-utils.ts:129
+	// Reference: ../../packages/js/services/telegram/telegram-utils.ts:125
 	__( 'This is a test message', 'wptelegram' ),
 
-	// Reference: ../../packages/js/services/telegram/telegram-utils.ts:133
+	// Reference: ../../packages/js/services/telegram/telegram-utils.ts:129
 	__( 'Message is empty', 'wptelegram' ),
 
-	// Reference: ../../packages/js/services/telegram/telegram-utils.ts:152
+	// Reference: ../../packages/js/services/telegram/telegram-utils.ts:148
 	__( 'Success', 'wptelegram' ),
 
-	// Reference: ../../packages/js/services/use-display-feedback.ts:61
+	// Reference: ../../packages/js/services/use-display-feedback.ts:60
 	__( 'Lets fix these errors first.', 'wptelegram' ),
 
 	// Reference: ../../packages/js/services/use-submit-form.ts:64
@@ -34,7 +34,7 @@ $generated_i18n_strings = array(
 	// Reference: ../../packages/js/shared-ui/components/instructions.tsx:17
 	__( 'INSTRUCTIONS!', 'wptelegram' ),
 
-	// Reference: ../../packages/js/shared-ui/components/plugin-info/plugin-info-card.tsx:57
+	// Reference: ../../packages/js/shared-ui/components/plugin-info/plugin-info-card.tsx:59
 	/* translators: %s: plugin name */
 	__( 'Do you like %s?', 'wptelegram' ),
 
@@ -60,7 +60,7 @@ $generated_i18n_strings = array(
 
 	// Reference: ../../packages/js/shared-ui/form/submit/submit-button.tsx:9
 	// Reference: ../../packages/js/shared-ui/wptelegram/p2tg-instructions.tsx:120
-	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:124
+	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:125
 	// Reference: js/settings/ui/basics/instructions.tsx:70
 	__( 'Save Changes', 'wptelegram' ),
 
@@ -75,7 +75,7 @@ $generated_i18n_strings = array(
 	__( 'Please wait…', 'wptelegram' ),
 
 	// Reference: ../../packages/js/shared-ui/form/use-bot-token-test.tsx:67
-	// Reference: js/settings/ui/basics/tab.tsx:37
+	// Reference: js/settings/ui/basics/tab.tsx:30
 	__( 'Test Token', 'wptelegram' ),
 
 	// Reference: ../../packages/js/shared-ui/form/use-chat-with-test.tsx:93
@@ -96,17 +96,25 @@ $generated_i18n_strings = array(
 	// Reference: ../../packages/js/shared-ui/wptelegram/channels-field.tsx:73
 	__( 'Add channel', 'wptelegram' ),
 
-	// Reference: ../../packages/js/shared-ui/wptelegram/delay-in-posting.tsx:29
+	// Reference: ../../packages/js/shared-ui/wptelegram/delay-in-posting.tsx:36
 	__( 'The delay starts after the post gets published.', 'wptelegram' ),
 
-	// Reference: ../../packages/js/shared-ui/wptelegram/delay-in-posting.tsx:34
+	// Reference: ../../packages/js/shared-ui/wptelegram/delay-in-posting.tsx:42
+	/* translators: %s is the plugin name */
+	__( 'If you face any issues with delay in posting, please install the %s plugin.', 'wptelegram' ),
+
+	// Reference: ../../packages/js/shared-ui/wptelegram/delay-in-posting.tsx:64
+	__( 'Minute(s)', 'wptelegram' ),
+
+	// Reference: ../../packages/js/shared-ui/wptelegram/delay-in-posting.tsx:71
 	__( 'Warning', 'wptelegram' ),
 
-	// Reference: ../../packages/js/shared-ui/wptelegram/delay-in-posting.tsx:38
+	// Reference: ../../packages/js/shared-ui/wptelegram/delay-in-posting.tsx:75
 	__( 'WordPress cron should not be disabled!', 'wptelegram' ),
 
-	// Reference: ../../packages/js/shared-ui/wptelegram/delay-in-posting.tsx:46
-	__( 'Minute(s)', 'wptelegram' ),
+	// Reference: ../../packages/js/shared-ui/wptelegram/delay-in-posting.tsx:80
+	/* translators: %s is the plugin name */
+	__( 'Otherwise, you may install the %s plugin.', 'wptelegram' ),
 
 	// Reference: ../../packages/js/shared-ui/wptelegram/disable-notification.tsx:18
 	__( 'Send the messages silently.', 'wptelegram' ),
@@ -161,11 +169,11 @@ $generated_i18n_strings = array(
 	__( 'Debug Info', 'wptelegram' ),
 
 	// Reference: ../../packages/js/shared-ui/wptelegram/fields.ts:20
-	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:96
+	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:97
 	__( 'Delay in Posting', 'wptelegram' ),
 
 	// Reference: ../../packages/js/shared-ui/wptelegram/fields.ts:21
-	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:90
+	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:91
 	__( 'Disable Notifications', 'wptelegram' ),
 
 	// Reference: ../../packages/js/shared-ui/wptelegram/fields.ts:22
@@ -196,7 +204,7 @@ $generated_i18n_strings = array(
 	__( 'Image Position', 'wptelegram' ),
 
 	// Reference: ../../packages/js/shared-ui/wptelegram/fields.ts:31
-	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:113
+	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:114
 	__( 'Message Template', 'wptelegram' ),
 
 	// Reference: ../../packages/js/shared-ui/wptelegram/fields.ts:32
@@ -236,7 +244,7 @@ $generated_i18n_strings = array(
 	__( 'Username', 'wptelegram' ),
 
 	// Reference: ../../packages/js/shared-ui/wptelegram/fields.ts:43
-	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:106
+	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:107
 	__( 'Featured Image', 'wptelegram' ),
 
 	// Reference: ../../packages/js/shared-ui/wptelegram/fields.ts:44
@@ -259,7 +267,7 @@ $generated_i18n_strings = array(
 	__( 'After the Text', 'wptelegram' ),
 
 	// Reference: ../../packages/js/shared-ui/wptelegram/image-settings.tsx:43
-	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:109
+	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:110
 	__( 'Send Featured Image (if exists).', 'wptelegram' ),
 
 	// Reference: ../../packages/js/shared-ui/wptelegram/link-preview-options.tsx:28
@@ -524,7 +532,7 @@ $generated_i18n_strings = array(
 	__( 'profile', 'wptelegram' ),
 
 	// Reference: ../../packages/js/utilities/fields.ts:35
-	// Reference: js/settings/services/fields.ts:147
+	// Reference: js/settings/services/fields.ts:148
 	__( 'Invalid %s', 'wptelegram' ),
 
 	// Reference: ../../packages/js/utilities/fields.ts:39
@@ -537,7 +545,7 @@ $generated_i18n_strings = array(
 	// Reference: js/p2tg-block-editor/Channels.tsx:37
 	__( 'Send to', 'wptelegram' ),
 
-	// Reference: js/p2tg-block-editor/Channels.tsx:56
+	// Reference: js/p2tg-block-editor/Channels.tsx:55
 	__( 'Select all', 'wptelegram' ),
 
 	// Reference: js/p2tg-block-editor/Files.tsx:11
@@ -549,25 +557,25 @@ $generated_i18n_strings = array(
 	// Reference: js/p2tg-block-editor/Files.tsx:67
 	__( 'Files', 'wptelegram' ),
 
-	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:68
+	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:69
 	// Reference: js/settings/ui/TabbedSections.tsx:26
 	// Reference: js/settings/ui/advanced/tab.tsx:30
 	__( 'Post to Telegram', 'wptelegram' ),
 
-	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:77
+	// Reference: js/p2tg-block-editor/OverrideSettings.tsx:78
 	__( 'Override settings', 'wptelegram' ),
 
 	// Reference: js/p2tg-block-editor/SendToTelegram.tsx:36
 	__( 'Send to Telegram', 'wptelegram' ),
 
-	// Reference: js/settings/services/fields.ts:127
+	// Reference: js/settings/services/fields.ts:128
 	__( 'channel', 'wptelegram' ),
 
-	// Reference: js/settings/services/fields.ts:169
+	// Reference: js/settings/services/fields.ts:171
 	/* translators: %s: field label */
 	__( 'At least one %s is required.', 'wptelegram' ),
 
-	// Reference: js/settings/services/fields.ts:170
+	// Reference: js/settings/services/fields.ts:172
 	__( 'chat ID', 'wptelegram' ),
 
 	// Reference: js/settings/services/fields.ts:21
@@ -588,13 +596,13 @@ $generated_i18n_strings = array(
 	// Reference: js/settings/services/fields.ts:28
 	__( 'If Email goes to', 'wptelegram' ),
 
-	// Reference: js/settings/ui/Sidebar.tsx:20
+	// Reference: js/settings/ui/Sidebar.tsx:21
 	__( 'Integrate your WordPress website perfectly with Telegram. Send posts automatically to Telegram when published or updated, whether to a Telegram Channel, Group or private chat, with full control. Get your email notifications on Telegram.', 'wptelegram' ),
 
-	// Reference: js/settings/ui/Sidebar.tsx:23
+	// Reference: js/settings/ui/Sidebar.tsx:24
 	__( 'Join our public chat on Telegram', 'wptelegram' ),
 
-	// Reference: js/settings/ui/Sidebar.tsx:28
+	// Reference: js/settings/ui/Sidebar.tsx:29
 	__( 'Support', 'wptelegram' ),
 
 	// Reference: js/settings/ui/TabbedSections.tsx:20
@@ -648,7 +656,7 @@ $generated_i18n_strings = array(
 	// Reference: js/settings/ui/basics/instructions.tsx:61
 	__( 'Configure the activated modules.', 'wptelegram' ),
 
-	// Reference: js/settings/ui/basics/tab.tsx:36
+	// Reference: js/settings/ui/basics/tab.tsx:29
 	__( 'Use %s above to set automatically.', 'wptelegram' ),
 
 	// Reference: js/settings/ui/notify/tab.tsx:33

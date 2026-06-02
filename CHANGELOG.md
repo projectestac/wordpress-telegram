@@ -1,5 +1,39 @@
 # Changelog
 
+## 4.2.15
+
+### Patch Changes
+
+- [#308](https://github.com/wpsocio/wp-projects/pull/308) [`c6f7136`](https://github.com/wpsocio/wp-projects/commit/c6f71364ea4d0bb6d166d72dd768e71c55c4a1fb) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fix plugin page stuck with data upgrade.
+
+## 4.2.14
+
+### Patch Changes
+
+- [#305](https://github.com/wpsocio/wp-projects/pull/305) [`3975fe1`](https://github.com/wpsocio/wp-projects/commit/3975fe16a5222a69d47fa24454cd951098192ad6) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Remove figcaption content by default.
+
+## 4.2.13
+
+### Patch Changes
+
+- [#298](https://github.com/wpsocio/wp-projects/pull/298) [`5490279`](https://github.com/wpsocio/wp-projects/commit/549027918a6585dded8e40dc46c23a2948bca88c) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Drop support for PHP 7.x, making PHP 8 the minimum required version.
+
+## 4.2.12
+
+### Patch Changes
+
+- [#292](https://github.com/wpsocio/wp-projects/pull/292) [`c2a54d4`](https://github.com/wpsocio/wp-projects/commit/c2a54d4f8ac430682f02fa8a8fa1994956489301) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed PHOTO_INVALID_DIMENSIONS error.
+
+## 4.2.11
+
+### Patch Changes
+
+- [#281](https://github.com/wpsocio/wp-projects/pull/281) [`77aaa4f`](https://github.com/wpsocio/wp-projects/commit/77aaa4f6537f8927861a89045ffb03539f4343df) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Updated error notices to show specific errors first.
+
+- [#282](https://github.com/wpsocio/wp-projects/pull/282) [`2efbf31`](https://github.com/wpsocio/wp-projects/commit/2efbf31e8596cad779f83ffd5fae60600fa33bde) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Added support for the Action Scheduler plugin for better reliability for delay in posting.
+
+- [#274](https://github.com/wpsocio/wp-projects/pull/274) [`8dee1eb`](https://github.com/wpsocio/wp-projects/commit/8dee1eb67500bdf6339b2045f64b38f3989d369f) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed help text label in the sidebar.
+
 ## 4.2.10
 
 ### Patch Changes
@@ -8,7 +42,7 @@
 
 - [#259](https://github.com/wpsocio/wp-projects/pull/259) [`cd61a8d`](https://github.com/wpsocio/wp-projects/commit/cd61a8d56970474cfed5362c7f722ff22e99bd22) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed Bot Token and Message tests not working for lowercase URLs
 
-- [#257](https://github.com/wpsocio/wp-projects/pull/257) [`150dc9f`](https://github.com/wpsocio/wp-projects/commit/150dc9f501e39e1d412da6a433d0855000e7a7ea) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed background color for the setting page
+- [#257](https://github.com/wpsocio/wp-projects/pull/257) [`150dc9f`](https://github.com/wpsocio/wp-projects/commit/150dc9f501e39e1d412da6a433d0855000e7a7ea) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Fixed background color for the settings page
 
 - [#263](https://github.com/wpsocio/wp-projects/pull/263) [`cc3b03d`](https://github.com/wpsocio/wp-projects/commit/cc3b03d92211502a9ad9eadde93396fa861aa334) Thanks [@irshadahmad21](https://github.com/irshadahmad21)! - Added support for post modified and post time variables
 

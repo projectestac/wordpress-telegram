@@ -4,14 +4,14 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit9f22db83b0053400e648614fbb59278d
+class ComposerStaticInitde73fe2e885c38dafe8d8fba7753e345
 {
     public static $files = array (
         '0d252e6134999215031cdb0e94a79cd5' => __DIR__ . '/..' . '/wpsocio/wptelegram-bot-api/init.php',
     );
 
     public static $prefixLengthsPsr4 = array (
-        'W' => 
+        'W' =>
         array (
             'WPTelegram\\BotAPI\\' => 18,
             'WPSocio\\WPUtils\\' => 16,
@@ -20,15 +20,15 @@ class ComposerStaticInit9f22db83b0053400e648614fbb59278d
     );
 
     public static $prefixDirsPsr4 = array (
-        'WPTelegram\\BotAPI\\' => 
+        'WPTelegram\\BotAPI\\' =>
         array (
             0 => __DIR__ . '/..' . '/wpsocio/wptelegram-bot-api/src',
         ),
-        'WPSocio\\WPUtils\\' => 
+        'WPSocio\\WPUtils\\' =>
         array (
             0 => __DIR__ . '/..' . '/wpsocio/wp-utils/src',
         ),
-        'WPSocio\\TelegramFormatText\\' => 
+        'WPSocio\\TelegramFormatText\\' =>
         array (
             0 => __DIR__ . '/..' . '/wpsocio/telegram-format-text/src',
         ),
@@ -41,9 +41,9 @@ class ComposerStaticInit9f22db83b0053400e648614fbb59278d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit9f22db83b0053400e648614fbb59278d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit9f22db83b0053400e648614fbb59278d::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit9f22db83b0053400e648614fbb59278d::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitde73fe2e885c38dafe8d8fba7753e345::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitde73fe2e885c38dafe8d8fba7753e345::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitde73fe2e885c38dafe8d8fba7753e345::$classMap;
 
         }, null, ClassLoader::class);
     }
